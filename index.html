@@ -4,11 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Таро Оракул • Полная версия 78 Карт</title>
-    <!-- Подключение Tailwind CSS для современного адаптивного дизайна -->
     <script src="https://cdn.tailwindcss.com"></script>
-    <!-- Интеграция Telegram WebApp SDK -->
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
-    <!-- Эзотерические шрифты из Google Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&family=Montserrat:wght@300;400;600&display=swap" rel="stylesheet">
     <style>
         body {
@@ -18,44 +15,25 @@
             overflow-x: hidden;
             -webkit-tap-highlight-color: transparent;
         }
-        .font-esoteric {
-            font-family: 'Cinzel', serif;
-        }
-        /* Стилизация полосы прокрутки */
-        ::-webkit-scrollbar {
-            width: 4px;
-        }
-        ::-webkit-scrollbar-track {
-            background: #070311;
-        }
-        ::-webkit-scrollbar-thumb {
-            background: #d97706;
-            border-radius: 2px;
-        }
-        /* 3D-анимации переворота карт */
-        .card-container {
-            perspective: 1000px;
-        }
+        .font-esoteric { font-family: 'Cinzel', serif; }
+        ::-webkit-scrollbar { width: 4px; }
+        ::-webkit-scrollbar-track { background: #070311; }
+        ::-webkit-scrollbar-thumb { background: #d97706; border-radius: 2px; }
+        
+        .card-container { perspective: 1000px; }
         .card-inner {
             transition: transform 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275);
             transform-style: preserve-3d;
         }
-        .card-inner.flipped {
-            transform: rotateY(180deg);
-        }
+        .card-inner.flipped { transform: rotateY(180deg); }
         .card-front, .card-back {
             backface-visibility: hidden;
             position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
         }
-        .card-front {
-            transform: rotateY(180deg);
-        }
+        .card-front { transform: rotateY(180deg); }
         
-        /* Спецэффекты тасования карт */
         @keyframes shuffle-left {
             0% { transform: translateX(0) rotate(0deg); z-index: 10; }
             50% { transform: translateX(-120px) rotate(-15deg); z-index: 1; }
@@ -66,18 +44,9 @@
             50% { transform: translateX(120px) rotate(15deg); z-index: 10; }
             100% { transform: translateX(0) rotate(0deg); z-index: 8; }
         }
-        
-        .animate-shuffle-1 {
-            animation: shuffle-left 0.7s ease-in-out infinite;
-        }
-        .animate-shuffle-2 {
-            animation: shuffle-right 0.7s ease-in-out infinite;
-        }
-        
-        /* Золотое свечение */
-        .gold-glow {
-            box-shadow: 0 0 25px rgba(217, 119, 6, 0.3);
-        }
+        .animate-shuffle-1 { animation: shuffle-left 0.7s ease-in-out infinite; }
+        .animate-shuffle-2 { animation: shuffle-right 0.7s ease-in-out infinite; }
+        .gold-glow { box-shadow: 0 0 25px rgba(217, 119, 6, 0.3); }
     </style>
 </head>
 <body class="min-h-screen flex flex-col justify-between p-4 max-w-md mx-auto relative">
@@ -99,7 +68,6 @@
         </div>
     </header>
 
-    <!-- Основной контент -->
     <main class="flex-grow flex flex-col justify-center items-center w-full z-10">
         
         <!-- ЭКРАН 0: Регистрация -->
@@ -115,39 +83,34 @@
                     <label class="text-[10px] text-amber-500 font-esoteric tracking-wider" for="reg-name">Ваше имя:</label>
                     <input type="text" id="reg-name" placeholder="Введите ваше имя" class="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-xs text-gray-100 focus:outline-none focus:border-amber-500/60 transition-colors">
                 </div>
-
                 <div class="space-y-1">
-                    <label class="text-[10px] text-amber-500 font-esoteric tracking-wider" for="reg-email">Ваш Email (для сохранения истории раскладов):</label>
+                    <label class="text-[10px] text-amber-500 font-esoteric tracking-wider" for="reg-email">Ваш Email:</label>
                     <input type="email" id="reg-email" placeholder="example@mail.com" class="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-xs text-gray-100 focus:outline-none focus:border-amber-500/60 transition-colors">
                 </div>
-
                 <div class="flex items-start space-x-2.5 pt-1">
                     <input type="checkbox" id="reg-consent" class="mt-0.5 w-4 h-4 rounded border-gray-300 text-amber-500 focus:ring-amber-500 bg-white/5 accent-amber-500">
                     <label for="reg-consent" class="text-[9px] text-gray-400 leading-relaxed select-none">
-                        Я даю согласие на <span class="text-amber-500 font-medium">обработку персональных данных</span> ИП для отправки прогнозов и соглашаюсь с 
-                        <span onclick="openPolicyModal()" class="underline text-amber-400 hover:text-amber-300 cursor-pointer font-medium active:scale-95 transition-transform inline-block">Политикой конфиденциальности</span>.
+                        Я даю согласие на <span class="text-amber-500 font-medium">обработку персональных данных</span> ИП для отправки прогнозов.
                     </label>
                 </div>
-
                 <button onclick="handleRegister()" class="w-full py-3.5 bg-gradient-to-r from-amber-600 to-yellow-500 text-gray-950 font-bold font-esoteric rounded-xl text-xs uppercase tracking-widest shadow-lg hover:from-amber-500 hover:to-yellow-400 transition-all duration-300 active:scale-[0.98]">
                     Войти в Оракул
                 </button>
             </div>
         </div>
         
-        <!-- ЭКРАН 1: Сетка выбора вопросов -->
+        <!-- ЭКРАН 1: Вопросы -->
         <div id="screen-questions" class="w-full space-y-4 hidden">
             <div class="text-center mb-2">
                 <h2 class="text-xl font-esoteric text-amber-400 font-bold tracking-wider mb-1">Выберите свой вопрос</h2>
-                <p class="text-gray-400 text-[10px] px-6">Сфокусируйтесь на ситуации и сделайте выбор. Стоимость: 1 расклад = 1 🔮</p>
+                <p class="text-gray-400 text-[10px] px-6">Стоимость: 1 расклад = 1 🔮</p>
             </div>
-            
             <div id="questions-grid" class="grid grid-cols-1 gap-2 max-h-[50vh] overflow-y-auto px-1 py-1">
-                <!-- Вопросы загружаются автоматически из JS -->
+                <!-- Генерируется из JS -->
             </div>
         </div>
 
-        <!-- ЭКРАН 2: Анимация Тасования и Выбора Карт -->
+        <!-- ЭКРАН 2: Тасование -->
         <div id="screen-shuffling" class="w-full hidden flex flex-col items-center justify-center space-y-6 my-auto">
             <h2 id="current-question-title" class="text-sm font-esoteric text-center text-amber-300 max-w-[85%] mb-2"></h2>
             
@@ -155,39 +118,37 @@
                 <div class="absolute w-52 h-52 border border-dashed border-amber-500/20 rounded-full animate-spin [animation-duration:35s]"></div>
                 
                 <div id="card-deck-container" class="relative w-40 h-56 card-container">
-                    <div id="deck-card-3" class="absolute inset-0 bg-indigo-950 border border-amber-500/40 rounded-xl p-4 flex flex-col justify-between shadow-2xl transition-all duration-300 transform rotate-1 scale-95 opacity-80">
-                        <div class="w-full h-full border border-amber-500/10 rounded-lg flex items-center justify-center bg-[#150a2b]">🌙</div>
-                    </div>
-                    <div id="deck-card-2" class="absolute inset-0 bg-indigo-950 border border-amber-500/60 rounded-xl p-4 flex flex-col justify-between shadow-2xl transition-all duration-300 transform -rotate-1 scale-98 opacity-90">
-                        <div class="w-full h-full border border-amber-500/10 rounded-lg flex items-center justify-center bg-[#150a2b]">🔮</div>
-                    </div>
+                    <div id="deck-card-3" class="absolute inset-0 bg-indigo-950 border border-amber-500/40 rounded-xl p-4 shadow-2xl transition-all duration-300 transform rotate-1 scale-95 opacity-80"></div>
+                    <div id="deck-card-2" class="absolute inset-0 bg-indigo-950 border border-amber-500/60 rounded-xl p-4 shadow-2xl transition-all duration-300 transform -rotate-1 scale-98 opacity-90"></div>
                     
                     <div id="interactive-card" class="absolute inset-0 card-inner w-full h-full">
-                        <div class="card-back bg-gradient-to-br from-indigo-950 to-purple-950 border border-amber-500 rounded-xl p-3 flex flex-col justify-between shadow-2xl">
-                            <div class="w-full h-full border-2 border-amber-500/20 rounded-lg flex flex-col justify-between p-2 bg-[#0e0622]">
-                                <div class="flex justify-between text-[8px] text-amber-500/40 font-esoteric"><span>✧ TAROT ✧</span></div>
-                                <div class="w-full flex justify-center items-center my-auto">✨</div>
-                                <div class="flex justify-between text-[8px] text-amber-500/40 font-esoteric rotate-180"><span>✧ TAROT ✧</span></div>
-                            </div>
+                        <!-- Рубашка -->
+                        <div class="card-back bg-gradient-to-br from-indigo-950 to-purple-950 border border-amber-500 rounded-xl p-3 shadow-2xl">
+                            <div class="w-full h-full border-2 border-amber-500/20 rounded-lg bg-[#0e0622] flex items-center justify-center">✨</div>
                         </div>
-                        <div class="card-front bg-gradient-to-b from-[#180927] to-[#04010a] border-2 border-amber-500 rounded-xl p-3 flex flex-col justify-between shadow-2xl">
-                            <div class="w-full h-full border border-amber-500/30 rounded-lg flex flex-col justify-between p-2 bg-black/60 relative overflow-hidden">
-                                <div id="card-number" class="text-center font-esoteric text-amber-500 text-[10px]"></div>
-                                <div id="card-symbol" class="text-4xl text-center my-auto"></div>
-                                <div id="card-name" class="text-center font-esoteric text-amber-400 font-bold text-xs tracking-wider"></div>
+                        <!-- Лицевая сторона (ТЕПЕРЬ С КАРТИНКОЙ) -->
+                        <div class="card-front bg-[#04010a] border-2 border-amber-500 rounded-xl shadow-2xl overflow-hidden relative">
+                            <!-- Сюда вставляется реальная картинка -->
+                            <img id="card-image" src="" alt="Card" class="absolute inset-0 w-full h-full object-cover">
+                            <!-- Градиент затемнения снизу для текста -->
+                            <div class="absolute inset-x-0 bottom-0 h-1/2 bg-gradient-to-t from-black via-black/70 to-transparent"></div>
+                            
+                            <div class="absolute inset-0 flex flex-col justify-between p-3 z-10">
+                                <div id="card-number" class="text-center font-esoteric text-amber-400 drop-shadow-md text-xs font-bold"></div>
+                                <div id="card-name" class="text-center font-esoteric text-amber-400 font-bold text-[11px] tracking-wider mb-1 drop-shadow-lg"></div>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
 
-            <p id="shuffle-status" class="text-gray-400 text-[10px] italic tracking-wider animate-pulse text-center">Калибровка энергетического поля...</p>
+            <p id="shuffle-status" class="text-gray-400 text-[10px] italic tracking-wider animate-pulse text-center">Калибровка поля...</p>
             <button id="draw-btn" onclick="startShufflingAndReveal()" class="px-8 py-3 bg-gradient-to-r from-amber-600 to-yellow-500 text-gray-950 font-bold font-esoteric rounded-full text-xs uppercase tracking-widest shadow-lg hover:from-amber-500 hover:to-yellow-400 transition-all gold-glow duration-300 active:scale-95">
                 Перемешать и вытянуть
             </button>
         </div>
 
-        <!-- ЭКРАН 3: Индивидуальное толкование -->
+        <!-- ЭКРАН 3: Результат -->
         <div id="screen-result" class="w-full hidden space-y-4">
             <div class="flex flex-col items-center">
                 <h3 class="text-[10px] font-esoteric text-amber-500 tracking-wider">РАСКЛАД ЗАВЕРШЕН</h3>
@@ -195,671 +156,205 @@
             </div>
 
             <div class="flex justify-center my-1">
-                <div class="bg-gradient-to-r from-amber-950/20 via-amber-500/10 to-amber-950/20 border-y border-amber-500/20 w-full py-2.5 px-4 flex items-center justify-center space-x-5">
-                    <div class="w-14 h-22 bg-[#120721] border border-amber-500/55 rounded-lg flex flex-col justify-between p-1 shadow-xl">
-                        <div id="result-badge-num" class="text-center text-[7px] font-esoteric text-amber-500"></div>
-                        <div id="result-badge-symbol" class="text-xl text-center my-auto"></div>
-                        <div id="result-badge-name" class="text-center font-esoteric text-amber-400 text-[8px] font-semibold truncate"></div>
+                <div class="bg-gradient-to-r from-amber-950/20 via-amber-500/10 to-amber-950/20 border-y border-amber-500/20 w-full py-2.5 px-4 flex items-center justify-center space-x-4">
+                    <!-- Миниатюра вытянутой карты -->
+                    <div class="w-12 h-16 border border-amber-500/50 rounded-md overflow-hidden relative shadow-lg shrink-0">
+                        <img id="result-badge-image" src="" class="absolute inset-0 w-full h-full object-cover">
                     </div>
                     <div>
                         <h4 class="text-[8px] text-amber-500 tracking-widest uppercase font-esoteric">Выпавшая карта:</h4>
                         <h3 id="result-card-fullname" class="text-xs font-esoteric text-amber-400 font-bold tracking-wide"></h3>
-                        <p id="result-card-nature" class="text-[8px] bg-emerald-500/10 border border-emerald-500/30 text-emerald-400 font-medium px-2 py-0.5 rounded-full inline-block mt-0.5">Благоприятный знак</p>
                     </div>
                 </div>
             </div>
 
-            <div class="bg-black/40 border border-white/5 rounded-2xl p-4 max-h-[30vh] overflow-y-auto space-y-3 shadow-inner">
+            <!-- Текстовый свиток -->
+            <div class="bg-black/40 border border-white/5 rounded-2xl p-4 max-h-[35vh] overflow-y-auto space-y-3 shadow-inner">
                 <h4 class="font-esoteric text-amber-500 text-xs font-bold flex items-center">
-                    <span class="mr-1.5">✦</span> Духовный ответ для вас, <span id="user-name-result" class="text-gray-100 ml-1"></span>:
+                    <span class="mr-1.5">✦</span> Толкование:
                 </h4>
-                <p id="interpretation-text" class="text-gray-300 text-xs leading-relaxed text-justify whitespace-pre-line">
-                    Текст прогноза...
-                </p>
+                <p id="interpretation-text" class="text-gray-300 text-xs leading-relaxed text-justify whitespace-pre-line"></p>
             </div>
 
-            <div class="flex space-x-3 pt-1">
-                <button onclick="goToQuestions()" class="flex-1 py-3 bg-white/5 border border-white/10 text-gray-200 font-esoteric rounded-xl text-xs uppercase tracking-wider active:scale-95">Новый вопрос</button>
-                <button onclick="shareResult()" class="flex-1 py-3 bg-gradient-to-r from-amber-500/20 to-amber-600/20 border border-amber-500/40 text-amber-300 font-esoteric rounded-xl text-xs uppercase tracking-wider active:scale-95">Поделиться</button>
-            </div>
+            <button onclick="goToQuestions()" class="w-full py-3 bg-white/5 border border-white/10 text-gray-200 font-esoteric rounded-xl text-xs uppercase tracking-wider active:scale-95">Новый вопрос</button>
         </div>
 
-        <!-- ЭКРАН 4: Магазин Telegram Stars -->
+        <!-- ЭКРАН 4: Магазин -->
         <div id="screen-shop" class="w-full hidden space-y-5">
             <div class="text-center">
                 <h2 class="text-xl font-esoteric text-amber-400 font-bold tracking-wider mb-1">Приобрести Энергию</h2>
-                <p class="text-gray-400 text-[10px] px-6">Для совершения раскладов требуется энергия Оракула. Пополняйте баланс в звездах Telegram</p>
+                <p class="text-gray-400 text-[10px] px-6">Пополняйте баланс в звездах Telegram</p>
             </div>
-
             <div class="space-y-3">
-                <div class="bg-gradient-to-r from-[#180f2d] to-[#0f0720] border border-white/5 rounded-2xl p-4 flex items-center justify-between shadow-lg relative overflow-hidden">
-                    <div class="absolute left-0 top-0 h-full w-1 bg-amber-500"></div>
+                <div class="bg-[#180f2d] border border-white/5 rounded-2xl p-4 flex items-center justify-between shadow-lg">
                     <div>
-                        <h4 class="font-esoteric text-gray-100 font-bold text-xs">Пакет «Один Вопрос»</h4>
-                        <p class="text-[9px] text-gray-400 mt-0.5">1 детальный расклад Таро (~$1)</p>
+                        <h4 class="font-esoteric text-gray-100 font-bold text-xs">Пакет «1 Вопрос»</h4>
                     </div>
-                    <button onclick="buyPackage(1, 75)" class="flex items-center space-x-1 bg-amber-500 hover:bg-amber-400 text-gray-950 font-bold px-3 py-1.5 rounded-xl transition active:scale-95">
-                        <span class="text-xs font-extrabold">75</span>
-                        <span class="text-[10px]">⭐</span>
-                    </button>
+                    <button onclick="buyPackage(1, 75)" class="flex items-center space-x-1 bg-amber-500 text-gray-950 px-3 py-1.5 rounded-xl font-bold"><span>75</span><span>⭐</span></button>
                 </div>
-
-                <div class="bg-gradient-to-r from-[#21113e] to-[#120726] border-2 border-amber-500 rounded-2xl p-4 flex items-center justify-between shadow-lg relative overflow-hidden gold-glow">
-                    <div class="absolute right-0 top-0 bg-amber-500 text-gray-950 font-bold text-[8px] px-2.5 py-0.5 rounded-bl-lg font-esoteric uppercase tracking-widest">Хит (Скидка 10%)</div>
-                    <div class="absolute left-0 top-0 h-full w-1 bg-amber-500"></div>
+                <div class="bg-[#21113e] border-2 border-amber-500 rounded-2xl p-4 flex items-center justify-between shadow-lg gold-glow">
                     <div>
-                        <h4 class="font-esoteric text-amber-300 font-bold text-xs flex items-center">Пакет «Поток Мудрости»</h4>
-                        <p class="text-[9px] text-gray-300 mt-0.5">5 детальных раскладов Таро (~$4.5)</p>
+                        <h4 class="font-esoteric text-amber-300 font-bold text-xs">Пакет «5 Вопросов»</h4>
                     </div>
-                    <button onclick="buyPackage(5, 340)" class="flex items-center space-x-1 bg-amber-500 hover:bg-amber-400 text-gray-950 font-bold px-3 py-1.5 rounded-xl transition active:scale-95">
-                        <span class="text-xs font-extrabold">340</span>
-                        <span class="text-[10px]">⭐</span>
-                    </button>
-                </div>
-
-                <div class="bg-gradient-to-r from-[#180f2d] to-[#0f0720] border border-white/5 rounded-2xl p-4 flex items-center justify-between shadow-lg relative overflow-hidden">
-                    <div class="absolute left-0 top-0 h-full w-1 bg-purple-500"></div>
-                    <div>
-                        <h4 class="font-esoteric text-gray-100 font-bold text-xs">Пакет «Абсолютное Знание»</h4>
-                        <p class="text-[9px] text-gray-400 mt-0.5">15 раскладов со скидкой 20% (~$12)</p>
-                    </div>
-                    <button onclick="buyPackage(15, 900)" class="flex items-center space-x-1 bg-amber-500 hover:bg-amber-400 text-gray-950 font-bold px-3 py-1.5 rounded-xl transition active:scale-95">
-                        <span class="text-xs font-extrabold">900</span>
-                        <span class="text-[10px]">⭐</span>
-                    </button>
+                    <button onclick="buyPackage(5, 340)" class="flex items-center space-x-1 bg-amber-500 text-gray-950 px-3 py-1.5 rounded-xl font-bold"><span>340</span><span>⭐</span></button>
                 </div>
             </div>
-
-            <button onclick="goToQuestions()" class="w-full py-2.5 bg-white/5 border border-white/10 hover:bg-white/10 text-gray-300 font-esoteric rounded-xl text-xs uppercase tracking-wider transition-colors">
-                Назад к вопросам
-            </button>
         </div>
 
     </main>
 
     <!-- Нижняя навигация -->
     <nav id="app-navigation" class="hidden flex justify-around items-center w-full py-2.5 px-3 bg-black/60 border-t border-white/10 rounded-t-2xl backdrop-blur-md mt-4">
-        <button id="nav-questions" onclick="switchTab('questions')" class="flex flex-col items-center space-y-1 text-amber-500">
-            <span class="text-xs">🔮</span>
-            <span class="text-[9px] font-semibold tracking-wider">Вопросы</span>
+        <button onclick="switchTab('questions')" class="flex flex-col items-center space-y-1 text-amber-500">
+            <span class="text-xs">🔮</span><span class="text-[9px]">Вопросы</span>
         </button>
-        <button id="nav-shop" onclick="switchTab('shop')" class="flex flex-col items-center space-y-1 text-gray-400 hover:text-amber-500 transition">
-            <span class="text-xs">🪙</span>
-            <span class="text-[9px] font-semibold tracking-wider">Купить</span>
+        <button onclick="switchTab('shop')" class="flex flex-col items-center space-y-1 text-gray-400">
+            <span class="text-xs">🪙</span><span class="text-[9px]">Купить</span>
         </button>
     </nav>
 
-    <!-- Кастомное окно сообщений -->
-    <div id="custom-modal" class="fixed inset-0 bg-black/80 flex items-center justify-center p-6 z-50 hidden backdrop-blur-sm">
-        <div class="bg-gradient-to-b from-indigo-950 to-[#0e0622] border border-amber-500/40 rounded-3xl p-6 w-full max-w-sm text-center space-y-4 gold-glow">
-            <div id="modal-icon" class="text-4xl">🔮</div>
-            <h3 id="modal-title" class="font-esoteric text-md text-amber-400 font-bold tracking-wider"></h3>
-            <p id="modal-text" class="text-xs text-gray-300 leading-relaxed"></p>
-            <button onclick="closeModal()" class="w-full py-2.5 bg-gradient-to-r from-amber-600 to-yellow-500 text-gray-950 font-bold rounded-xl text-xs font-esoteric uppercase tracking-wider">
-                Принять
-            </button>
-        </div>
-    </div>
-
-    <!-- Модальное окно политики безопасности -->
-    <div id="policy-modal" class="fixed inset-0 bg-black/95 flex items-center justify-center p-5 z-50 hidden backdrop-blur-sm">
-        <div class="bg-[#0e0622] border border-amber-500/40 rounded-3xl p-5 w-full max-w-sm flex flex-col h-[70vh] gold-glow">
-            <h3 class="font-esoteric text-xs text-amber-400 font-bold tracking-wider text-center mb-3">Политика конфиденциальности</h3>
-            <div class="flex-grow overflow-y-auto text-[9px] text-gray-300 space-y-3 pr-1 text-justify">
-                <p><strong>1. Сбор данных</strong><br>Оператор собирает персональные данные пользователя: Имя и адрес электронной почты (Email) исключительно для работы сервиса и направления прогнозов.</p>
-                <p><strong>2. Использование данных</strong><br>Данные собираются с согласия пользователя в соответствии с законом РК «О персональных данных и их защите».</p>
-                <p><strong>3. Защита данных</strong><br>Мы гарантируем полную конфиденциальность ваших данных и обязуемся не передавать их третьим лицам.</p>
-                <p><strong>4. Согласие на рассылку</strong><br>Указывая свой Email, вы соглашаетесь получать персональные электронные письма с результатами раскладов и эксклюзивными предложениями Оракула.</p>
-            </div>
-            <button onclick="closePolicyModal()" class="w-full py-2 mt-4 bg-white/5 text-amber-400 border border-amber-500/30 rounded-xl text-[10px] font-esoteric uppercase tracking-wider">
-                Закрыть
-            </button>
-        </div>
-    </div>
-
     <script>
+        // Инициализация Telegram
         let tg = window.Telegram ? window.Telegram.WebApp : null;
-        if (tg) {
-            tg.ready();
-            tg.expand();
-        }
-
-        // ТВОЙ БЭКЕНД-АДРЕС НА RENDER (Определен из Вебхука на скриншоте)
-        const BACKEND_URL = "https://tarot-backend-136l.onrender.com";
+        if (tg) { tg.ready(); tg.expand(); }
 
         let state = {
-            registered: false,
-            user_name: '',
-            user_email: '',
-            balance: 1, 
-            selectedQuestionId: null,
-            currentScreen: 'register'
+            registered: false, user_name: '', user_email: '', balance: 1, 
+            selectedQuestionId: null, currentScreen: 'register'
         };
 
-        // Запрос профиля пользователя с сервера при старте приложения
-        async function initApp() {
-            initFullDeck();
-            renderQuestions();
-            
-            if (tg && tg.initData) {
-                try {
-                    const response = await fetch(`${BACKEND_URL}/api/user/profile`, {
-                        headers: { 'Authorization': tg.initData }
-                    });
-                    if (response.ok) {
-                        const data = await response.json();
-                        state.registered = data.registered;
-                        state.balance = data.balance;
-                        state.user_name = data.name;
-                        
-                        updateBalanceUI();
-                        
-                        if (state.registered) {
-                            document.getElementById('user-name-display').innerText = state.user_name;
-                            document.getElementById('user-name-result').innerText = state.user_name;
-                            document.getElementById('screen-register').classList.add('hidden');
-                            document.getElementById('app-header').classList.remove('hidden');
-                            document.getElementById('app-navigation').classList.remove('hidden');
-                            switchTab('questions');
-                        }
-                    }
-                } catch (e) {
-                    console.error("Не удалось связаться с сервером профилей", e);
-                }
-            } else {
-                updateBalanceUI();
-            }
-        }
+        const BACKEND_URL = "https://tarot-backend-136l.onrender.com"; // Твой бэкенд
 
-        // Список 10 вопросов
+        // =====================================================================
+        // 🔮 БАЗА ВОПРОСОВ (МОЖНО РЕДАКТИРОВАТЬ ТЕКСТ И КАТЕГОРИИ)
+        // =====================================================================
         const questionsList = [
             { id: 1, text: "Что меня ждет на работе в ближайший месяц?", category: "Карьера" },
             { id: 2, text: "Встречу ли я свою любовь в ближайшее время?", category: "Любовь" },
             { id: 3, text: "Стоит ли мне сейчас менять сферу деятельности?", category: "Выбор" },
             { id: 4, text: "Каковы перспективы моих текущих отношений?", category: "Отношения" },
-            { id: 5, text: "Что поможет мне увеличить денежный доход?", category: "Финансы" },
-            { id: 6, text: "Какое скрытое препятствие стоит на моем пути?", category: "Тень" },
-            { id: 7, text: "Чего мне стоит избегать в ближайшие дни?", category: "Предупреждение" },
-            { id: 8, text: "Каков будет исход задуманного мною дела?", category: "Будущее" },
-            { id: 9, text: "В чем моя главная сила прямо сейчас?", category: "Сила" },
-            { id: 10, text: "Что принесет мне сегодняшнее решение?", category: "Совет" }
+            { id: 5, text: "Что поможет мне увеличить денежный доход?", category: "Финансы" }
         ];
 
-        // Масти младших арканов
-        const suitMeanings = {
-            wands: {
-                name: "Жезлов",
-                symbol: "🔥",
-                desc: "стихия Огня, воля, амбиции, страсть и движение вперед.",
-                career: "Вам предстоит месяц activeных действий и лидерских решений. Появится мощный шанс заявить о себе, начать новый проект или преодолеть застой. Ваша энергия на пике, действуйте смело!",
-                love: "Вас ждет вспышка страсти, яркие эмоции или активная инициатива от партнера (или от вас). Отношения будут развиваться стремительно, но избегайте эгоизма.",
-                advice: "Рекомендуется проявить мужество, отстаивать свои позиции и верить в свои силы. Избегайте упрямства, направляйте пламя вашей воли на созидание."
-            },
-            cups: {
-                name: "Кубков",
-                symbol: "💧",
-                desc: "стихия Воды, чувства, любовь, интуиция и душевные связи.",
-                career: "На работе важную роль сыграет интуиция, творческий подход и гармоничные отношения с коллегами. Финансы придут через любимое дело и искреннюю увлеченность.",
-                love: "Благоприятный знак. Вас ждет глубокое душевное взаимопонимание, новые романтические чувства или переход отношений на более искренний, чувственный уровень.",
-                advice: "Доверяйте своему сердцу и предчувствиям. Постарайтесь найти гармонию внутри себя, простите старые обиды и откройте душу прекрасному."
-            },
-            swords: {
-                name: "Мечей",
-                symbol: "💨",
-                desc: "стихия Воздуха, разум, логика, вызовы и преодоление барьеров.",
-                career: "Время холодных расчетов и интеллектуальных баталий. Возможны трудные переговоры, споры или необходимость принять резкое решение. Логика — ваше главное оружие.",
-                love: "Отношения проходят проверку разумом. Возможно охлаждение чувств, честный и непростой разговор или необходимость установить четкие личные границы.",
-                advice: "Рекомендуется отбросить эмоции, проанализировать факты и отсечь всё лишнее. Остерегайтесь конфликтов и сплетен за вашей спиной."
-            },
-            pentacles: {
-                name: "Пентаклей",
-                symbol: "🌍",
-                desc: "стихия Земли, материальный мир, деньги, стабильность и плоды труда.",
-                career: "Превосходный материальный знак. Вас ждет стабильный рост доходов, выгодное предложение, премия или долгожданный результат упорных трудов. Почва под ногами тверда.",
-                love: "Отношения прочные, надежные и ориентированные на общее будущее. Это союз, построенный на взаимном доверии, стабильности и общем быте.",
-                advice: "Фокусируйтесь на земных, практических задачах. Не спешите рисковать деньгами. Опирайтесь на проверенные методы и закладывайте прочный фундамент."
-            }
-        };
-
-        // Ранги младших арканов
-        const rankMeanings = {
-            1: { name: "Туз", desc: "чистый импульс, мощный старт, подарок судьбы и великолепная возможность." },
-            2: { name: "Двойка", desc: "выбор, баланс, необходимость лавировать и искать партнерство." },
-            3: { name: "Тройка", desc: "первые успехи, расширение влияния, синергия и совместный труд." },
-            4: { name: "Четверка", desc: "стабильность, сохранение позиций, но порой — застой и страх перемен." },
-            5: { name: "Пятерка", desc: "вызов, кризис, временные потери или преодоление разногласий." },
-            6: { name: "Шестерка", desc: "гармония, заслуженная победа, продвижение вперед и получение помощи." },
-            7: { name: "Семерка", desc: "терпение, ожидание результатов, планирование и проверка на выносливость." },
-            8: { name: "Восьмерка", desc: "мастерство, фокус на деталях, упорный и благодарный труд." },
-            9: { name: "Девятка", desc: "изобилие, самодостаточность, защищенность и преддверие триумфа." },
-            10: { name: "Десятка", desc: "полнота, завершение цикла, абсолютное благополучие, семейное богатство." },
-            11: { name: "Паж", desc: "новые известия, юный импульс, ученичество и шанс начать с малого." },
-            12: { name: "Рыцарь", desc: "напор, движение, скорость, поездка или решительное наступление." },
-            13: { name: "Королева", desc: "зрелая мудрость, мастерство владения стихией и сильное покровительство." },
-            14: { name: "Король", desc: "абсолютная власть, стабильность, авторитет и принятие судьбоносных решений." }
-        };
-
-        // 22 Старших Аркана
+        // =====================================================================
+        // 🔮 БАЗА СТАРШИХ АРКАНОВ (ИЗОБРАЖЕНИЯ И ТЕКСТЫ)
+        // КАК МЕНЯТЬ ИЗОБРАЖЕНИЕ: Вставь свою ссылку в поле imageUrl
+        // КАК МЕНЯТЬ ТЕКСТ: Меняй текст в полях "love", "career", "advice"
+        // =====================================================================
         const majorArcanaDatabase = [
             {
                 id: 0,
                 name: "Дурак",
                 number: "0",
-                symbol: "🌀",
-                nature: "Начало Пути",
-                isPositive: true,
-                love: "Вас ждет легкий, свободный роман с чистого листа, без лишних ожиданий и обязательств. Отношения обновятся, если вы отпустите контроль и доверитесь спонтанности.",
-                career: "Время начать новый проект, даже если он кажется безумным. Не бойтесь риска и отсутствия опыта — Космос благоволит смелым новичкам. Возможен легкий заработок.",
-                advice: "Обнулите прошлые обиды и страхи. Сделайте шаг в неизвестность с открытым сердцем. Но остерегайтесь глупых, импульсивных трат и доверчивости."
+                imageUrl: "https://placehold.co/400x600/1e1b4b/d97706?font=playfair-display&text=The+Fool", // Замени на свою ссылку
+                
+                // Текст, если вопрос связан с Любовью (вопросы 2, 4):
+                love: "Вас ждет легкий, свободный роман с чистого листа, без лишних ожиданий и обязательств. Отношения обновятся, если вы доверитесь спонтанности.",
+                
+                // Текст, если вопрос связан с Карьерой (вопросы 1, 3, 5):
+                career: "Время начать новый проект, даже если он кажется безумным. Не бойтесь риска — Космос благоволит смелым новичкам. Возможен легкий заработок.",
+                
+                // Текст для любых других вопросов (Совет):
+                advice: "Обнулите прошлые обиды. Сделайте шаг в неизвестность с открытым сердцем. Но остерегайтесь глупых трат."
             },
             {
                 id: 1,
                 name: "Маг",
                 number: "I",
-                symbol: "🔮",
-                nature: "Высокий потенциал",
-                isPositive: true,
-                love: "Ваша харизма сейчас на пике. Вы способны влюбить в себя любого, проявив инициативу. Сделайте первый шаг, ведите партнера за собой, но избегайте манипуляций.",
-                career: "У вас есть все ресурсы для победы. Самое время предлагать руководству смелые идеи, открывать бизнес или просить повышения. Ваше слово сейчас имеет огромный вес.",
-                advice: "Вы — творец своей реальности. Сконцентрируйте волю, действуйте активно и не сомневайтесь в успехе. Вся сила — в ваших руках."
+                imageUrl: "https://placehold.co/400x600/1e1b4b/d97706?font=playfair-display&text=The+Magician",
+                love: "Ваша харизма сейчас на пике. Вы способны влюбить в себя любого. Сделайте первый шаг, но избегайте манипуляций.",
+                career: "У вас есть все ресурсы для победы. Самое время предлагать руководству смелые идеи или открывать бизнес.",
+                advice: "Вы — творец своей реальности. Сконцентрируйте волю, действуйте активно и не сомневайтесь в успехе."
             },
             {
                 id: 2,
                 name: "Верховная Жрица",
                 number: "II",
-                symbol: "🌙",
-                nature: "Интуиция и Тайны",
-                isPositive: true,
-                love: "Отношения наполнены загадками и глубокой чувственностью. Доверяйте не словам партнера, а своим внутренним предчувствиям — они укажут истину.",
-                career: "Не спешите действовать напролом. Затаитесь, соберите информацию и внимательно наблюдайте за окружением. Скоро вам откроется важная тайна, которая поможет преуспеть.",
-                advice: "Посвятите время духовному росту, интуиции и спокойствию. Держите свои планы в строжайшем секрете от окружающих людей."
-            },
-            {
-                id: 3,
-                name: "Императрица",
-                number: "III",
-                symbol: "👑",
-                nature: "Изобилие и Рост",
-                isPositive: true,
-                love: "Один из лучших знаков. В любви вас ждет период расцвета, искренней нежности, создание крепкой семьи или переход отношений на зрелый уровень созидания.",
-                career: "Проекты начнут приносить богатые плоды. Деньги идут к вам естественным путем. Отличный период для долгосрочных инвестиций, карьерного взлета и стабильности.",
-                advice: "Действуйте мягко, созидательно и терпеливо. Позвольте событиям созреть, словно плодам на дереве. Окружайте близких теплом и заботой."
-            },
-            {
-                id: 4,
-                name: "Император",
-                number: "IV",
-                symbol: "🏛️",
-                nature: "Стабильность и Власть",
-                isPositive: true,
-                love: "В отношениях ценится прочность, надежность и четкие правила. Партнер настроен серьезно и готов взять на себя ответственность (или это требуется от вас).",
-                career: "Период наведения порядка и укрепления авторитета. Вас ждет стабильность, уважение коллег и возможность возглавить крупный проект. Действуйте жестко, но справедливо.",
-                advice: "Проявите дисциплину, организуйте свои дела и твердо стойте на ногах. Будьте опорой для других, но избегайте тирании."
-            },
-            {
-                id: 5,
-                name: "Иерофант",
-                number: "V",
-                symbol: "📜",
-                nature: "Мудрость и Традиции",
-                isPositive: true,
-                love: "Отношения строятся на общих духовных ценностях, взаимном уважении и традициях. Возможно заключение брака или встреча с человеком, который станет вашим наставником.",
-                career: "Успех придет через следование правилам, обучение других или повышение собственной квалификации. Занимайтесь только честным, этичным бизнесом.",
-                advice: "Поступайте по совести и закону. Ищите мудрые советы у авторитетных людей. Сейчас важно сохранить внутреннюю чистоту и принципы."
-            },
-            {
-                id: 6,
-                name: "Влюбленные",
-                number: "VI",
-                symbol: "💞",
-                nature: "Важный Выбор",
-                isPositive: true,
-                love: "Вас ждет гармония в союзе или необходимость принять важное решение сердцем. Доверяйте своим чувствам, а не холодному расчету — любовь победит.",
-                career: "Время партнерства, выгодных союзов и сделок. Возможно, вам предстоит сделать выбор между двумя вакансиями или проектами. Выбирайте то, к чему лежит душа.",
-                advice: "Принимайте решения, основываясь на согласии со своей душой. Избегайте внутренних компромиссов, которые разрушают вашу целостность."
-            },
-            {
-                id: 7,
-                name: "Колесница",
-                number: "VII",
-                symbol: "🏹",
-                nature: "Прорыв и Триумф",
-                isPositive: true,
-                love: "Отношения будут развиваться стремительно. Возможна совместная поездка, яркое приключение или победа над преградами, которые мешали вам быть вместе.",
-                career: "Время карьерного прорыва! Вы сметете любые препятствия на своем пути. Успех ждет в командировках, покупке авто, запуске амбициозных стартапов.",
-                advice: "Возьмите бразды правления своей жизнью в свои руки. Сконцентрируйте волю, двигайтесь к цели на максимальной скорости и не сомневайтесь в триумфе."
-            },
-            {
-                id: 8,
-                name: "Сила",
-                number: "VIII",
-                symbol: "🦁",
-                nature: "Мягкое Влияние",
-                isPositive: true,
-                love: "Отношения требуют терпения, страсти и мягкого женского влияния. Вы сможете укротить любые конфликты и разногласия с помощью любви и ласки.",
-                career: "Предстоит упорный труд, но вы справитесь благодаря огромному внутреннему потенциалу. Вы сможете договориться со сложными клиентами или партнерами.",
-                advice: "Укротите своих внутренних демонов — страх, гнев, лень. Ваша главная сила сейчас заключается не в агрессии, а в мягком терпении и уверенности."
-            },
-            {
-                id: 9,
-                name: "Отшельник",
-                number: "IX",
-                symbol: "⏳",
-                nature: "Мудрость Покоя",
-                isPositive: false,
-                love: "Период уединения, переосмысления или временного отдаления в отношениях. Карта призывает понять собственные истинные желания перед тем, как идти на контакт.",
-                career: "Время для спокойного анализа, инвентаризации дел и завершения старых хвостов. Не стремитесь к публичности, работайте в тишине — это принесет плоды.",
-                advice: "Замедлите бег, побудьте наедине с собой. Ищите ответы внутри, а не снаружи. Духовное богатство сейчас важнее материальной суеты."
-            },
-            {
-                id: 10,
-                name: "Колесо Фортуны",
-                number: "X",
-                symbol: "🎡",
-                nature: "Судьбоносный Поворот",
-                isPositive: true,
-                love: "Вспышка чувств, неожиданная судьбоносная встреча или резкое изменение статус-кво. Доверьтесь потоку — всё меняется к лучшему, это рука Судьбы.",
-                career: "Везение на вашей стороне. Возможен неожиданный выигрыш, случайный выгодный контракт или карьерный вираж, который откроет перед вами новые двери.",
-                advice: "Не пытайтесь плыть против течения. Ловите знаки вселенной, адаптируйтесь к переменам и помните, что за любым спадом всегда следует подъем."
-            },
-            {
-                id: 11,
-                name: "Справедливость",
-                number: "XI",
-                symbol: "⚖️",
-                nature: "Честность и Карма",
-                isPositive: true,
-                love: "Отношения требуют честности и равенства. Карта указывает на официальное оформление союза, брак или необходимость взглянуть на ситуацию без розовых очков.",
-                career: "Все сделки, договоры и судебные дела завершатся по справедливости. Вы получите ровно столько, сколько заслужили своими прошлыми действиями.",
-                advice: "Будьте предельно честны с собой и окружающими. Взвешивайте каждое решение. Помните о законе причины и следствия — карма работает мгновенно."
-            },
-            {
-                id: 12,
-                name: "Повешенный",
-                number: "XII",
-                symbol: "👣",
-                nature: "Смена Взгляда",
-                isPositive: false,
-                love: "Отношения могут зайти в тупик или зависнуть в неопределенности. Требуется жертва или кардинальная смена вашего взгляда на поведение партнера.",
-                career: "Проекты могут временно приостановиться. Не пытайтесь форсировать события силой — используйте эту паузу, чтобы пересмотреть стратегию бизнеса.",
-                advice: "Посмотрите на ситуацию под совершенно другим углом. Иногда нужно отпустить контроль и чем-то пожертвовать, чтобы выйти на новый уровень развития."
-            },
-            {
-                id: 13,
-                name: "Смерть",
-                number: "XIII",
-                symbol: "💀",
-                nature: "Перерождение",
-                isPositive: false,
-                love: "Старый этап отношений подошел к концу. Возможен разрыв отношений, изживших себя, или их полное перерождение в принципиально новую форму.",
-                career: "Кардинальные перемены на работе. Закрытие старых неэффективных проектов, смена должности или увольнение, которое расчистит место для новой карьеры.",
-                advice: "Не цепляйтесь за прошлое. Позвольте умереть тому, что уже отжило свой век. На месте ушедшего обязательно вырастет новое, прекрасное будущее."
-            },
-            {
-                id: 14,
-                name: "Умеренность",
-                number: "XIV",
-                symbol: "🍶",
-                nature: "Гармония Времени",
-                isPositive: true,
-                love: "Период мира, гармонии, исцеления старых душевных ран и спокойного счастья в любви. Партнеры бережно относятся к чувствам друг друга.",
-                career: "Спокойное, размеренное развитие без потрясений. Финансы стабильны. Отличное время для командной работы, дипломатии и восстановления баланса сил.",
-                advice: "Избегайте крайностей, спешки и лишних трат. Проявите терпение — всё придет к вам в самый правильный и гармоничный момент времени."
-            },
-            {
-                id: 15,
-                name: "Дьявол",
-                number: "XV",
-                symbol: "🔱",
-                nature: "Искушение и Зависимость",
-                isPositive: false,
-                love: "Безумная страсть, магнетическое притяжение, но также риск попасть в токсичную, болезненную зависимость от партнера. Остерегайтесь ревности.",
-                career: "Возможен крупный соблазн — легкие, но нечестные деньги, обман или хитрые схемы. Будьте предельно осторожны, чтобы не попасть в кабалу.",
-                advice: "Осознайте свои теневые стороны и зависимости (вредные привычки, страхи, жадность). Дьявол силен лишь тогда, когда вы соглашаетесь быть его рабом."
-            },
-            {
-                id: 16,
-                name: "Башня",
-                number: "XVI",
-                symbol: "⚡",
-                nature: "Внезапный Крах",
-                isPositive: false,
-                love: "Внезапный кризис, ссора, разрушение иллюзий или резкий разрыв отношений. Это болезненный процесс, но он необходим, чтобы очистить вашу жизнь.",
-                career: "Возможны форс-мажоры, увольнение или закрытие фирмы. Это крах старой, ненадежной структуры, открывающий путь к новому, честному делу.",
-                advice: "Примите разрушение старого фундамента без страха. Башня рушит только то, что изначально было иллюзорным и хрупким. Вы сильнее этого."
-            },
-            {
-                id: 17,
-                name: "Звезда",
-                number: "XVII",
-                symbol: "⭐",
-                nature: "Надежда и Мечта",
-                isPositive: true,
-                love: "Прекрасный, вдохновляющий период. Ваши мечты о любви начнут сбываться. Отношения наполнены романтикой, нежностью и верой в счастливое будущее.",
-                career: "Карта указывает на раскрытие талантов, обретение признания и долгосрочные блестящие перспективы. Ваши планы одобрены силами Вселенной.",
-                advice: "Не теряйте надежду и верьте в свою мечту. Двигайтесь за своим внутренним путеводным светом. Ваше время сиять обязательно придет."
-            },
-            {
-                id: 18,
-                name: "Луна",
-                number: "XVIII",
-                symbol: "🌘",
-                nature: "Иллюзии и Страхи",
-                isPositive: false,
-                love: "Отношения окутаны туманом ревности, недосказанности или измен. Возможно, вы обманываете себя или партнер скрывает от вас важную правду.",
-                career: "Опасайтесь интриг, заговоров и мутных схем на работе. Не верьте обещаниям на слово, внимательно читайте все документы и проверяйте партнеров.",
-                advice: "Загляните в лицо своим скрытым страхам. Не поддавайтесь иллюзиям и панике. Туман рассеется, как только вы включите свет разума."
-            },
-            {
-                id: 19,
-                name: "Солнце",
-                number: "XIX",
-                symbol: "☀️",
-                nature: "Успех и Счастье",
-                isPositive: true,
-                love: "Полное счастье, взаимная любовь, ясность чувств и абсолютное взаимопонимание. Возможно рождение ребенка, свадьба или триумфальное примирение.",
-                career: "Полная победа и признание ваших заслуг. Вас ждет богатство, слава, отличные финансовые результаты и уважение со стороны руководства.",
-                advice: "Светите ярко, дарите тепло окружающим и празднуйте жизнь! Вы заслужили этот триумф своим трудом и чистой, светлой энергией."
-            },
-            {
-                id: 20,
-                name: "Суд",
-                number: "XX",
-                symbol: "🔔",
-                nature: "Пробуждение",
-                isPositive: true,
-                love: "Возрождение старой любви, прощение застарелых обид и полное духовное обновление союза. Отношения выходят на новый, священный уровень.",
-                career: "Время собирать камни. Вас ждет заслуженное признание, возвращение старых выгодных связей или успешное завершение затяжного дела.",
-                advice: "Прислушайтесь к зову своего сердца. Пора отпустить прошлое, освободиться от груза ошибок и сделать решительный шаг к обновленной жизни."
-            },
-            {
-                id: 21,
-                name: "Мир",
-                number: "XXI",
-                symbol: "🌍",
-                nature: "Абсолютная Гармония",
-                isPositive: true,
-                love: "Отношения достигли своей высшей точки гармонии, взаимопонимания и счастья. Это союз родственных душ, благословленный небесами.",
-                career: "Успешное завершение крупного проекта, выход на международный уровень или полное признание вашего профессионализма. Максимальный финансовый успех.",
-                advice: "Вы обрели свое истинное место в мире. Наслаждайтесь гармонией, поблагодарите вселенную за дары и празднуйте завершение этого великого цикла."
+                imageUrl: "https://placehold.co/400x600/1e1b4b/d97706?font=playfair-display&text=High+Priestess",
+                love: "Отношения наполнены загадками. Доверяйте не словам партнера, а своим внутренним предчувствиям — они укажут истину.",
+                career: "Не спешите действовать напролом. Затаитесь, соберите информацию. Скоро вам откроется важная тайна.",
+                advice: "Посвятите время духовному росту, интуиции и спокойствию. Держите планы в секрете."
             }
+            // Ты можешь добавить сюда остальные арканы по такому же шаблону!
         ];
 
-        // --- ДИНАМИЧЕСКИЙ ГЕНЕРАТОР ДЛЯ 56 МЛАДШИХ АРКАНОВ ---
-        function getMinorArcanaInterpretation(card, category) {
-            const suit = suitMeanings[card.suit];
-            const rank = rankMeanings[card.rank];
-            
-            let categoryText = "";
-            if (category === "career") {
-                categoryText = `В материальных делах это означает следующее: ${suit.career} Соединение силы масти (${suit.name}) и энергии числа (${rank.name}) дает импульс: ${rank.desc}`;
-            } else if (category === "love") {
-                categoryText = `В сфере любви и отношений это предвещает: ${suit.love} Влияние карты раскрывает: ${rank.name} символизирует ${rank.desc}`;
-            } else {
-                categoryText = `Мистический совет карты на будущее: ${suit.advice} Силы Оракула указывают на то, что ${rank.name} (${rank.desc}) поможет вам преодолеть любые преграды на пути.`;
-            }
-
-            return `Вы вытянули карту Младшего Аркана: **${rank.name} ${suit.name}** (${suit.symbol}).\n\nЭтот аркан объединяет в себе две мощные силы: ${suit.desc} и ${rank.desc}\n\n${categoryText}`;
-        }
-
-        // --- ФУНКЦИЯ ПОЛУЧЕНИЯ ТОЛКОВАНИЯ КАРТЫ ПО ВОПРОСУ ---
+        // =====================================================================
+        // ЛОГИКА ОПРЕДЕЛЕНИЯ, КАКОЙ ТЕКСТ ВЫДАВАТЬ НА КАКОЙ ВОПРОС
+        // =====================================================================
         function getInterpretation(card, questionId) {
-            let category = "advice";
+            let category = "advice"; // По умолчанию выдаем текст "Совет"
+            
+            // Если ID вопроса = 1, 3 или 5, выдаем текст из раздела "career"
             if ([1, 3, 5].includes(questionId)) category = "career";
+            
+            // Если ID вопроса = 2 или 4, выдаем текст из раздела "love"
             else if ([2, 4].includes(questionId)) category = "love";
 
-            if (card.id <= 21) {
-                return card[category];
-            } else {
-                return getMinorArcanaInterpretation(card, category);
-            }
+            return card[category];
         }
 
-        // Инициализация полной колоды
-        let fullTarotDeck = [];
+        // --- ДАЛЕЕ ИДЕТ ЛОГИКА ИНТЕРФЕЙСА (Можно не трогать) ---
 
-        function initFullDeck() {
-            fullTarotDeck = [...majorArcanaDatabase];
+        let fullTarotDeck = [...majorArcanaDatabase];
 
-            const suits = ["wands", "cups", "swords", "pentacles"];
-            let idCounter = 22;
-
-            suits.forEach((suit) => {
-                for (let rank = 1; rank <= 14; rank++) {
-                    const rankInfo = rankMeanings[rank];
-                    const suitInfo = suitMeanings[suit];
-                    
-                    let romanNum = rank.toString();
-                    if (rank === 11) romanNum = "Page";
-                    else if (rank === 12) romanNum = "Knight";
-                    else if (rank === 13) romanNum = "Queen";
-                    else if (rank === 14) romanNum = "King";
-
-                    fullTarotDeck.push({
-                        id: idCounter,
-                        name: `${rankInfo.name} ${suitInfo.name}`,
-                        number: romanNum,
-                        symbol: suitInfo.symbol,
-                        nature: rankInfo.desc,
-                        suit: suit,
-                        rank: rank,
-                        isPositive: suit !== "swords"
-                    });
-                    idCounter++;
-                }
-            });
-        }
-
-        // Рендер вопросов
         function renderQuestions() {
             const container = document.getElementById('questions-grid');
             container.innerHTML = '';
-            questionsList.forEach((q) => {
+            questionsList.forEach(q => {
                 container.innerHTML += `
-                    <button onclick="selectQuestion(${q.id})" class="w-full text-left py-3.5 px-4 bg-white/5 hover:bg-white/10 border border-white/10 rounded-xl transition duration-200 flex items-center justify-between group active:scale-[0.99]">
-                        <span class="text-gray-200 text-xs font-medium pr-2 group-hover:text-amber-400 transition-colors">${q.id}. ${q.text}</span>
-                        <span class="text-amber-500 font-esoteric text-[10px] bg-amber-500/10 px-2.5 py-1 rounded-lg">${q.category}</span>
-                    </button>
-                `;
+                    <button onclick="selectQuestion(${q.id})" class="w-full text-left py-3.5 px-4 bg-white/5 hover:bg-white/10 border border-white/10 rounded-xl transition flex items-center justify-between">
+                        <span class="text-gray-200 text-xs pr-2">${q.id}. ${q.text}</span>
+                        <span class="text-amber-500 font-esoteric text-[10px] bg-amber-500/10 px-2 py-1 rounded-lg">${q.category}</span>
+                    </button>`;
             });
         }
 
-        // Регистрация с сохранением данных на сервере
         async function handleRegister() {
-            const nameInput = document.getElementById('reg-name').value.trim();
-            const emailInput = document.getElementById('reg-email').value.trim();
-            const consentCheckbox = document.getElementById('reg-consent').checked;
-
-            if (!nameInput) return openModal("Заполните поля", "Пожалуйста, введите имя.", "✍️");
-            if (!emailInput || !emailInput.includes('@')) return openModal("Некорректный Email", "Укажите верный адрес почты.", "✉️");
-            if (!consentCheckbox) return openModal("Требуется согласие", "Для продолжения необходимо принять условия обработки персональных данных.", "⚖️");
-
-            if (tg && tg.initData) {
-                try {
-                    const response = await fetch(`${BACKEND_URL}/api/user/register`, {
-                        method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/json',
-                            'Authorization': tg.initData
-                        },
-                        body: JSON.stringify({
-                            name: nameInput,
-                            email: emailInput,
-                            consent: consentCheckbox
-                        })
-                    });
-                    
-                    if (response.ok) {
-                        const data = await response.json();
-                        state.balance = data.balance;
-                        state.user_name = data.name;
-                        state.registered = true;
-                    } else {
-                        const err = await response.json();
-                        return openModal("Ошибка регистрации", err.detail || "Попробуйте позже.", "❌");
-                    }
-                } catch (e) {
-                    return openModal("Ошибка соединения", "Не удалось связаться с сервером.", "🔌");
-                }
-            } else {
-                // Демо-режим вне Telegram
-                state.user_name = nameInput;
-                state.user_email = emailInput;
-                state.registered = true;
+            const name = document.getElementById('reg-name').value;
+            const email = document.getElementById('reg-email').value;
+            const consent = document.getElementById('reg-consent').checked;
+            
+            if (!name || !email || !consent) {
+                alert("Пожалуйста, заполните все поля и поставьте галочку."); return;
             }
 
-            document.getElementById('user-name-display').innerText = state.user_name;
-            document.getElementById('user-name-result').innerText = state.user_name;
-
-            document.getElementById('screen-register').classList.add('hidden');
-            document.getElementById('app-header').classList.remove('hidden');
-            document.getElementById('app-navigation').classList.remove('hidden');
+            const initData = tg ? tg.initData : "dummy_data_for_browser";
             
-            updateBalanceUI();
-            switchTab('questions');
-        }
-
-        function openPolicyModal() { document.getElementById('policy-modal').classList.remove('hidden'); }
-        function closePolicyModal() { document.getElementById('policy-modal').classList.add('hidden'); }
-
-        function updateBalanceUI() {
-            document.getElementById('user-balance').innerText = `${state.balance} раскладов`;
+            try {
+                const res = await fetch(`${BACKEND_URL}/api/user/register`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json', 'Authorization': initData },
+                    body: JSON.stringify({ name, email, consent })
+                });
+                
+                if (res.ok) {
+                    const data = await res.json();
+                    state.balance = data.balance;
+                    state.registered = true;
+                    document.getElementById('user-name-display').innerText = data.name;
+                    document.getElementById('user-balance').innerText = `${state.balance} раскладов`;
+                    
+                    document.getElementById('screen-register').classList.add('hidden');
+                    document.getElementById('app-header').classList.remove('hidden');
+                    document.getElementById('app-navigation').classList.remove('hidden');
+                    switchTab('questions');
+                } else {
+                    const err = await res.json();
+                    alert("Ошибка: " + err.detail);
+                }
+            } catch (e) { alert("Ошибка соединения с сервером"); }
         }
 
         function switchTab(tab) {
-            if (!state.registered) return;
-
-            document.getElementById('nav-questions').className = "flex flex-col items-center space-y-1 text-gray-400 hover:text-amber-500 transition";
-            document.getElementById('nav-shop').className = "flex flex-col items-center space-y-1 text-gray-400 hover:text-amber-500 transition";
-            
             document.getElementById('screen-questions').classList.add('hidden');
-            document.getElementById('screen-shuffling').classList.add('hidden');
-            document.getElementById('screen-result').classList.add('hidden');
             document.getElementById('screen-shop').classList.add('hidden');
-
-            if (tab === 'questions') {
-                document.getElementById('nav-questions').className = "flex flex-col items-center space-y-1 text-amber-500";
-                document.getElementById('screen-questions').classList.remove('hidden');
-                state.currentScreen = 'questions';
-            } else if (tab === 'shop') {
-                document.getElementById('nav-shop').className = "flex flex-col items-center space-y-1 text-amber-500";
-                document.getElementById('screen-shop').classList.remove('hidden');
-                state.currentScreen = 'shop';
-            }
+            document.getElementById('screen-result').classList.add('hidden');
+            document.getElementById('screen-shuffling').classList.add('hidden');
+            document.getElementById(`screen-${tab}`).classList.remove('hidden');
         }
 
-        function openModal(title, text, icon = "🔮") {
-            document.getElementById('modal-title').innerText = title;
-            document.getElementById('modal-text').innerText = text;
-            document.getElementById('modal-icon').innerText = icon;
-            document.getElementById('custom-modal').classList.remove('hidden');
-        }
-        function closeModal() { document.getElementById('custom-modal').classList.add('hidden'); }
-
-        // Выбор вопроса
         function selectQuestion(id) {
             if (state.balance <= 0) {
-                openModal("Энергия иссякла", "Ваш баланс равен 0. Пожалуйста, пополните его в магазине всего за 1 доллар, чтобы открыть тайны карт.", "✨");
                 switchTab('shop');
                 return;
             }
@@ -869,156 +364,68 @@
             
             document.getElementById('interactive-card').classList.remove('flipped');
             document.getElementById('draw-btn').classList.remove('hidden');
-            document.getElementById('shuffle-status').innerText = "Сфокусируйтесь на вопросе и нажмите кнопку ниже";
-            document.getElementById('shuffle-status').className = "text-gray-400 text-[10px] italic tracking-wider animate-pulse text-center";
-
-            document.getElementById('screen-questions').classList.add('hidden');
-            document.getElementById('screen-shuffling').classList.remove('hidden');
-            state.currentScreen = 'shuffling';
+            
+            switchTab('shuffling');
         }
 
-        // Запуск анимации и вытягивание карты
         function startShufflingAndReveal() {
-            if (state.balance <= 0) return;
+            document.getElementById('draw-btn').classList.add('hidden');
+            document.getElementById('interactive-card').style.transform = "translateY(-30px) scale(1.05)";
             
-            state.balance--;
-            updateBalanceUI();
-
-            const drawBtn = document.getElementById('draw-btn');
-            const statusText = document.getElementById('shuffle-status');
-            const card1 = document.getElementById('deck-card-2');
-            const card2 = document.getElementById('deck-card-3');
-
-            drawBtn.classList.add('hidden');
-            statusText.innerText = "Тасование карт Оракула...";
-            statusText.className = "text-amber-400 text-[10px] italic tracking-wider animate-pulse text-center";
-
-            card1.classList.add('animate-shuffle-1');
-            card2.classList.add('animate-shuffle-2');
-
             setTimeout(() => {
-                card1.classList.remove('animate-shuffle-1');
-                card2.classList.remove('animate-shuffle-2');
-                statusText.innerText = "Извлечение священной карты...";
-
-                const mainCard = document.getElementById('interactive-card');
-                mainCard.style.transform = "translateY(-30px) scale(1.05)";
+                const randomCard = fullTarotDeck[Math.floor(Math.random() * fullTarotDeck.length)];
                 
-                setTimeout(() => {
-                    const randomCard = fullTarotDeck[Math.floor(Math.random() * fullTarotDeck.length)];
-                    
-                    document.getElementById('card-number').innerText = randomCard.number;
-                    document.getElementById('card-symbol').innerText = randomCard.symbol;
-                    document.getElementById('card-name').innerText = randomCard.name;
+                // Подставляем НАСТОЯЩЕЕ ФОТО и ТЕКСТ КАРТЫ в HTML
+                document.getElementById('card-image').src = randomCard.imageUrl;
+                document.getElementById('card-number').innerText = randomCard.number;
+                document.getElementById('card-name').innerText = randomCard.name;
 
-                    mainCard.classList.add('flipped');
-                    mainCard.style.transform = "translateY(0) scale(1)";
-                    statusText.innerText = "Карта открыта!";
+                document.getElementById('interactive-card').classList.add('flipped');
+                document.getElementById('interactive-card').style.transform = "translateY(0) scale(1)";
 
-                    setTimeout(() => {
-                        showInterpretationResult(randomCard);
-                    }, 1800);
-                }, 800);
-            }, 2000);
+                setTimeout(() => showInterpretationResult(randomCard), 1800);
+            }, 1000);
         }
 
         function showInterpretationResult(card) {
-            const q = questionsList.find(x => x.id === state.selectedQuestionId);
             const interpretation = getInterpretation(card, state.selectedQuestionId);
-
-            document.getElementById('result-question-title').innerText = `«${q.text}»`;
             
-            document.getElementById('result-badge-num').innerText = card.number;
-            document.getElementById('result-badge-symbol').innerText = card.symbol;
-            document.getElementById('result-badge-name').innerText = card.name;
-            
-            document.getElementById('result-card-fullname').innerText = `${card.name}`;
+            document.getElementById('result-badge-image').src = card.imageUrl;
+            document.getElementById('result-card-fullname').innerText = card.name;
             document.getElementById('interpretation-text').innerText = interpretation;
 
-            const natureBadge = document.getElementById('result-card-nature');
-            natureBadge.innerText = card.nature;
-            natureBadge.className = card.isPositive ? "text-[8px] bg-emerald-500/10 border border-emerald-500/30 text-emerald-400 font-medium px-2 py-0.5 rounded-full inline-block mt-0.5" : "text-[8px] bg-rose-500/10 border border-rose-500/30 text-rose-400 font-medium px-2 py-0.5 rounded-full inline-block mt-0.5";
+            // Списываем баланс только визуально, сервер обновит сам при реальном потоке
+            state.balance--;
+            document.getElementById('user-balance').innerText = `${state.balance} раскладов`;
 
-            document.getElementById('screen-shuffling').classList.add('hidden');
-            document.getElementById('screen-result').classList.remove('hidden');
-            state.currentScreen = 'result';
+            switchTab('result');
         }
 
-        function goToQuestions() {
-            switchTab('questions');
-        }
+        function goToQuestions() { switchTab('questions'); }
 
-        // РЕАЛЬНАЯ ПОКУПКА ЧЕРЕЗ TELEGRAM STARS И СЕРВЕР RENDER
-        async function buyPackage(questionsCount, starsCost) {
-            let packageId = 1;
-            if (questionsCount === 5) packageId = 5;
-            if (questionsCount === 15) packageId = 15;
-
-            if (tg && tg.initData) {
-                tg.showConfirm(`Вы действительно хотите приобрести пакет из ${questionsCount} раскладов за ${starsCost} Telegram Stars?`, async (confirmed) => {
-                    if (confirmed) {
-                        try {
-                            const response = await fetch(`${BACKEND_URL}/api/payment/create-invoice`, {
-                                method: 'POST',
-                                headers: {
-                                    'Content-Type': 'application/json',
-                                    'Authorization': tg.initData
-                                },
-                                body: JSON.stringify({ package_id: packageId })
-                            });
-
-                            if (response.ok) {
-                                const data = await response.json();
-                                const invoiceLink = data.invoice_link;
-
-                                // Открываем нативное окно платежной системы Telegram Stars
-                                tg.openInvoice(invoiceLink, function(status) {
-                                    if (status === 'paid') {
-                                        openModal("Оплата успешна", "Спасибо! Энергия Оракула пополнена. Сервер начислит расклады в течение пары секунд!", "✨");
-                                        // Перезапрашиваем профиль для обновления баланса через 2 сек
-                                        setTimeout(initApp, 2000);
-                                    } else if (status === 'cancelled') {
-                                        openModal("Платеж отменен", "Оплата не была завершена.", "🪙");
-                                    } else {
-                                        openModal("Ошибка платежа", "Не удалось провести транзакцию.", "❌");
-                                    }
-                                });
-                            } else {
-                                const err = await response.json();
-                                openModal("Ошибка счета", err.detail || "Не удалось сгенерировать счет.", "❌");
-                            }
-                        } catch (e) {
-                            openModal("Ошибка сети", "Не удалось связаться с платежным сервером.", "🔌");
-                        }
-                    }
+        async function buyPackage(pkgId, stars) {
+            if (!tg) { alert(`Оплата ${stars} звезд! (Симуляция браузера)`); return; }
+            try {
+                const res = await fetch(`${BACKEND_URL}/api/payment/create-invoice`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json', 'Authorization': tg.initData },
+                    body: JSON.stringify({ package_id: pkgId })
                 });
-            } else {
-                // Симуляция вне Telegram
-                state.balance += questionsCount;
-                updateBalanceUI();
-                openModal("Оплата (Симуляция)", `Вы пополнили баланс на ${questionsCount} раскладов за ${starsCost} Stars.`, "⭐");
-                switchTab('questions');
-            }
+                const data = await res.json();
+                if (data.invoice_link) {
+                    tg.openInvoice(data.invoice_link, function(status) {
+                        if (status === 'paid') {
+                            alert("Успешно! Баланс пополнен.");
+                            state.balance += (pkgId === 1 ? 1 : pkgId === 5 ? 5 : 15);
+                            document.getElementById('user-balance').innerText = `${state.balance} раскладов`;
+                            switchTab('questions');
+                        }
+                    });
+                }
+            } catch (e) { alert("Ошибка при создании счета"); }
         }
 
-        function shareResult() {
-            const cardName = document.getElementById('result-card-fullname').innerText;
-            const text = `Мне выпала карта "${cardName}" на мой вопрос в Оракуле Таро! Открой свое будущее и ты!`;
-            if (tg) {
-                tg.shareToStory ? tg.shareToStory(text) : window.open(`https://t.me/share/url?url=t.me/your_bot/app&text=${encodeURIComponent(text)}`);
-            } else {
-                const dummy = document.createElement('input');
-                document.body.appendChild(dummy);
-                dummy.value = text;
-                dummy.select();
-                document.execCommand('copy');
-                document.body.removeChild(dummy);
-                openModal("Успешно!", "Ссылка для друзей скопирована в буфер обмена.", "📋");
-            }
-        }
-
-        // Запуск
-        initApp();
+        renderQuestions();
     </script>
 </body>
 </html>
