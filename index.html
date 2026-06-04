@@ -242,60 +242,123 @@
         // КАК МЕНЯТЬ ТЕКСТ: Меняй текст в полях "love", "career", "advice"
         // =====================================================================
         const majorArcanaDatabase = [
-            {
-                id: 0,
-                name: "Дурак",
-                number: "0",
-                imageUrl: "https://placehold.co/400x600/1e1b4b/d97706?font=playfair-display&text=The+Fool", // Замени на свою ссылку
-                
-                // Текст, если вопрос связан с Любовью (вопросы 2, 4):
-                love: "Вас ждет легкий, свободный роман с чистого листа, без лишних ожиданий и обязательств. Отношения обновятся, если вы доверитесь спонтанности.",
-                
-                // Текст, если вопрос связан с Карьерой (вопросы 1, 3, 5):
-                career: "Время начать новый проект, даже если он кажется безумным. Не бойтесь риска — Космос благоволит смелым новичкам. Возможен легкий заработок.",
-                
-                // Текст для любых других вопросов (Совет):
-                advice: "Обнулите прошлые обиды. Сделайте шаг в неизвестность с открытым сердцем. Но остерегайтесь глупых трат."
-            },
-            {
-                id: 1,
-                name: "Маг",
-                number: "I",
-                imageUrl: "https://placehold.co/400x600/1e1b4b/d97706?font=playfair-display&text=The+Magician",
-                love: "Ваша харизма сейчас на пике. Вы способны влюбить в себя любого. Сделайте первый шаг, но избегайте манипуляций.",
-                career: "У вас есть все ресурсы для победы. Самое время предлагать руководству смелые идеи или открывать бизнес.",
-                advice: "Вы — творец своей реальности. Сконцентрируйте волю, действуйте активно и не сомневайтесь в успехе."
-            },
-            {
-                id: 2,
-                name: "Верховная Жрица",
-                number: "II",
-                imageUrl: "https://placehold.co/400x600/1e1b4b/d97706?font=playfair-display&text=High+Priestess",
-                love: "Отношения наполнены загадками. Доверяйте не словам партнера, а своим внутренним предчувствиям — они укажут истину.",
-                career: "Не спешите действовать напролом. Затаитесь, соберите информацию. Скоро вам откроется важная тайна.",
-                advice: "Посвятите время духовному росту, интуиции и спокойствию. Держите планы в секрете."
-            }
-            // Ты можешь добавить сюда остальные арканы по такому же шаблону!
+            { id: 0, name: "Дурак", number: "0", imageUrl: "https://placehold.co/400x600/1e1b4b/d97706?font=playfair-display&text=The+Fool", love: "Свободный роман с чистого листа.", career: "Время начать новый проект.", advice: "Сделайте шаг в неизвестность." },
+            { id: 1, name: "Маг", number: "I", imageUrl: "https://placehold.co/400x600/1e1b4b/d97706?font=playfair-display&text=The+Magician", love: "Вы способны влюбить в себя любого.", career: "У вас есть все ресурсы для победы.", advice: "Вы — творец своей реальности." },
+            { id: 2, name: "Верховная Жрица", number: "II", imageUrl: "https://placehold.co/400x600/1e1b4b/d97706?font=playfair-display&text=High+Priestess", love: "Доверяйте внутренним предчувствиям.", career: "Соберите информацию и затаитесь.", advice: "Посвятите время духовному росту." },
+            { id: 3, name: "Императрица", number: "III", imageUrl: "https://placehold.co/400x600/1e1b4b/d97706?font=playfair-display&text=The+Empress", love: "Период расцвета и искренней нежности.", career: "Проекты принесут богатые плоды.", advice: "Действуйте мягко и созидательно." },
+            { id: 4, name: "Император", number: "IV", imageUrl: "https://placehold.co/400x600/1e1b4b/d97706?font=playfair-display&text=The+Emperor", love: "Прочность, надежность и четкие правила.", career: "Укрепление авторитета и стабильность.", advice: "Проявите дисциплину и порядок." },
+            { id: 5, name: "Иерофант", number: "V", imageUrl: "https://placehold.co/400x600/1e1b4b/d97706?font=playfair-display&text=The+Hierophant", love: "Отношения на общих ценностях.", career: "Успех через следование правилам.", advice: "Поступайте по совести." },
+            { id: 6, name: "Влюбленные", number: "VI", imageUrl: "https://placehold.co/400x600/1e1b4b/d97706?font=playfair-display&text=The+Lovers", love: "Гармония и важный выбор сердцем.", career: "Время выгодных партнерств.", advice: "Выбирайте то, к чему лежит душа." },
+            { id: 7, name: "Колесница", number: "VII", imageUrl: "https://placehold.co/400x600/1e1b4b/d97706?font=playfair-display&text=The+Chariot", love: "Стремительное развитие отношений.", career: "Карьерный прорыв и победа.", advice: "Двигайтесь к цели на максимальной скорости." },
+            { id: 8, name: "Сила", number: "VIII", imageUrl: "https://placehold.co/400x600/1e1b4b/d97706?font=playfair-display&text=Strength", love: "Страсть и мягкое женское влияние.", career: "Упорный труд и внутренний потенциал.", advice: "Укротите свои внутренние страхи." },
+            { id: 9, name: "Отшельник", number: "IX", imageUrl: "https://placehold.co/400x600/1e1b4b/d97706?font=playfair-display&text=The+Hermit", love: "Период уединения и переосмысления.", career: "Время для спокойного анализа.", advice: "Ищите ответы внутри себя." },
+            { id: 10, name: "Колесо Фортуны", number: "X", imageUrl: "https://placehold.co/400x600/1e1b4b/d97706?font=playfair-display&text=Wheel+of+Fortune", love: "Судьбоносная встреча или перемена.", career: "Везение и неожиданный контракт.", advice: "Доверьтесь потоку вселенной." },
+            { id: 11, name: "Справедливость", number: "XI", imageUrl: "https://placehold.co/400x600/1e1b4b/d97706?font=playfair-display&text=Justice", love: "Честность, равенство или брак.", career: "Сделки завершатся по справедливости.", advice: "Взвешивайте каждое решение." },
+            { id: 12, name: "Повешенный", number: "XII", imageUrl: "https://placehold.co/400x600/1e1b4b/d97706?font=playfair-display&text=The+Hanged+Man", love: "Требуется смена взгляда на ситуацию.", career: "Временная пауза в делах.", advice: "Посмотрите на всё под другим углом." },
+            { id: 13, name: "Смерть", number: "XIII", imageUrl: "https://placehold.co/400x600/1e1b4b/d97706?font=playfair-display&text=Death", love: "Полное перерождение отношений.", career: "Кардинальные перемены и новые пути.", advice: "Отпустите то, что уже отжило." },
+            { id: 14, name: "Умеренность", number: "XIV", imageUrl: "https://placehold.co/400x600/1e1b4b/d97706?font=playfair-display&text=Temperance", love: "Мир, гармония и исцеление.", career: "Размеренное развитие без потрясений.", advice: "Избегайте крайностей и спешки." },
+            { id: 15, name: "Дьявол", number: "XV", imageUrl: "https://placehold.co/400x600/1e1b4b/d97706?font=playfair-display&text=The+Devil", love: "Безумная страсть и искушение.", career: "Соблазн легких денег.", advice: "Осознайте свои зависимости." },
+            { id: 16, name: "Башня", number: "XVI", imageUrl: "https://placehold.co/400x600/1e1b4b/d97706?font=playfair-display&text=The+Tower", love: "Разрушение иллюзий и кризис.", career: "Крах старой системы.", advice: "Примите разрушение старого без страха." },
+            { id: 17, name: "Звезда", number: "XVII", imageUrl: "https://placehold.co/400x600/1e1b4b/d97706?font=playfair-display&text=The+Star", love: "Мечты о любви начинают сбываться.", career: "Раскрытие талантов и признание.", advice: "Верьте в свою мечту и надежду." },
+            { id: 18, name: "Луна", number: "XVIII", imageUrl: "https://placehold.co/400x600/1e1b4b/d97706?font=playfair-display&text=The+Moon", love: "Тайны, ревность или иллюзии.", career: "Опасайтесь интриг и мутных схем.", advice: "Включите свет разума." },
+            { id: 19, name: "Солнце", number: "XIX", imageUrl: "https://placehold.co/400x600/1e1b4b/d97706?font=playfair-display&text=The+Sun", love: "Полное счастье и взаимопонимание.", career: "Триумф, победа и богатство.", advice: "Светите ярко и празднуйте жизнь!" },
+            { id: 20, name: "Суд", number: "XX", imageUrl: "https://placehold.co/400x600/1e1b4b/d97706?font=playfair-display&text=Judgement", love: "Духовное обновление союза.", career: "Заслуженное признание и возрождение.", advice: "Сделайте шаг к обновленной жизни." },
+            { id: 21, name: "Мир", number: "XXI", imageUrl: "https://placehold.co/400x600/1e1b4b/d97706?font=playfair-display&text=The+World", love: "Высшая точка гармонии.", career: "Успешное завершение крупного проекта.", advice: "Вы обрели свое истинное место." }
         ];
+
+        // Масти младших арканов
+        const suitMeanings = {
+            wands: { name: "Жезлов", career: "Действуйте смело, время лидерства и амбиций.", love: "Вспышка страсти и активная инициатива от партнера.", advice: "Проявите мужество, отстаивайте свои позиции." },
+            cups: { name: "Кубков", career: "Слушайте интуицию, важны гармоничные отношения с коллегами.", love: "Глубокое душевное взаимопонимание и новые чувства.", advice: "Доверяйте своему сердцу и предчувствиям." },
+            swords: { name: "Мечей", career: "Время холодных расчетов и интеллектуальных баталий.", love: "Отношения проходят проверку разумом, возможен холодок.", advice: "Отбросьте эмоции, анализируйте факты и логику." },
+            pentacles: { name: "Пентаклей", career: "Стабильный рост доходов, премия и результат упорных трудов.", love: "Прочные, надежные отношения, ориентированные на будущее.", advice: "Фокусируйтесь на практических задачах, закладывайте фундамент." }
+        };
+
+        // Ранги младших арканов
+        const rankMeanings = {
+            1: { name: "Туз", desc: "чистый импульс, мощный старт и великолепная возможность." },
+            2: { name: "Двойка", desc: "выбор, баланс, лавирование и партнерство." },
+            3: { name: "Тройка", desc: "первые успехи, расширение влияния и совместный труд." },
+            4: { name: "Четверка", desc: "стабильность, сохранение позиций и покой." },
+            5: { name: "Пятерка", desc: "вызов, кризис, временные потери или разногласия." },
+            6: { name: "Шестерка", desc: "гармония, заслуженная победа и получение помощи." },
+            7: { name: "Семерка", desc: "терпение, ожидание результатов и проверка на выносливость." },
+            8: { name: "Восьмерка", desc: "мастерство, фокус на деталях и упорный труд." },
+            9: { name: "Девятка", desc: "изобилие, самодостаточность и преддверие триумфа." },
+            10: { name: "Десятка", desc: "полнота, завершение цикла и благополучие." },
+            11: { name: "Паж", desc: "новые известия, юный импульс и ученичество." },
+            12: { name: "Рыцарь", desc: "напор, движение, скорость и решительное наступление." },
+            13: { name: "Королева", desc: "зрелая мудрость и сильное покровительство." },
+            14: { name: "Король", desc: "абсолютная власть, стабильность и авторитет." }
+        };
 
         // =====================================================================
         // ЛОГИКА ОПРЕДЕЛЕНИЯ, КАКОЙ ТЕКСТ ВЫДАВАТЬ НА КАКОЙ ВОПРОС
         // =====================================================================
         function getInterpretation(card, questionId) {
             let category = "advice"; // По умолчанию выдаем текст "Совет"
-            
-            // Если ID вопроса = 1, 3 или 5, выдаем текст из раздела "career"
             if ([1, 3, 5].includes(questionId)) category = "career";
-            
-            // Если ID вопроса = 2 или 4, выдаем текст из раздела "love"
             else if ([2, 4].includes(questionId)) category = "love";
 
-            return card[category];
+            if (card.id <= 21) {
+                return card[category];
+            } else {
+                const suit = suitMeanings[card.suit];
+                const rank = rankMeanings[card.rank];
+                let categoryText = "";
+                if (category === "career") categoryText = suit.career;
+                else if (category === "love") categoryText = suit.love;
+                else categoryText = suit.advice;
+                
+                return `Вы вытянули карту: ${rank.name} ${suit.name}.\n\nЭта карта символизирует ${rank.desc}\n\nТолкование: ${categoryText}`;
+            }
         }
 
-        // --- ДАЛЕЕ ИДЕТ ЛОГИКА ИНТЕРФЕЙСА (Можно не трогать) ---
+        // --- ДАЛЕЕ ИДЕТ ЛОГИКА ИНТЕРФЕЙСА ---
 
-        let fullTarotDeck = [...majorArcanaDatabase];
+        let fullTarotDeck = [];
+
+        function initFullDeck() {
+            // 1. Добавляем 22 Старших Аркана
+            fullTarotDeck = [...majorArcanaDatabase];
+
+            // 2. Добавляем 56 Младших Арканов с автоматической генерацией картинок
+            const suits = ["wands", "cups", "swords", "pentacles"];
+            const suitNamesEN = { wands: "Wands", cups: "Cups", swords: "Swords", pentacles: "Pentacles" };
+            const rankNamesEN = { 1: "Ace", 2: "2", 3: "3", 4: "4", 5: "5", 6: "6", 7: "7", 8: "8", 9: "9", 10: "10", 11: "Page", 12: "Knight", 13: "Queen", 14: "King" };
+            
+            let idCounter = 22;
+
+            suits.forEach((suit) => {
+                for (let rank = 1; rank <= 14; rank++) {
+                    const rankInfo = rankMeanings[rank];
+                    const suitInfo = suitMeanings[suit];
+                    
+                    let romanNum = rank.toString();
+                    if (rank === 11) romanNum = "P";
+                    else if (rank === 12) romanNum = "Kn";
+                    else if (rank === 13) romanNum = "Q";
+                    else if (rank === 14) romanNum = "K";
+                    
+                    // Генерируем ссылку на картинку с названием карты на английском
+                    const cardTextEN = `${rankNamesEN[rank]}+of+${suitNamesEN[suit]}`;
+                    const imgUrl = `https://placehold.co/400x600/1e1b4b/d97706?font=playfair-display&text=${cardTextEN}`;
+
+                    fullTarotDeck.push({
+                        id: idCounter,
+                        name: `${rankInfo.name} ${suitInfo.name}`,
+                        number: romanNum,
+                        imageUrl: imgUrl,
+                        suit: suit,
+                        rank: rank
+                    });
+                    idCounter++;
+                }
+            });
+        }
+        
+        // Обязательно вызываем функцию создания колоды при загрузке
+        initFullDeck();
 
         function renderQuestions() {
             const container = document.getElementById('questions-grid');
