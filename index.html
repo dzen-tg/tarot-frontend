@@ -4,8 +4,11 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Таро Оракул • Полная версия 78 Карт</title>
+    <!-- Подключение Tailwind CSS для современного адаптивного дизайна -->
     <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Интеграция Telegram WebApp SDK -->
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
+    <!-- Эзотерические шрифты из Google Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&family=Montserrat:wght@300;400;600&display=swap" rel="stylesheet">
     <style>
         body {
@@ -15,27 +18,44 @@
             overflow-x: hidden;
             -webkit-tap-highlight-color: transparent;
         }
-        .font-esoteric { font-family: 'Cinzel', serif; }
-        ::-webkit-scrollbar { width: 4px; }
-        ::-webkit-scrollbar-track { background: #070311; }
-        ::-webkit-scrollbar-thumb { background: #d97706; border-radius: 2px; }
-        
-        /* 3D Окружение для карт */
-        .card-container { perspective: 1000px; }
+        .font-esoteric {
+            font-family: 'Cinzel', serif;
+        }
+        /* Стилизация полосы прокрутки */
+        ::-webkit-scrollbar {
+            width: 4px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #070311;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #d97706;
+            border-radius: 2px;
+        }
+        /* 3D-анимации переворота карт */
+        .card-container {
+            perspective: 1000px;
+        }
         .card-inner {
             transition: transform 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275);
             transform-style: preserve-3d;
         }
-        .card-inner.flipped { transform: rotateY(180deg); }
+        .card-inner.flipped {
+            transform: rotateY(180deg);
+        }
         .card-front, .card-back {
             backface-visibility: hidden;
             position: absolute;
-            top: 0; left: 0;
-            width: 100%; height: 100%;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
         }
-        .card-front { transform: rotateY(180deg); }
+        .card-front {
+            transform: rotateY(180deg);
+        }
         
-        /* Фирменные 3D анимации тасования карт влево-вправо */
+        /* Спецэффекты тасования карт влево-вправо */
         @keyframes shuffle-left {
             0% { transform: translateX(0) rotate(0deg) scale(1); z-index: 10; }
             50% { transform: translateX(-110px) rotate(-12deg) scale(0.95); z-index: 1; }
@@ -46,22 +66,24 @@
             50% { transform: translateX(110px) rotate(12deg) scale(0.95); z-index: 10; }
             100% { transform: translateX(0) rotate(0deg) scale(1); z-index: 8; }
         }
-        .animate-shuffle-1 { animation: shuffle-left 0.7s ease-in-out infinite; }
-        .animate-shuffle-2 { animation: shuffle-right 0.7s ease-in-out infinite; }
-        .gold-glow { box-shadow: 0 0 25px rgba(217, 119, 6, 0.3); }
         
-        /* Анимированные звездные частицы фона */
-        .stars-bg {
-            background-image: radial-gradient(white, rgba(255,255,255,.2) 2px, transparent 40px);
-            background-size: 550px 550px;
+        .animate-shuffle-1 {
+            animation: shuffle-left 0.7s ease-in-out infinite;
+        }
+        .animate-shuffle-2 {
+            animation: shuffle-right 0.7s ease-in-out infinite;
+        }
+        
+        /* Золотое свечение */
+        .gold-glow {
+            box-shadow: 0 0 25px rgba(217, 119, 6, 0.3);
         }
     </style>
 </head>
-<body class="min-h-screen flex flex-col justify-between p-4 max-w-md mx-auto relative overflow-hidden">
-    <!-- Фон -->
-    <div class="stars-bg absolute inset-0 opacity-25 pointer-events-none"></div>
+<body class="min-h-screen flex flex-col justify-between p-4 max-w-md mx-auto relative">
 
-    <header id="app-header" class="hidden flex justify-between items-center w-full py-3 px-4 bg-white/5 border border-white/10 rounded-2xl backdrop-blur-md mb-4 gold-glow relative z-20">
+    <!-- Верхняя панель (Скрыта на первом экране регистрации) -->
+    <header id="app-header" class="hidden flex justify-between items-center w-full py-3 px-4 bg-white/5 border border-white/10 rounded-2xl backdrop-blur-md mb-4 gold-glow">
         <div class="flex items-center space-x-3">
             <div class="w-10 h-10 rounded-full border border-amber-500 flex items-center justify-center bg-amber-500/10">
                 <span class="text-amber-500 text-lg">👁️</span>
@@ -77,9 +99,10 @@
         </div>
     </header>
 
-    <main class="flex-grow flex flex-col justify-center items-center w-full z-10 relative">
+    <!-- Основной контент -->
+    <main class="flex-grow flex flex-col justify-center items-center w-full z-10">
         
-        <!-- ЭКРАН 0: Регистрация -->
+        <!-- ЭКРАН 0: Регистрация (Сбор контактов по закону РК) -->
         <div id="screen-register" class="w-full space-y-4 py-2 animate-fade-in">
             <div class="text-center mb-4">
                 <div class="text-5xl mb-2 filter drop-shadow-[0_0_10px_rgba(217,119,6,0.5)]">🌌</div>
@@ -88,34 +111,42 @@
             </div>
 
             <div class="bg-black/30 border border-white/5 rounded-3xl p-5 space-y-4 gold-glow">
+                <!-- Поле ввода имени -->
                 <div class="space-y-1">
                     <label class="text-[10px] text-amber-500 font-esoteric tracking-wider" for="reg-name">Ваше имя:</label>
                     <input type="text" id="reg-name" placeholder="Введите ваше имя" class="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-xs text-gray-100 focus:outline-none focus:border-amber-500/60 transition-colors">
                 </div>
+
+                <!-- Поле ввода почты -->
                 <div class="space-y-1">
-                    <label class="text-[10px] text-amber-500 font-esoteric tracking-wider" for="reg-email">Ваш Email:</label>
+                    <label class="text-[10px] text-amber-500 font-esoteric tracking-wider" for="reg-email">Ваш Email (для сохранения истории раскладов):</label>
                     <input type="email" id="reg-email" placeholder="example@mail.com" class="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-xs text-gray-100 focus:outline-none focus:border-amber-500/60 transition-colors">
                 </div>
+
+                <!-- Согласие и Политика безопасности -->
                 <div class="flex items-start space-x-2.5 pt-1">
                     <input type="checkbox" id="reg-consent" class="mt-0.5 w-4 h-4 rounded border-gray-300 text-amber-500 focus:ring-amber-500 bg-white/5 accent-amber-500">
                     <label for="reg-consent" class="text-[9px] text-gray-400 leading-relaxed select-none">
                         Я даю согласие на <span class="text-amber-500 font-medium">обработку персональных данных</span> ИП для отправки прогнозов.
                     </label>
                 </div>
+
+                <!-- Кнопка подтверждения -->
                 <button onclick="handleRegister()" class="w-full py-3.5 bg-gradient-to-r from-amber-600 to-yellow-500 text-gray-950 font-bold font-esoteric rounded-xl text-xs uppercase tracking-widest shadow-lg hover:from-amber-500 hover:to-yellow-400 transition-all duration-300 active:scale-[0.98]">
                     Войти в Оракул
                 </button>
             </div>
         </div>
         
-        <!-- ЭКРАН 1: Выбор вопроса -->
+        <!-- ЭКРАН 1: Сетка выбора вопросов (Все 10 вопросов на месте) -->
         <div id="screen-questions" class="w-full space-y-4 hidden">
             <div class="text-center mb-2">
                 <h2 class="text-xl font-esoteric text-amber-400 font-bold tracking-wider mb-1">Выберите свой вопрос</h2>
-                <p class="text-gray-400 text-[10px] px-6">Стоимость: 1 расклад = 1 🔮</p>
+                <p class="text-gray-400 text-[10px] px-6">Сфокусируйтесь на ситуации и сделайте выбор. Стоимость: 1 расклад = 1 🔮</p>
             </div>
+            
             <div id="questions-grid" class="grid grid-cols-1 gap-2 max-h-[50vh] overflow-y-auto px-1 py-1">
-                <!-- Генерируется динамически -->
+                <!-- Вопросы загружаются автоматически из JS -->
             </div>
         </div>
 
@@ -126,53 +157,50 @@
             <div class="h-64 w-44 relative flex items-center justify-center">
                 <div class="absolute w-52 h-52 border border-dashed border-amber-500/20 rounded-full animate-spin [animation-duration:35s]"></div>
                 
+                <!-- Колода с летающими картами-подложками для ASMR-эффекта -->
                 <div id="card-deck-container" class="relative w-40 h-56 card-container">
-                    <!-- Задние карты для анимации тасования -->
-                    <div id="deck-card-3" class="absolute inset-0 bg-gradient-to-br from-[#12082b] to-[#04010a] border border-amber-500/35 rounded-xl p-3 flex flex-col justify-between shadow-2xl transition-all duration-300 transform rotate-1 scale-95 opacity-80">
-                        <div class="w-full h-full border border-amber-500/10 rounded-lg flex items-center justify-center bg-[#070311]">🌙</div>
+                    <div id="deck-card-3" class="absolute inset-0 bg-indigo-950 border border-amber-500/40 rounded-xl p-4 flex flex-col justify-between shadow-2xl transition-all duration-300 transform rotate-1 scale-95 opacity-80">
+                        <div class="w-full h-full border border-amber-500/10 rounded-lg flex items-center justify-center bg-[#150a2b]">🌙</div>
                     </div>
-                    <div id="deck-card-2" class="absolute inset-0 bg-gradient-to-br from-[#12082b] to-[#04010a] border border-amber-500/50 rounded-xl p-3 flex flex-col justify-between shadow-2xl transition-all duration-300 transform -rotate-1 scale-98 opacity-90">
-                        <div class="w-full h-full border border-amber-500/10 rounded-lg flex items-center justify-center bg-[#070311]">🔮</div>
+                    <div id="deck-card-2" class="absolute inset-0 bg-indigo-950 border border-amber-500/60 rounded-xl p-4 flex flex-col justify-between shadow-2xl transition-all duration-300 transform -rotate-1 scale-98 opacity-90">
+                        <div class="w-full h-full border border-amber-500/10 rounded-lg flex items-center justify-center bg-[#150a2b]">🔮</div>
                     </div>
                     
-                    <!-- Интерактивная передняя карта -->
                     <div id="interactive-card" class="absolute inset-0 card-inner w-full h-full">
-                        <!-- Рубашка -->
-                        <div class="card-back bg-gradient-to-br from-indigo-950 via-[#180f2d] to-purple-950 border-2 border-amber-500 rounded-xl p-2.5 shadow-2xl">
-                            <div class="w-full h-full border-2 border-amber-500/35 rounded-lg bg-[#0e0622] flex flex-col justify-between p-2 relative overflow-hidden">
-                                <div class="absolute inset-0 bg-[radial-gradient(#d97706_1px,transparent_1px)] [background-size:16px_16px] opacity-10"></div>
-                                <div class="flex justify-between text-[7px] text-amber-500/40 font-esoteric"><span>✧ ORACLE ✧</span><span>✧ TAROT ✧</span></div>
-                                <div class="w-full flex justify-center items-center my-auto text-amber-400 drop-shadow-[0_0_10px_rgba(217,119,6,0.6)] text-2xl">✨</div>
-                                <div class="flex justify-between text-[7px] text-amber-500/40 font-esoteric rotate-180"><span>✧ ORACLE ✧</span><span>✧ TAROT ✧</span></div>
+                        <!-- Рубашка карты -->
+                        <div class="card-back bg-gradient-to-br from-indigo-950 to-purple-950 border border-amber-500 rounded-xl p-3 flex flex-col justify-between shadow-2xl">
+                            <div class="w-full h-full border-2 border-amber-500/20 rounded-lg flex flex-col justify-between p-2 bg-[#0e0622]">
+                                <div class="flex justify-between text-[8px] text-amber-500/40 font-esoteric"><span>✧ TAROT ✧</span></div>
+                                <div class="w-full flex justify-center items-center my-auto text-amber-400 drop-shadow-[0_0_10px_rgba(217,119,6,0.6)] text-xl">✨</div>
+                                <div class="flex justify-between text-[8px] text-amber-500/40 font-esoteric rotate-180"><span>✧ TAROT ✧</span></div>
                             </div>
                         </div>
-                        <!-- Лицевая сторона (Роскошный векторный дизайн) -->
-                        <div class="card-front bg-gradient-to-b from-[#180927] to-[#04010a] border-2 border-amber-500 rounded-xl p-2.5 shadow-2xl">
-                            <div id="card-design-container" class="w-full h-full border border-amber-500/35 rounded-lg flex flex-col justify-between p-2.5 bg-black/75 relative overflow-hidden">
-                                <div id="card-category-name" class="text-center font-esoteric text-[7px] text-amber-500/60 tracking-widest">АРКАН</div>
-                                <div id="card-number" class="text-center font-esoteric text-amber-500 text-[10px] mt-0.5"></div>
+                        <!-- Лицевая сторона карты (Векторный золотой дизайн) -->
+                        <div class="card-front bg-gradient-to-b from-[#180927] to-[#04010a] border-2 border-amber-500 rounded-xl p-3 flex flex-col justify-between shadow-2xl">
+                            <div class="w-full h-full border border-amber-500/35 rounded-lg flex flex-col justify-between p-2 bg-black/75 relative overflow-hidden">
+                                <div id="card-number" class="text-center font-esoteric text-amber-500 text-[10px]"></div>
                                 
                                 <!-- Эзотерический центральный символ -->
                                 <div class="w-full flex justify-center items-center my-auto">
-                                    <svg id="card-symbol-svg" class="w-20 h-20" viewBox="0 0 100 100">
+                                    <svg id="card-symbol-svg" class="w-16 h-16" viewBox="0 0 100 100">
                                         <!-- Сюда вставляется векторный символ аркана -->
                                     </svg>
                                 </div>
                                 
-                                <div id="card-name" class="text-center font-esoteric text-amber-400 font-bold text-xs tracking-wider uppercase mb-0.5"></div>
+                                <div id="card-name" class="text-center font-esoteric text-amber-400 font-bold text-[10px] tracking-wider uppercase mb-0.5"></div>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
 
-            <p id="shuffle-status" class="text-gray-400 text-[10px] italic tracking-wider animate-pulse text-center">Сфокусируйтесь на ситуации и запустите поле...</p>
+            <p id="shuffle-status" class="text-gray-400 text-[10px] italic tracking-wider animate-pulse text-center">Калибровка энергетического поля...</p>
             <button id="draw-btn" onclick="startShufflingAndReveal()" class="px-8 py-3.5 bg-gradient-to-r from-amber-600 to-yellow-500 text-gray-950 font-bold font-esoteric rounded-full text-xs uppercase tracking-widest shadow-lg hover:from-amber-500 hover:to-yellow-400 transition-all gold-glow duration-300 active:scale-95">
                 Перемешать и вытянуть
             </button>
         </div>
 
-        <!-- ЭКРАН 3: Результат -->
+        <!-- ЭКРАН 3: Индивидуальное толкование -->
         <div id="screen-result" class="w-full hidden space-y-4">
             <div class="flex flex-col items-center">
                 <h3 class="text-[10px] font-esoteric text-amber-500 tracking-wider">РАСКЛАД ЗАВЕРШЕН</h3>
@@ -181,7 +209,6 @@
 
             <div class="flex justify-center my-1">
                 <div class="bg-gradient-to-r from-amber-950/20 via-amber-500/10 to-amber-950/20 border-y border-amber-500/20 w-full py-3.5 px-4 flex items-center justify-center space-x-5">
-                    <!-- Мини-карта на экране результатов -->
                     <div class="w-14 h-20 bg-gradient-to-b from-[#180927] to-[#04010a] border border-amber-500/60 rounded-lg flex flex-col justify-between p-1.5 shadow-xl shrink-0">
                         <div id="result-badge-num" class="text-center text-[7px] font-esoteric text-amber-500"></div>
                         <div class="w-full flex justify-center my-auto scale-75">
@@ -197,65 +224,91 @@
                 </div>
             </div>
 
-            <!-- Свиток толкования -->
+            <!-- Текстовый свиток -->
             <div class="bg-black/40 border border-white/5 rounded-2xl p-4 max-h-[30vh] overflow-y-auto space-y-3 shadow-inner">
                 <h4 class="font-esoteric text-amber-500 text-xs font-bold flex items-center">
-                    <span class="mr-1.5">✦</span> Духовное послание:
+                    <span class="mr-1.5">✦</span> Духовный ответ для вас, <span id="user-name-result" class="text-gray-100 ml-1"></span>:
                 </h4>
-                <p id="interpretation-text" class="text-gray-300 text-xs leading-relaxed text-justify whitespace-pre-line"></p>
+                <p id="interpretation-text" class="text-gray-300 text-xs leading-relaxed text-justify whitespace-pre-line">
+                    Текст прогноза...
+                </p>
             </div>
 
-            <button onclick="goToQuestions()" class="w-full py-3.5 bg-white/5 border border-white/10 hover:bg-white/10 text-gray-200 font-esoteric rounded-xl text-xs uppercase tracking-wider transition-all active:scale-95">Новый вопрос</button>
+            <div class="flex space-x-3 pt-1">
+                <button onclick="goToQuestions()" class="flex-1 py-3 bg-white/5 border border-white/10 text-gray-200 font-esoteric rounded-xl text-xs uppercase tracking-wider active:scale-95">Новый вопрос</button>
+            </div>
         </div>
 
-        <!-- ЭКРАН 4: Магазин -->
+        <!-- ЭКРАН 4: Магазин Telegram Stars (Все 3 пакета на месте) -->
         <div id="screen-shop" class="w-full hidden space-y-5">
             <div class="text-center">
                 <h2 class="text-xl font-esoteric text-amber-400 font-bold tracking-wider mb-1">Приобрести Энергию</h2>
                 <p class="text-gray-400 text-[10px] px-6">Пополняйте баланс в звездах Telegram</p>
             </div>
+
             <div class="space-y-3">
-                <div class="bg-[#180f2d] border border-white/5 rounded-2xl p-4 flex items-center justify-between shadow-lg relative overflow-hidden">
+                <!-- Вариант 1 -->
+                <div class="bg-gradient-to-r from-[#180f2d] to-[#0f0720] border border-white/5 rounded-2xl p-4 flex items-center justify-between shadow-lg relative overflow-hidden">
                     <div class="absolute left-0 top-0 h-full w-1 bg-amber-500"></div>
                     <div>
                         <h4 class="font-esoteric text-gray-100 font-bold text-xs">Пакет «1 Вопрос»</h4>
-                        <p class="text-[9px] text-gray-400">1 детальный расклад Таро</p>
+                        <p class="text-[9px] text-gray-400 mt-0.5">1 детальный расклад Таро</p>
                     </div>
-                    <button onclick="buyPackage(1, 75)" class="flex items-center space-x-1 bg-amber-500 text-gray-950 px-3 py-1.5 rounded-xl font-bold transition active:scale-95"><span>75</span><span>⭐</span></button>
+                    <button onclick="buyPackage(1, 75)" class="flex items-center space-x-1 bg-amber-500 hover:bg-amber-400 text-gray-950 font-bold px-3 py-1.5 rounded-xl transition active:scale-95">
+                        <span class="text-xs font-extrabold">75</span>
+                        <span class="text-[10px]">⭐</span>
+                    </button>
                 </div>
-                <div class="bg-[#21113e] border-2 border-amber-500 rounded-2xl p-4 flex items-center justify-between shadow-lg gold-glow relative overflow-hidden">
-                    <div class="absolute left-0 top-0 h-full w-1 bg-amber-400"></div>
+
+                <!-- Вариант 5 -->
+                <div class="bg-gradient-to-r from-[#21113e] to-[#120726] border-2 border-amber-500 rounded-2xl p-4 flex items-center justify-between shadow-lg relative overflow-hidden gold-glow">
+                    <div class="absolute right-0 top-0 bg-amber-500 text-gray-950 font-bold text-[8px] px-2.5 py-0.5 rounded-bl-lg font-esoteric uppercase tracking-widest">Хит (Скидка 10%)</div>
+                    <div class="absolute left-0 top-0 h-full w-1 bg-amber-500"></div>
                     <div>
-                        <h4 class="font-esoteric text-amber-300 font-bold text-xs">Пакет «5 Вопросов»</h4>
-                        <p class="text-[9px] text-gray-300">5 детальных раскладов Таро</p>
+                        <h4 class="font-esoteric text-amber-300 font-bold text-xs flex items-center">Пакет «5 Вопросов»</h4>
+                        <p class="text-[9px] text-gray-300 mt-0.5">5 детальных раскладов Таро</p>
                     </div>
-                    <button onclick="buyPackage(5, 340)" class="flex items-center space-x-1 bg-amber-500 text-gray-950 px-3 py-1.5 rounded-xl font-bold transition active:scale-95"><span>340</span><span>⭐</span></button>
+                    <button onclick="buyPackage(5, 340)" class="flex items-center space-x-1 bg-amber-500 hover:bg-amber-400 text-gray-950 font-bold px-3 py-1.5 rounded-xl transition active:scale-95">
+                        <span class="text-xs font-extrabold">340</span>
+                        <span class="text-[10px]">⭐</span>
+                    </button>
                 </div>
-                <div class="bg-[#180f2d] border border-white/5 rounded-2xl p-4 flex items-center justify-between shadow-lg relative overflow-hidden">
+
+                <!-- Вариант 15 -->
+                <div class="bg-gradient-to-r from-[#180f2d] to-[#0f0720] border border-white/5 rounded-2xl p-4 flex items-center justify-between shadow-lg relative overflow-hidden">
                     <div class="absolute left-0 top-0 h-full w-1 bg-purple-500"></div>
                     <div>
                         <h4 class="font-esoteric text-gray-100 font-bold text-xs">Пакет «15 Вопросов»</h4>
-                        <p class="text-[9px] text-gray-400">15 раскладов со скидкой 20%</p>
+                        <p class="text-[9px] text-gray-400 mt-0.5">15 раскладов со скидкой 20%</p>
                     </div>
-                    <button onclick="buyPackage(15, 900)" class="flex items-center space-x-1 bg-amber-500 text-gray-950 px-3 py-1.5 rounded-xl font-bold transition active:scale-95"><span>900</span><span>⭐</span></button>
+                    <button onclick="buyPackage(15, 900)" class="flex items-center space-x-1 bg-amber-500 hover:bg-amber-400 text-gray-950 font-bold px-3 py-1.5 rounded-xl transition active:scale-95">
+                        <span class="text-xs font-extrabold">900</span>
+                        <span class="text-[10px]">⭐</span>
+                    </button>
                 </div>
             </div>
-            <button onclick="goToQuestions()" class="w-full py-2.5 bg-white/5 border border-white/10 text-gray-300 font-esoteric rounded-xl text-xs uppercase tracking-wider transition-all">Назад</button>
+
+            <button onclick="goToQuestions()" class="w-full py-2.5 bg-white/5 border border-white/10 hover:bg-white/10 text-gray-300 font-esoteric rounded-xl text-xs uppercase tracking-wider transition-colors">
+                Назад к вопросам
+            </button>
         </div>
 
     </main>
 
     <!-- Нижняя навигация -->
-    <nav id="app-navigation" class="hidden flex justify-around items-center w-full py-2.5 px-3 bg-black/60 border-t border-white/10 rounded-t-2xl backdrop-blur-md mt-4 relative z-20">
-        <button onclick="switchTab('questions')" class="flex flex-col items-center space-y-1 text-amber-500">
-            <span class="text-xs">🔮</span><span class="text-[9px] font-semibold uppercase tracking-wider">Вопросы</span>
+    <nav id="app-navigation" class="hidden flex justify-around items-center w-full py-2.5 px-3 bg-black/60 border-t border-white/10 rounded-t-2xl backdrop-blur-md mt-4">
+        <button id="nav-questions" onclick="switchTab('questions')" class="flex flex-col items-center space-y-1 text-amber-500">
+            <span class="text-xs">🔮</span>
+            <span class="text-[9px] font-semibold tracking-wider">Вопросы</span>
         </button>
-        <button onclick="switchTab('shop')" class="flex flex-col items-center space-y-1 text-gray-400">
-            <span class="text-xs">🪙</span><span class="text-[9px] font-semibold uppercase tracking-wider">Купить</span>
+        <button id="nav-shop" onclick="switchTab('shop')" class="flex flex-col items-center space-y-1 text-gray-400 hover:text-amber-500 transition">
+            <span class="text-xs">🪙</span>
+            <span class="text-[9px] font-semibold tracking-wider">Купить</span>
         </button>
     </nav>
 
     <script>
+        // Инициализация Telegram WebApp SDK
         let tg = window.Telegram ? window.Telegram.WebApp : null;
         if (tg) { tg.ready(); tg.expand(); }
 
@@ -264,10 +317,9 @@
             selectedQuestionId: null, currentScreen: 'register'
         };
 
-        // ВАША НАСТОЯЩАЯ ССЫЛКА НА БЭКЕНД УЖЕ ЗДЕСЬ!
         const BACKEND_URL = "https://tarot-backend-136l.onrender.com";
 
-        // Проверка автоматической авторизации
+        // АВТОМАТИЧЕСКАЯ БЕСШОВНАЯ АВТОРИЗАЦИЯ
         async function checkAuth() {
             const initData = tg ? tg.initData : "dummy_data_for_browser";
             try {
@@ -283,6 +335,7 @@
                         state.user_name = data.name;
                         
                         document.getElementById('user-name-display').innerText = data.name;
+                        document.getElementById('user-name-result').innerText = data.name;
                         document.getElementById('user-balance').innerText = `${state.balance} раскладов`;
                         
                         document.getElementById('screen-register').classList.add('hidden');
@@ -298,7 +351,7 @@
 
         window.addEventListener('DOMContentLoaded', checkAuth);
 
-        // 10 Категорийных вопросов
+        // Все 10 оригинальных вопросов Оракула
         const questionsList = [
             { id: 1, text: "Что меня ждет на работе в ближайший месяц?", category: "Карьера" },
             { id: 2, text: "Встречу ли я свою любовь в ближайшее время?", category: "Любовь" },
@@ -312,7 +365,7 @@
             { id: 10, text: "Что принесет мне сегодняшнее решение?", category: "Совет" }
         ];
 
-        // База Старших Арканов с SVG иллюстрациями
+        // База Старших Арканов с SVG символами
         const majorArcanaDatabase = [
             {
                 id: 0, name: "Дурак", number: "0",
@@ -470,6 +523,7 @@
             }
         ];
 
+        // Масти младших арканов
         const suitMeanings = {
             wands: { name: "Жезлов", career: "Действуйте смело, время лидерства и амбиций.", love: "Вспышка страсти и активная инициатива.", advice: "Проявите мужество, отстаивайте свои позиции.", symbolSvg: `<g stroke="#d97706" stroke-width="2" stroke-linecap="round"><line x1="50" y1="20" x2="50" y2="80"/><line x1="42" y1="35" x2="58" y2="35"/><line x1="45" y1="50" x2="55" y2="50"/><line x1="42" y1="65" x2="58" y2="65"/></g>` },
             cups: { name: "Кубков", career: "Слушайте интуицию, важны отношения с коллегами.", love: "Глубокое взаимопонимание и новые чувства.", advice: "Доверяйте своему сердцу и предчувствиям.", symbolSvg: `<g stroke="#d97706" stroke-width="1.5" fill="none"><path d="M35 30 L65 30 L60 60 C60 70 40 70 40 60 Z M50 63 L50 80 M35 80 L65 80" fill="#d97706" fill-opacity="0.2"/></g>` },
@@ -494,17 +548,24 @@
             14: { name: "Король", desc: "абсолютная власть и стабильность." }
         };
 
+        // УМНЫЙ РОУТИНГ ПРЕДСКАЗАНИЙ ПО КАТЕГОРИЯМ
         function getInterpretation(card, questionId) {
-            let category = "advice";
-            if ([1, 3, 5].includes(questionId)) category = "career";
-            else if ([2, 4].includes(questionId)) category = "love";
+            const question = questionsList.find(q => q.id === questionId);
+            const categoryName = question ? question.category : "Совет";
+
+            let targetSection = "advice";
+            if (["Карьера", "Финансы", "Выбор"].includes(categoryName)) {
+                targetSection = "career";
+            } else if (["Любовь", "Отношения"].includes(categoryName)) {
+                targetSection = "love";
+            }
 
             if (card.id <= 21) {
-                return card[category];
+                return card[targetSection];
             } else {
                 const suit = suitMeanings[card.suit];
                 const rank = rankMeanings[card.rank];
-                let categoryText = category === "career" ? suit.career : (category === "love" ? suit.love : suit.advice);
+                let categoryText = targetSection === "career" ? suit.career : (targetSection === "love" ? suit.love : suit.advice);
                 return `Вы вытянули карту: ${rank.name} ${suit.name}.\n\nЭта карта символизирует ${rank.desc}\n\nТолкование: ${categoryText}`;
             }
         }
@@ -539,7 +600,7 @@
                 container.innerHTML += `
                     <button onclick="selectQuestion(${q.id})" class="w-full text-left py-3.5 px-4 bg-white/5 hover:bg-white/10 border border-white/10 rounded-xl transition flex items-center justify-between">
                         <span class="text-gray-200 text-xs pr-2">${q.id}. ${q.text}</span>
-                        <span class="text-amber-500 font-esoteric text-[10px] bg-amber-500/10 px-2 py-1 rounded-lg">${q.category}</span>
+                        <span class="text-amber-500 font-esoteric text-[10px] bg-amber-500/10 px-2.5 py-1 rounded-lg">${q.category}</span>
                     </button>`;
             });
         }
@@ -603,6 +664,7 @@
             switchTab('shuffling');
         }
 
+        // 3D АНИМАЦИЯ ТАСОВАНИЯ И ПЕРЕВОРОТА КАРТ
         function startShufflingAndReveal() {
             const drawBtn = document.getElementById('draw-btn');
             const statusText = document.getElementById('shuffle-status');
@@ -610,56 +672,44 @@
             const cardRight = document.getElementById('deck-card-2');
             const mainCard = document.getElementById('interactive-card');
 
-            // Скрываем кнопку
             drawBtn.classList.add('hidden');
-            statusText.innerText = "Тасование священной колоды...";
+            statusText.innerText = "Тасование колоды...";
             statusText.className = "text-amber-400 text-[10px] italic tracking-wider animate-pulse text-center";
 
-            // Запуск 3D-анимации тасования
+            // Летающие 3D-анимации
             cardLeft.classList.add('animate-shuffle-1');
             cardRight.classList.add('animate-shuffle-2');
-
-            // Легкое масштабирование главной карты для динамики
             mainCard.style.transform = "scale(0.95) translateY(-10px)";
 
             setTimeout(() => {
-                // Останавливаем анимацию
                 cardLeft.classList.remove('animate-shuffle-1');
                 cardRight.classList.remove('animate-shuffle-2');
                 statusText.innerText = "Оракул выбирает карту...";
 
-                // Выбираем случайную карту
                 const randomCard = fullTarotDeck[Math.floor(Math.random() * fullTarotDeck.length)];
-
-                // Отрисовка векторного аркана
                 const cardSymbolSvg = document.getElementById('card-symbol-svg');
-                const cardCategoryName = document.getElementById('card-category-name');
 
                 if (randomCard.id <= 21) {
-                    cardCategoryName.innerText = "Старший Аркан";
                     cardSymbolSvg.innerHTML = randomCard.symbolSvg;
                 } else {
                     const suit = suitMeanings[randomCard.suit];
-                    cardCategoryName.innerText = `Аркан ${suit.name}`;
                     cardSymbolSvg.innerHTML = suit.symbolSvg;
                 }
 
                 document.getElementById('card-number').innerText = randomCard.number;
                 document.getElementById('card-name').innerText = randomCard.name;
 
-                // Переворачиваем карту
+                // Разворот карты лицом к пользователю
                 mainCard.classList.add('flipped');
                 mainCard.style.transform = "scale(1.05) rotateY(180deg)";
 
-                // Показываем результат
                 setTimeout(() => showInterpretationResult(randomCard), 2000);
-            }, 2500); // 2.5 секунды идет тасование
+            }, 2500); 
         }
 
         function showInterpretationResult(card) {
             const interpretation = getInterpretation(card, state.selectedQuestionId);
             
-            // Настройка SVG в мини-карте на экране результатов
             const resultBadgeSvg = document.getElementById('result-badge-svg');
             const resultCardCategory = document.getElementById('result-card-category');
 
