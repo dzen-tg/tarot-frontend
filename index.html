@@ -4,11 +4,11 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Таро Оракул • Полная версия 78 Карт</title>
-    <!-- Подключение Tailwind CSS -->
+    <!-- Tailwind CSS для стилей -->
     <script src="https://cdn.tailwindcss.com"></script>
-    <!-- Подключение SDK Telegram Web App -->
+    <!-- Telegram Web App SDK -->
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
-    <!-- Эзотерические шрифты из Google Fonts -->
+    <!-- Шрифты для создания эзотерической атмосферы -->
     <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&family=Montserrat:wght@300;400;600&display=swap" rel="stylesheet">
     
     <style>
@@ -24,7 +24,7 @@
         ::-webkit-scrollbar-track { background: #070311; }
         ::-webkit-scrollbar-thumb { background: #d97706; border-radius: 2px; }
         
-        /* Стили для 3D переворота карты */
+        /* 3D Окружение для карт */
         .card-container { perspective: 1000px; }
         .card-inner {
             transition: transform 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275);
@@ -39,25 +39,32 @@
         }
         .card-front { transform: rotateY(180deg); }
         
-        /* Фирменные анимации тасования */
+        /* Фирменные 3D анимации тасования карт влево-вправо */
         @keyframes shuffle-left {
-            0% { transform: translateX(0) rotate(0deg); z-index: 10; }
-            50% { transform: translateX(-120px) rotate(-15deg); z-index: 1; }
-            100% { transform: translateX(0) rotate(0deg); z-index: 5; }
+            0% { transform: translateX(0) rotate(0deg) scale(1); z-index: 10; }
+            50% { transform: translateX(-110px) rotate(-12deg) scale(0.95); z-index: 1; }
+            100% { transform: translateX(0) rotate(0deg) scale(1); z-index: 5; }
         }
         @keyframes shuffle-right {
-            0% { transform: translateX(0) rotate(0deg); z-index: 5; }
-            50% { transform: translateX(120px) rotate(15deg); z-index: 10; }
-            100% { transform: translateX(0) rotate(0deg); z-index: 8; }
+            0% { transform: translateX(0) rotate(0deg) scale(1); z-index: 5; }
+            50% { transform: translateX(110px) rotate(12deg) scale(0.95); z-index: 10; }
+            100% { transform: translateX(0) rotate(0deg) scale(1); z-index: 8; }
         }
         .animate-shuffle-1 { animation: shuffle-left 0.7s ease-in-out infinite; }
         .animate-shuffle-2 { animation: shuffle-right 0.7s ease-in-out infinite; }
         .gold-glow { box-shadow: 0 0 25px rgba(217, 119, 6, 0.3); }
+        
+        /* Анимированные звездные частицы фона */
+        .stars-bg {
+            background-image: radial-gradient(white, rgba(255,255,255,.2) 2px, transparent 40px);
+            background-size: 550px 550px;
+        }
     </style>
 </head>
-<body class="min-h-screen flex flex-col justify-between p-4 max-w-md mx-auto relative">
+<body class="min-h-screen flex flex-col justify-between p-4 max-w-md mx-auto relative overflow-hidden">
+    <div class="stars-bg absolute inset-0 opacity-25 pointer-events-none"></div>
 
-    <header id="app-header" class="hidden flex justify-between items-center w-full py-3 px-4 bg-white/5 border border-white/10 rounded-2xl backdrop-blur-md mb-4 gold-glow">
+    <header id="app-header" class="hidden flex justify-between items-center w-full py-3 px-4 bg-white/5 border border-white/10 rounded-2xl backdrop-blur-md mb-4 gold-glow relative z-20">
         <div class="flex items-center space-x-3">
             <div class="w-10 h-10 rounded-full border border-amber-500 flex items-center justify-center bg-amber-500/10">
                 <span class="text-amber-500 text-lg">👁️</span>
@@ -73,8 +80,9 @@
         </div>
     </header>
 
-    <main class="flex-grow flex flex-col justify-center items-center w-full z-10">
+    <main class="flex-grow flex flex-col justify-center items-center w-full z-10 relative">
         
+        <!-- ЭКРАН 0: Регистрация -->
         <div id="screen-register" class="w-full space-y-4 py-2 animate-fade-in">
             <div class="text-center mb-4">
                 <div class="text-5xl mb-2 filter drop-shadow-[0_0_10px_rgba(217,119,6,0.5)]">🌌</div>
@@ -103,13 +111,14 @@
             </div>
         </div>
         
+        <!-- ЭКРАН 1: Выбор вопроса -->
         <div id="screen-questions" class="w-full space-y-4 hidden">
             <div class="text-center mb-2">
                 <h2 class="text-xl font-esoteric text-amber-400 font-bold tracking-wider mb-1">Выберите свой вопрос</h2>
                 <p class="text-gray-400 text-[10px] px-6">Стоимость: 1 расклад = 1 🔮</p>
             </div>
             <div id="questions-grid" class="grid grid-cols-1 gap-2 max-h-[50vh] overflow-y-auto px-1 py-1">
-                <!-- Сюда динамически загружаются 10 вопросов из JS -->
+                <!-- Генерируется динамически -->
             </div>
         </div>
 
@@ -120,34 +129,47 @@
                 <div class="absolute w-52 h-52 border border-dashed border-amber-500/20 rounded-full animate-spin [animation-duration:35s]"></div>
                 
                 <div id="card-deck-container" class="relative w-40 h-56 card-container">
-                    <div id="deck-card-3" class="absolute inset-0 bg-indigo-950 border border-amber-500/40 rounded-xl p-4 flex flex-col justify-between shadow-2xl transition-all duration-300 transform rotate-1 scale-95 opacity-80">
-                        <div class="w-full h-full border border-amber-500/10 rounded-lg flex items-center justify-center bg-[#150a2b]">🌙</div>
+                    <!-- Задние карты для анимации тасования -->
+                    <div id="deck-card-3" class="absolute inset-0 bg-gradient-to-br from-[#12082b] to-[#04010a] border border-amber-500/35 rounded-xl p-3 flex flex-col justify-between shadow-2xl transition-all duration-300 transform rotate-1 scale-95 opacity-80">
+                        <div class="w-full h-full border border-amber-500/10 rounded-lg flex items-center justify-center bg-[#070311]">🌙</div>
                     </div>
-                    <div id="deck-card-2" class="absolute inset-0 bg-indigo-950 border border-amber-500/60 rounded-xl p-4 flex flex-col justify-between shadow-2xl transition-all duration-300 transform -rotate-1 scale-98 opacity-90">
-                        <div class="w-full h-full border border-amber-500/10 rounded-lg flex items-center justify-center bg-[#150a2b]">🔮</div>
+                    <div id="deck-card-2" class="absolute inset-0 bg-gradient-to-br from-[#12082b] to-[#04010a] border border-amber-500/50 rounded-xl p-3 flex flex-col justify-between shadow-2xl transition-all duration-300 transform -rotate-1 scale-98 opacity-90">
+                        <div class="w-full h-full border border-amber-500/10 rounded-lg flex items-center justify-center bg-[#070311]">🔮</div>
                     </div>
                     
+                    <!-- Интерактивная передняя карта -->
                     <div id="interactive-card" class="absolute inset-0 card-inner w-full h-full">
                         <!-- Рубашка -->
-                        <div class="card-back bg-gradient-to-br from-indigo-950 to-purple-950 border border-amber-500 rounded-xl p-3 shadow-2xl">
-                            <div class="w-full h-full border-2 border-amber-500/20 rounded-lg bg-[#0e0622] flex items-center justify-center">✨</div>
+                        <div class="card-back bg-gradient-to-br from-indigo-950 via-[#180f2d] to-purple-950 border-2 border-amber-500 rounded-xl p-2.5 shadow-2xl">
+                            <div class="w-full h-full border-2 border-amber-500/35 rounded-lg bg-[#0e0622] flex flex-col justify-between p-2 relative overflow-hidden">
+                                <div class="absolute inset-0 bg-[radial-gradient(#d97706_1px,transparent_1px)] [background-size:16px_16px] opacity-10"></div>
+                                <div class="flex justify-between text-[7px] text-amber-500/40 font-esoteric"><span>✧ ORACLE ✧</span><span>✧ TAROT ✧</span></div>
+                                <div class="w-full flex justify-center items-center my-auto text-amber-400 drop-shadow-[0_0_10px_rgba(217,119,6,0.6)] text-2xl">✨</div>
+                                <div class="flex justify-between text-[7px] text-amber-500/40 font-esoteric rotate-180"><span>✧ ORACLE ✧</span><span>✧ TAROT ✧</span></div>
+                            </div>
                         </div>
-                        <!-- Лицевая сторона карты -->
-                        <div class="card-front bg-[#04010a] border-2 border-amber-500 rounded-xl shadow-2xl overflow-hidden relative">
-                            <img id="card-image" src="" alt="Card" class="absolute inset-0 w-full h-full object-cover">
-                            <div class="absolute inset-x-0 bottom-0 h-1/2 bg-gradient-to-t from-black via-black/70 to-transparent"></div>
-                            
-                            <div class="absolute inset-0 flex flex-col justify-between p-3 z-10">
-                                <div id="card-number" class="text-center font-esoteric text-amber-400 drop-shadow-md text-xs font-bold"></div>
-                                <div id="card-name" class="text-center font-esoteric text-amber-400 font-bold text-[11px] tracking-wider mb-1 drop-shadow-lg"></div>
+                        <!-- Лицевая сторона (Роскошный векторный дизайн) -->
+                        <div class="card-front bg-gradient-to-b from-[#180927] to-[#04010a] border-2 border-amber-500 rounded-xl p-2.5 shadow-2xl">
+                            <div id="card-design-container" class="w-full h-full border border-amber-500/35 rounded-lg flex flex-col justify-between p-2.5 bg-black/75 relative overflow-hidden">
+                                <div id="card-category-name" class="text-center font-esoteric text-[7px] text-amber-500/60 tracking-widest">АРКАН</div>
+                                <div id="card-number" class="text-center font-esoteric text-amber-500 text-[10px] mt-0.5"></div>
+                                
+                                <!-- Эзотерический центральный символ -->
+                                <div class="w-full flex justify-center items-center my-auto">
+                                    <svg id="card-symbol-svg" class="w-20 h-20" viewBox="0 0 100 100">
+                                        <!-- Сюда вставляется векторный символ аркана -->
+                                    </svg>
+                                </div>
+                                
+                                <div id="card-name" class="text-center font-esoteric text-amber-400 font-bold text-xs tracking-wider uppercase mb-0.5"></div>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
 
-            <p id="shuffle-status" class="text-gray-400 text-[10px] italic tracking-wider animate-pulse text-center">Калибровка поля...</p>
-            <button id="draw-btn" onclick="startShufflingAndReveal()" class="px-8 py-3 bg-gradient-to-r from-amber-600 to-yellow-500 text-gray-950 font-bold font-esoteric rounded-full text-xs uppercase tracking-widest shadow-lg hover:from-amber-500 hover:to-yellow-400 transition-all gold-glow duration-300 active:scale-95">
+            <p id="shuffle-status" class="text-gray-400 text-[10px] italic tracking-wider animate-pulse text-center">Сфокусируйтесь на ситуации и запустите поле...</p>
+            <button id="draw-btn" onclick="startShufflingAndReveal()" class="px-8 py-3.5 bg-gradient-to-r from-amber-600 to-yellow-500 text-gray-950 font-bold font-esoteric rounded-full text-xs uppercase tracking-widest shadow-lg hover:from-amber-500 hover:to-yellow-400 transition-all gold-glow duration-300 active:scale-95">
                 Перемешать и вытянуть
             </button>
         </div>
@@ -159,65 +181,78 @@
             </div>
 
             <div class="flex justify-center my-1">
-                <div class="bg-gradient-to-r from-amber-950/20 via-amber-500/10 to-amber-950/20 border-y border-amber-500/20 w-full py-2.5 px-4 flex items-center justify-center space-x-4">
-                    <div class="w-12 h-16 border border-amber-500/50 rounded-md overflow-hidden relative shadow-lg shrink-0">
-                        <img id="result-badge-image" src="" class="absolute inset-0 w-full h-full object-cover">
+                <div class="bg-gradient-to-r from-amber-950/20 via-amber-500/10 to-amber-950/20 border-y border-amber-500/20 w-full py-3.5 px-4 flex items-center justify-center space-x-5">
+                    <!-- Мини-карта на экране результатов -->
+                    <div class="w-14 h-20 bg-gradient-to-b from-[#180927] to-[#04010a] border border-amber-500/60 rounded-lg flex flex-col justify-between p-1.5 shadow-xl shrink-0">
+                        <div id="result-badge-num" class="text-center text-[7px] font-esoteric text-amber-500"></div>
+                        <div class="w-full flex justify-center my-auto scale-75">
+                            <svg id="result-badge-svg" class="w-10 h-10" viewBox="0 0 100 100"></svg>
+                        </div>
+                        <div id="result-badge-name" class="text-center font-esoteric text-amber-400 text-[6px] font-semibold truncate uppercase"></div>
                     </div>
                     <div>
                         <h4 class="text-[8px] text-amber-500 tracking-widest uppercase font-esoteric">Выпавшая карта:</h4>
                         <h3 id="result-card-fullname" class="text-xs font-esoteric text-amber-400 font-bold tracking-wide"></h3>
+                        <p id="result-card-category" class="text-[8px] bg-amber-500/10 border border-amber-500/30 text-amber-400 font-medium px-2 py-0.5 rounded-full inline-block mt-0.5">Старший Аркан</p>
                     </div>
                 </div>
             </div>
 
-            <div class="bg-black/40 border border-white/5 rounded-2xl p-4 max-h-[35vh] overflow-y-auto space-y-3 shadow-inner">
+            <!-- Свиток толкования -->
+            <div class="bg-black/40 border border-white/5 rounded-2xl p-4 max-h-[30vh] overflow-y-auto space-y-3 shadow-inner">
                 <h4 class="font-esoteric text-amber-500 text-xs font-bold flex items-center">
-                    <span class="mr-1.5">✦</span> Толкование:
+                    <span class="mr-1.5">✦</span> Духовное послание:
                 </h4>
                 <p id="interpretation-text" class="text-gray-300 text-xs leading-relaxed text-justify whitespace-pre-line"></p>
             </div>
 
-            <button onclick="goToQuestions()" class="w-full py-3 bg-white/5 border border-white/10 text-gray-200 font-esoteric rounded-xl text-xs uppercase tracking-wider active:scale-95">Новый вопрос</button>
+            <button onclick="goToQuestions()" class="w-full py-3.5 bg-white/5 border border-white/10 hover:bg-white/10 text-gray-200 font-esoteric rounded-xl text-xs uppercase tracking-wider transition-all active:scale-95">Новый вопрос</button>
         </div>
 
+        <!-- ЭКРАН 4: Магазин -->
         <div id="screen-shop" class="w-full hidden space-y-5">
             <div class="text-center">
                 <h2 class="text-xl font-esoteric text-amber-400 font-bold tracking-wider mb-1">Приобрести Энергию</h2>
                 <p class="text-gray-400 text-[10px] px-6">Пополняйте баланс в звездах Telegram</p>
             </div>
             <div class="space-y-3">
-                <!-- Пакет 1 -->
-                <div class="bg-[#180f2d] border border-white/5 rounded-2xl p-4 flex items-center justify-between shadow-lg">
+                <div class="bg-[#180f2d] border border-white/5 rounded-2xl p-4 flex items-center justify-between shadow-lg relative overflow-hidden">
+                    <div class="absolute left-0 top-0 h-full w-1 bg-amber-500"></div>
                     <div>
                         <h4 class="font-esoteric text-gray-100 font-bold text-xs">Пакет «1 Вопрос»</h4>
+                        <p class="text-[9px] text-gray-400">1 детальный расклад Таро</p>
                     </div>
-                    <button onclick="buyPackage(1, 75)" class="flex items-center space-x-1 bg-amber-500 text-gray-950 px-3 py-1.5 rounded-xl font-bold"><span>75</span><span>⭐</span></button>
+                    <button onclick="buyPackage(1, 75)" class="flex items-center space-x-1 bg-amber-500 text-gray-950 px-3 py-1.5 rounded-xl font-bold transition active:scale-95"><span>75</span><span>⭐</span></button>
                 </div>
-                <!-- Пакет 5 -->
-                <div class="bg-[#21113e] border-2 border-amber-500 rounded-2xl p-4 flex items-center justify-between shadow-lg gold-glow">
+                <div class="bg-[#21113e] border-2 border-amber-500 rounded-2xl p-4 flex items-center justify-between shadow-lg gold-glow relative overflow-hidden">
+                    <div class="absolute left-0 top-0 h-full w-1 bg-amber-400"></div>
                     <div>
                         <h4 class="font-esoteric text-amber-300 font-bold text-xs">Пакет «5 Вопросов»</h4>
+                        <p class="text-[9px] text-gray-300">5 детальных раскладов Таро</p>
                     </div>
-                    <button onclick="buyPackage(5, 340)" class="flex items-center space-x-1 bg-amber-500 text-gray-950 px-3 py-1.5 rounded-xl font-bold"><span>340</span><span>⭐</span></button>
+                    <button onclick="buyPackage(5, 340)" class="flex items-center space-x-1 bg-amber-500 text-gray-950 px-3 py-1.5 rounded-xl font-bold transition active:scale-95"><span>340</span><span>⭐</span></button>
                 </div>
-                <!-- Пакет 15 -->
-                <div class="bg-[#180f2d] border border-white/5 rounded-2xl p-4 flex items-center justify-between shadow-lg">
+                <div class="bg-[#180f2d] border border-white/5 rounded-2xl p-4 flex items-center justify-between shadow-lg relative overflow-hidden">
+                    <div class="absolute left-0 top-0 h-full w-1 bg-purple-500"></div>
                     <div>
                         <h4 class="font-esoteric text-gray-100 font-bold text-xs">Пакет «15 Вопросов»</h4>
+                        <p class="text-[9px] text-gray-400">15 раскладов со скидкой 20%</p>
                     </div>
-                    <button onclick="buyPackage(15, 900)" class="flex items-center space-x-1 bg-amber-500 text-gray-950 px-3 py-1.5 rounded-xl font-bold"><span>900</span><span>⭐</span></button>
+                    <button onclick="buyPackage(15, 900)" class="flex items-center space-x-1 bg-amber-500 text-gray-950 px-3 py-1.5 rounded-xl font-bold transition active:scale-95"><span>900</span><span>⭐</span></button>
                 </div>
             </div>
+            <button onclick="goToQuestions()" class="w-full py-2.5 bg-white/5 border border-white/10 text-gray-300 font-esoteric rounded-xl text-xs uppercase tracking-wider transition-all">Назад</button>
         </div>
 
     </main>
 
-    <nav id="app-navigation" class="hidden flex justify-around items-center w-full py-2.5 px-3 bg-black/60 border-t border-white/10 rounded-t-2xl backdrop-blur-md mt-4">
+    <!-- Нижняя навигация -->
+    <nav id="app-navigation" class="hidden flex justify-around items-center w-full py-2.5 px-3 bg-black/60 border-t border-white/10 rounded-t-2xl backdrop-blur-md mt-4 relative z-20">
         <button onclick="switchTab('questions')" class="flex flex-col items-center space-y-1 text-amber-500">
-            <span class="text-xs">🔮</span><span class="text-[9px]">Вопросы</span>
+            <span class="text-xs">🔮</span><span class="text-[9px] font-semibold uppercase tracking-wider">Вопросы</span>
         </button>
         <button onclick="switchTab('shop')" class="flex flex-col items-center space-y-1 text-gray-400">
-            <span class="text-xs">🪙</span><span class="text-[9px]">Купить</span>
+            <span class="text-xs">🪙</span><span class="text-[9px] font-semibold uppercase tracking-wider">Купить</span>
         </button>
     </nav>
 
@@ -232,7 +267,7 @@
 
         const BACKEND_URL = "https://tarot-backend-136l.onrender.com";
 
-        // Проверка автоматической авторизации без повторного ввода имени
+        // Проверка автоматической авторизации
         async function checkAuth() {
             const initData = tg ? tg.initData : "dummy_data_for_browser";
             try {
@@ -257,12 +292,13 @@
                     }
                 }
             } catch (e) {
-                console.log("Пользователь зашел впервые, требуется заполнение формы регистрации.");
+                console.log("Пользователь зашел впервые");
             }
         }
 
         window.addEventListener('DOMContentLoaded', checkAuth);
 
+        // 10 Категорийных вопросов
         const questionsList = [
             { id: 1, text: "Что меня ждет на работе в ближайший месяц?", category: "Карьера" },
             { id: 2, text: "Встречу ли я свою любовь в ближайшее время?", category: "Любовь" },
@@ -276,157 +312,158 @@
             { id: 10, text: "Что принесет мне сегодняшнее решение?", category: "Совет" }
         ];
 
+        // База Старших Арканов с SVG иллюстрациями
         const majorArcanaDatabase = [
             {
                 id: 0, name: "Дурак", number: "0",
-                imageUrl: "https://placehold.co/400x600/1e1b4b/d97706?font=playfair-display&text=The+Fool",
+                symbolSvg: `<g stroke="#d97706" stroke-width="1.5" fill="none" stroke-linecap="round"><circle cx="50" cy="50" r="28" stroke-dasharray="3 3"/><path d="M50 20 L50 80 M20 50 L80 50 M29 29 L71 71 M29 71 L71 29"/><circle cx="50" cy="50" r="10" fill="#d97706" fill-opacity="0.2"/></g>`,
                 love: "Вас ждет легкий, свободный роман без обязательств. Доверьтесь спонтанности.",
                 career: "Время начать новый проект, даже если он кажется рискованным. Космос благоволит смелым.",
                 advice: "Обнулите прошлые обиды и страхи. Сделайте шаг в неизвестность с открытым сердцем."
             },
             {
                 id: 1, name: "Маг", number: "I",
-                imageUrl: "https://placehold.co/400x600/1e1b4b/d97706?font=playfair-display&text=The+Magician",
+                symbolSvg: `<g stroke="#d97706" stroke-width="1.5" fill="none"><path d="M30 45 C30 35, 70 35, 70 45 C70 55, 30 55, 30 65 C30 75, 70 75, 70 65" stroke-width="2"/><circle cx="50" cy="25" r="5" fill="#d97706"/><line x1="50" y1="30" x2="50" y2="70"/><circle cx="50" cy="75" r="4"/></g>`,
                 love: "Ваша харизма на пике. Вы способны влюбить в себя любого. Сделайте первый шаг.",
                 career: "У вас есть все ресурсы для победы. Предлагайте руководству смелые идеи.",
                 advice: "Вы — творец своей реальности. Сконцентрируйте волю и действуйте активно."
             },
             {
                 id: 2, name: "Верховная Жрица", number: "II",
-                imageUrl: "https://placehold.co/400x600/1e1b4b/d97706?font=playfair-display&text=High+Priestess",
+                symbolSvg: `<g stroke="#d97706" stroke-width="1.5" fill="none"><path d="M30 25 Q50 45 30 65 Q50 55 50 45 Q50 35 30 25 Z" fill="#d97706" fill-opacity="0.3"/><circle cx="65" cy="45" r="15" stroke-dasharray="2 2"/></g>`,
                 love: "Отношения наполнены загадками. Доверяйте интуиции, она укажет истину.",
                 career: "Не спешите действовать напролом. Соберите информацию и затаитесь.",
                 advice: "Посвятите время духовному росту и спокойствию. Держите планы в тайне."
             },
             {
                 id: 3, name: "Императрица", number: "III",
-                imageUrl: "https://placehold.co/400x600/1e1b4b/d97706?font=playfair-display&text=The+Empress",
+                symbolSvg: `<g stroke="#d97706" stroke-width="1.5" fill="none"><circle cx="50" cy="40" r="18"/><path d="M50 58 L50 82 M38 70 L62 70" stroke-width="2"/></g>`,
                 love: "Период расцвета, искренней нежности и создания крепкого союза.",
                 career: "Проекты принесут богатые плоды. Деньги идут к вам естественным путем.",
                 advice: "Действуйте мягко и созидательно. Позвольте событиям созреть."
             },
             {
                 id: 4, name: "Император", number: "IV",
-                imageUrl: "https://placehold.co/400x600/1e1b4b/d97706?font=playfair-display&text=The+Emperor",
+                symbolSvg: `<g stroke="#d97706" stroke-width="1.5" fill="none"><rect x="35" y="25" width="30" height="40" rx="3"/><path d="M50 25 L50 65 M35 45 L65 45"/></g>`,
                 love: "Прочность, надежность и четкие правила. Партнер настроен очень серьезно.",
                 career: "Период наведения порядка и укрепления авторитета. Действуйте справедливо.",
                 advice: "Проявите дисциплину и организуйте свои дела. Будьте опорой для других."
             },
             {
                 id: 5, name: "Иерофант", number: "V",
-                imageUrl: "https://placehold.co/400x600/1e1b4b/d97706?font=playfair-display&text=The+Hierophant",
+                symbolSvg: `<g stroke="#d97706" stroke-width="1.5" fill="none"><path d="M50 20 L50 80 M30 35 L70 35 M35 48 L65 48 M40 60 L60 60"/></g>`,
                 love: "Отношения на общих ценностях. Возможно заключение официального союза.",
                 career: "Успех придет через следование правилам и повышение квалификации.",
                 advice: "Поступайте по совести и закону. Ищите мудрые советы у авторитетов."
             },
             {
                 id: 6, name: "Влюбленные", number: "VI",
-                imageUrl: "https://placehold.co/400x600/1e1b4b/d97706?font=playfair-display&text=The+Lovers",
+                symbolSvg: `<g stroke="#d97706" stroke-width="1.5" fill="none"><path d="M50 35 C40 20 20 30 50 65 C80 30 60 20 50 35 Z" fill="#d97706" fill-opacity="0.2"/></g>`,
                 love: "Гармония в союзе или необходимость принять важное решение сердцем.",
                 career: "Время выгодных партнерств. Выбирайте то, к чему лежит душа.",
                 advice: "Избегайте внутренних компромиссов, которые разрушают вашу целостность."
             },
             {
                 id: 7, name: "Колесница", number: "VII",
-                imageUrl: "https://placehold.co/400x600/1e1b4b/d97706?font=playfair-display&text=The+Chariot",
+                symbolSvg: `<g stroke="#d97706" stroke-width="1.5" fill="none"><circle cx="32" cy="70" r="10"/><circle cx="68" cy="70" r="10"/><path d="M25 40 L75 40 L65 15 L35 15 Z"/></g>`,
                 love: "Стремительное развитие отношений. Возможна совместная поездка.",
                 career: "Время карьерного прорыва! Вы сметете любые преграды на пути.",
                 advice: "Двигайтесь к цели на максимальной скорости и не сомневайтесь в успехе."
             },
             {
                 id: 8, name: "Сила", number: "VIII",
-                imageUrl: "https://placehold.co/400x600/1e1b4b/d97706?font=playfair-display&text=Strength",
+                symbolSvg: `<g stroke="#d97706" stroke-width="1.5" fill="none"><circle cx="38" cy="50" r="10"/><circle cx="62" cy="50" r="10"/><path d="M38 40 Q50 60 62 40 Q50 40 38 40 Z" fill="#d97706" fill-opacity="0.3"/></g>`,
                 love: "Страсть и мягкое влияние. Вы укротите любые конфликты любовью.",
                 career: "Предстоит упорный труд, но вы справитесь благодаря потенциалу.",
                 advice: "Укротите своих внутренних страхов. Направляйте энергию в созидание."
             },
             {
                 id: 9, name: "Отшельник", number: "IX",
-                imageUrl: "https://placehold.co/400x600/1e1b4b/d97706?font=playfair-display&text=The+Hermit",
+                symbolSvg: `<g stroke="#d97706" stroke-width="1.5" fill="none"><circle cx="50" cy="30" r="6" fill="#d97706"/><path d="M50 36 L50 70 M38 50 L62 50 M42 75 L58 75"/></g>`,
                 love: "Период уединения или переосмысления отношений перед контактом.",
                 career: "Время для спокойного анализа. Не стремитесь к публичности.",
                 advice: "Замедлите бег, побудьте наедине с собой. Ищите ответы внутри."
             },
             {
                 id: 10, name: "Колесо Фортуны", number: "X",
-                imageUrl: "https://placehold.co/400x600/1e1b4b/d97706?font=playfair-display&text=Wheel+of+Fortune",
+                symbolSvg: `<g stroke="#d97706" stroke-width="1.5" fill="none"><circle cx="50" cy="50" r="24" stroke-width="2"/><circle cx="50" cy="50" r="8"/><path d="M50 10 L50 90 M10 50 L90 50 M22 22 L78 78 M22 78 L78 22"/></g>`,
                 love: "Неожиданная судьбоносная встреча или резкое изменение ситуации.",
                 career: "Везение на вашей стороне. Возможен неожиданный контракт или выигрыш.",
                 advice: "Не пытайтесь плыть против течения. Доверьтесь потоку Вселенной."
             },
             {
                 id: 11, name: "Справедливость", number: "XI",
-                imageUrl: "https://placehold.co/400x600/1e1b4b/d97706?font=playfair-display&text=Justice",
+                symbolSvg: `<g stroke="#d97706" stroke-width="1.5" fill="none"><line x1="50" y1="20" x2="50" y2="80" stroke-width="2"/><line x1="30" y1="35" x2="70" y2="35"/><circle cx="30" cy="50" r="6"/><circle cx="70" cy="50" r="6"/></g>`,
                 love: "Отношения требуют честности. Карта указывает на официальный брак.",
                 career: "Сделки и договоры завершатся справедливо. Вы получите заслуженное.",
                 advice: "Будьте честны с собой. Помните о законе причины и следствия."
             },
             {
                 id: 12, name: "Повешенный", number: "XII",
-                imageUrl: "https://placehold.co/400x600/1e1b4b/d97706?font=playfair-display&text=The+Hanged+Man",
+                symbolSvg: `<g stroke="#d97706" stroke-width="1.5" fill="none"><path d="M50 20 L50 80 M30 20 L70 20 M38 50 L50 50 L50 65 Z" fill="#d97706" fill-opacity="0.2"/></g>`,
                 love: "Отношения могут зависнуть. Требуется смена вашего взгляда.",
                 career: "Временная пауза в делах. Не пытайтесь форсировать события силой.",
                 advice: "Посмотрите на ситуацию под совершенно другим углом."
             },
             {
                 id: 13, name: "Смерть", number: "XIII",
-                imageUrl: "https://placehold.co/400x600/1e1b4b/d97706?font=playfair-display&text=Death",
+                symbolSvg: `<g stroke="#d97706" stroke-width="1.5" fill="none"><path d="M35 75 L50 25 L65 75 Z" fill="#d97706" fill-opacity="0.1"/><path d="M25 45 Q50 15 75 45" stroke-dasharray="3 3"/></g>`,
                 love: "Старый этап отношений подошел к концу. Полное перерождение.",
                 career: "Кардинальные перемены на работе. Расчистите место для новой карьеры.",
                 advice: "Не цепляйтесь за прошлое. Позвольте уйти тому, что отжило."
             },
             {
                 id: 14, name: "Умеренность", number: "XIV",
-                imageUrl: "https://placehold.co/400x600/1e1b4b/d97706?font=playfair-display&text=Temperance",
+                symbolSvg: `<g stroke="#d97706" stroke-width="1.5" fill="none"><circle cx="35" cy="35" r="8"/><circle cx="65" cy="55" r="8"/><path d="M35 35 Q50 45 65 55" stroke-width="2" stroke-linecap="round"/></g>`,
                 love: "Период мира, гармонии и спокойного счастья в любви.",
                 career: "Спокойное развитие дел без потрясений. Финансы стабильны.",
                 advice: "Избегайте крайностей. Проявите терпение — все придет вовремя."
             },
             {
                 id: 15, name: "Дьявол", number: "XV",
-                imageUrl: "https://placehold.co/400x600/1e1b4b/d97706?font=playfair-display&text=The+Devil",
+                symbolSvg: `<g stroke="#d97706" stroke-width="1.5" fill="none"><path d="M50 20 L50 80 M35 35 L65 35 M30 25 L50 35 L70 25" stroke-width="2"/></g>`,
                 love: "Безумная страсть, но риск попасть в токсичную зависимость.",
                 career: "Соблазн легких, но нечестных денег. Будьте предельно осторожны.",
                 advice: "Осознайте свои теневые стороны. Не будьте рабом своих страстей."
             },
             {
                 id: 16, name: "Башня", number: "XVI",
-                imageUrl: "https://placehold.co/400x600/1e1b4b/d97706?font=playfair-display&text=The+Tower",
+                symbolSvg: `<g stroke="#d97706" stroke-width="1.5" fill="none"><rect x="38" y="20" width="24" height="60" fill="#d97706" fill-opacity="0.15"/><path d="M25 35 L50 15 L75 35" stroke-width="2"/></g>`,
                 love: "Внезапный кризис или разрыв отношений. Разрушение иллюзий.",
                 career: "Крах старой неэффективной структуры, открывающий путь к новому.",
                 advice: "Примите разрушение фундамента. Башня рушит только хрупкое."
             },
             {
                 id: 17, name: "Звезда", number: "XVII",
-                imageUrl: "https://placehold.co/400x600/1e1b4b/d97706?font=playfair-display&text=The+Star",
+                symbolSvg: `<g stroke="#d97706" stroke-width="1.5" fill="none"><polygon points="50,15 55,35 75,35 58,47 64,67 50,55 36,67 42,47 25,35 45,35" fill="#d97706" fill-opacity="0.25"/></g>`,
                 love: "Мечты о любви начинают сбываться. Отношения наполнены надеждой.",
                 career: "Раскрытие талантов, признание и блестящие перспективы.",
                 advice: "Верьте в свою мечту и надежду. Двигайтесь за внутренним светом."
             },
             {
                 id: 18, name: "Луна", number: "XVIII",
-                imageUrl: "https://placehold.co/400x600/1e1b4b/d97706?font=playfair-display&text=The+Moon",
+                symbolSvg: `<g stroke="#d97706" stroke-width="1.5" fill="none"><path d="M35 30 A 20 20 0 1 0 70 65 A 24 24 0 1 1 35 30 Z" fill="#d97706" fill-opacity="0.2"/></g>`,
                 love: "Отношения окутаны туманом ревности, недосказанности или страхов.",
                 career: "Опасайтесь интриг и мутных схем на работе. Проверяйте документы.",
                 advice: "Загляните в лицо страхам. Туман рассеется при свете разума."
             },
             {
                 id: 19, name: "Солнце", number: "XIX",
-                imageUrl: "https://placehold.co/400x600/1e1b4b/d97706?font=playfair-display&text=The+Sun",
+                symbolSvg: `<g stroke="#d97706" stroke-width="1.5" fill="none"><circle cx="50" cy="50" r="18" fill="#d97706" fill-opacity="0.3"/><path d="M50 15 L50 25 M50 75 L50 85 M15 50 L25 50 M75 50 L85 50 M25 25 L32 32 M68 68 L75 75 M25 75 L32 68 M68 32 L75 25"/></g>`,
                 love: "Полное счастье, взаимная любовь, ясность чувств и триумф.",
                 career: "Полная победа и признание ваших заслуг. Вас ждут богатство и успех.",
                 advice: "Светите ярко, дарите тепло окружающим и празднуйте жизнь!"
             },
             {
                 id: 20, name: "Суд", number: "XX",
-                imageUrl: "https://placehold.co/400x600/1e1b4b/d97706?font=playfair-display&text=Judgement",
+                symbolSvg: `<g stroke="#d97706" stroke-width="1.5" fill="none"><path d="M30 30 L70 30 L50 70 Z" fill="#d97706" fill-opacity="0.15"/><circle cx="50" cy="30" r="12"/></g>`,
                 love: "Возрождение старой любви или полное духовное обновление.",
                 career: "Заслуженное признание и успешное завершение затяжного дела.",
                 advice: "Прислушайтесь к зову сердца. Пора отпустить груз прошлых ошибок."
             },
             {
                 id: 21, name: "Мир", number: "XXI",
-                imageUrl: "https://placehold.co/400x600/1e1b4b/d97706?font=playfair-display&text=The+World",
+                symbolSvg: `<g stroke="#d97706" stroke-width="1.5" fill="none"><ellipse cx="50" cy="50" rx="20" ry="32" stroke-dasharray="3 3"/><polygon points="50,25 55,35 65,35 57,42 60,52 50,45 40,52 43,42 35,35 45,35" fill="#d97706" fill-opacity="0.2"/></g>`,
                 love: "Высшая точка гармонии, взаимопонимания и счастья в союзе.",
                 career: "Успешно завершенный проект. Максимальный материальный успех.",
                 advice: "Вы обрели свое место в мире. Поблагодарите Вселенную за дары."
@@ -434,10 +471,10 @@
         ];
 
         const suitMeanings = {
-            wands: { name: "Жезлов", career: "Действуйте смело, время лидерства и амбиций.", love: "Вспышка страсти и активная инициатива.", advice: "Проявите мужество, отстаивайте свои позиции." },
-            cups: { name: "Кубков", career: "Слушайте интуицию, важны отношения с коллегами.", love: "Глубокое взаимопонимание и новые чувства.", advice: "Доверяйте своему сердцу и предчувствиям." },
-            swords: { name: "Мечей", career: "Время холодных расчетов и интеллектуальных баталий.", love: "Отношения проходят проверку разумом, возможен холодок.", advice: "Отбросьте эмоции, анализируйте факты." },
-            pentacles: { name: "Пентаклей", career: "Стабильный рост доходов, премия и результат трудов.", love: "Прочные, надежные отношения, ориентированные на будущее.", advice: "Фокусируйтесь на практических задачах." }
+            wands: { name: "Жезлов", career: "Действуйте смело, время лидерства и амбиций.", love: "Вспышка страсти и активная инициатива.", advice: "Проявите мужество, отстаивайте свои позиции.", symbolSvg: `<g stroke="#d97706" stroke-width="2" stroke-linecap="round"><line x1="50" y1="20" x2="50" y2="80"/><line x1="42" y1="35" x2="58" y2="35"/><line x1="45" y1="50" x2="55" y2="50"/><line x1="42" y1="65" x2="58" y2="65"/></g>` },
+            cups: { name: "Кубков", career: "Слушайте интуицию, важны отношения с коллегами.", love: "Глубокое взаимопонимание и новые чувства.", advice: "Доверяйте своему сердцу и предчувствиям.", symbolSvg: `<g stroke="#d97706" stroke-width="1.5" fill="none"><path d="M35 30 L65 30 L60 60 C60 70 40 70 40 60 Z M50 63 L50 80 M35 80 L65 80" fill="#d97706" fill-opacity="0.2"/></g>` },
+            swords: { name: "Мечей", career: "Время холодных расчетов и интеллектуальных баталий.", love: "Отношения проходят проверку разумом, возможен холодок.", advice: "Отбросьте эмоции, анализируйте факты.", symbolSvg: `<g stroke="#d97706" stroke-width="2" stroke-linecap="round" fill="none"><line x1="50" y1="15" x2="50" y2="70"/><line x1="38" y1="60" x2="62" y2="60"/><circle cx="50" cy="78" r="4" fill="#d97706"/></g>` },
+            pentacles: { name: "Пентаклей", career: "Стабильный рост доходов, премия и результат трудов.", love: "Прочные, надежные отношения, ориентированные на будущее.", advice: "Фокусируйтесь на практических задачах.", symbolSvg: `<g stroke="#d97706" stroke-width="1.5" fill="none"><circle cx="50" cy="50" r="26" stroke-width="2"/><polygon points="50,28 57,48 77,48 61,60 67,80 50,68 33,80 39,60 23,48 43,48" fill="#d97706" fill-opacity="0.2"/></g>` }
         };
 
         const rankMeanings = {
@@ -477,21 +514,14 @@
         function initFullDeck() {
             fullTarotDeck = [...majorArcanaDatabase];
             const suits = ["wands", "cups", "swords", "pentacles"];
-            const suitNamesEN = { wands: "Wands", cups: "Cups", swords: "Swords", pentacles: "Pentacles" };
-            const rankNamesEN = { 1: "Ace", 2: "2", 3: "3", 4: "4", 5: "5", 6: "6", 7: "7", 8: "8", 9: "9", 10: "10", 11: "Page", 12: "Knight", 13: "Queen", 14: "King" };
             
             let idCounter = 22;
             suits.forEach((suit) => {
                 for (let rank = 1; rank <= 14; rank++) {
-                    const cardTextEN = `${rankNamesEN[rank]}+of+${suitNamesEN[suit]}`;
-                    // Автоматическая генерация красивой золотой графической заглушки для каждой карты
-                    const imgUrl = `https://placehold.co/400x600/1e1b4b/d97706?font=playfair-display&text=${cardTextEN}`;
-
                     fullTarotDeck.push({
                         id: idCounter,
                         name: `${rankMeanings[rank].name} ${suitMeanings[suit].name}`,
                         number: rank.toString(),
-                        imageUrl: imgUrl,
                         suit: suit,
                         rank: rank
                     });
@@ -574,27 +604,76 @@
         }
 
         function startShufflingAndReveal() {
-            document.getElementById('draw-btn').classList.add('hidden');
-            document.getElementById('interactive-card').style.transform = "translateY(-30px) scale(1.05)";
-            
+            const drawBtn = document.getElementById('draw-btn');
+            const statusText = document.getElementById('shuffle-status');
+            const cardLeft = document.getElementById('deck-card-3');
+            const cardRight = document.getElementById('deck-card-2');
+            const mainCard = document.getElementById('interactive-card');
+
+            // Скрываем кнопку
+            drawBtn.classList.add('hidden');
+            statusText.innerText = "Тасование священной колоды...";
+            statusText.className = "text-amber-400 text-[10px] italic tracking-wider animate-pulse text-center";
+
+            // Запуск 3D-анимации тасования
+            cardLeft.classList.add('animate-shuffle-1');
+            cardRight.classList.add('animate-shuffle-2');
+
+            // Легкое масштабирование главной карты для динамики
+            mainCard.style.transform = "scale(0.95) translateY(-10px)";
+
             setTimeout(() => {
+                // Останавливаем анимацию
+                cardLeft.classList.remove('animate-shuffle-1');
+                cardRight.classList.remove('animate-shuffle-2');
+                statusText.innerText = "Оракул выбирает карту...";
+
+                // Выбираем случайную карту
                 const randomCard = fullTarotDeck[Math.floor(Math.random() * fullTarotDeck.length)];
-                
-                document.getElementById('card-image').src = randomCard.imageUrl;
+
+                // Отрисовка векторного аркана
+                const cardSymbolSvg = document.getElementById('card-symbol-svg');
+                const cardCategoryName = document.getElementById('card-category-name');
+
+                if (randomCard.id <= 21) {
+                    cardCategoryName.innerText = "Старший Аркан";
+                    cardSymbolSvg.innerHTML = randomCard.symbolSvg;
+                } else {
+                    const suit = suitMeanings[randomCard.suit];
+                    cardCategoryName.innerText = `Аркан ${suit.name}`;
+                    cardSymbolSvg.innerHTML = suit.symbolSvg;
+                }
+
                 document.getElementById('card-number').innerText = randomCard.number;
                 document.getElementById('card-name').innerText = randomCard.name;
 
-                document.getElementById('interactive-card').classList.add('flipped');
-                document.getElementById('interactive-card').style.transform = "translateY(0) scale(1)";
+                // Переворачиваем карту
+                mainCard.classList.add('flipped');
+                mainCard.style.transform = "scale(1.05) rotateY(180deg)";
 
-                setTimeout(() => showInterpretationResult(randomCard), 1800);
-            }, 1000);
+                // Показываем результат
+                setTimeout(() => showInterpretationResult(randomCard), 2000);
+            }, 2500); // 2.5 секунды идет тасование
         }
 
         function showInterpretationResult(card) {
             const interpretation = getInterpretation(card, state.selectedQuestionId);
             
-            document.getElementById('result-badge-image').src = card.imageUrl;
+            // Настройка SVG в мини-карте на экране результатов
+            const resultBadgeSvg = document.getElementById('result-badge-svg');
+            const resultCardCategory = document.getElementById('result-card-category');
+
+            if (card.id <= 21) {
+                resultBadgeSvg.innerHTML = card.symbolSvg;
+                resultCardCategory.innerText = "Старший Аркан";
+            } else {
+                const suit = suitMeanings[card.suit];
+                resultBadgeSvg.innerHTML = suit.symbolSvg;
+                resultCardCategory.innerText = `Аркан ${suit.name}`;
+            }
+
+            document.getElementById('result-badge-num').innerText = card.number;
+            document.getElementById('result-badge-name').innerText = card.name;
             document.getElementById('result-card-fullname').innerText = card.name;
             document.getElementById('interpretation-text').innerText = interpretation;
 
