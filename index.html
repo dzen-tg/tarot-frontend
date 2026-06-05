@@ -51,7 +51,6 @@
 </head>
 <body class="min-h-screen flex flex-col justify-between p-4 max-w-md mx-auto relative">
 
-    <!-- Верхняя панель -->
     <header id="app-header" class="hidden flex justify-between items-center w-full py-3 px-4 bg-white/5 border border-white/10 rounded-2xl backdrop-blur-md mb-4 gold-glow">
         <div class="flex items-center space-x-3">
             <div class="w-10 h-10 rounded-full border border-amber-500 flex items-center justify-center bg-amber-500/10">
@@ -70,7 +69,6 @@
 
     <main class="flex-grow flex flex-col justify-center items-center w-full z-10">
         
-        <!-- ЭКРАН 0: Регистрация -->
         <div id="screen-register" class="w-full space-y-4 py-2 animate-fade-in">
             <div class="text-center mb-4">
                 <div class="text-5xl mb-2 filter drop-shadow-[0_0_10px_rgba(217,119,6,0.5)]">🌌</div>
@@ -99,18 +97,16 @@
             </div>
         </div>
         
-        <!-- ЭКРАН 1: Вопросы -->
         <div id="screen-questions" class="w-full space-y-4 hidden">
             <div class="text-center mb-2">
                 <h2 class="text-xl font-esoteric text-amber-400 font-bold tracking-wider mb-1">Выберите свой вопрос</h2>
                 <p class="text-gray-400 text-[10px] px-6">Стоимость: 1 расклад = 1 🔮</p>
             </div>
             <div id="questions-grid" class="grid grid-cols-1 gap-2 max-h-[50vh] overflow-y-auto px-1 py-1">
-                <!-- Генерируется из JS -->
+                <!-- Сюда динамически загружаются 10 вопросов -->
             </div>
         </div>
 
-        <!-- ЭКРАН 2: Тасование -->
         <div id="screen-shuffling" class="w-full hidden flex flex-col items-center justify-center space-y-6 my-auto">
             <h2 id="current-question-title" class="text-sm font-esoteric text-center text-amber-300 max-w-[85%] mb-2"></h2>
             
@@ -126,11 +122,9 @@
                         <div class="card-back bg-gradient-to-br from-indigo-950 to-purple-950 border border-amber-500 rounded-xl p-3 shadow-2xl">
                             <div class="w-full h-full border-2 border-amber-500/20 rounded-lg bg-[#0e0622] flex items-center justify-center">✨</div>
                         </div>
-                        <!-- Лицевая сторона (ТЕПЕРЬ С КАРТИНКОЙ) -->
+                        <!-- Лицевая сторона карты -->
                         <div class="card-front bg-[#04010a] border-2 border-amber-500 rounded-xl shadow-2xl overflow-hidden relative">
-                            <!-- Сюда вставляется реальная картинка -->
                             <img id="card-image" src="" alt="Card" class="absolute inset-0 w-full h-full object-cover">
-                            <!-- Градиент затемнения снизу для текста -->
                             <div class="absolute inset-x-0 bottom-0 h-1/2 bg-gradient-to-t from-black via-black/70 to-transparent"></div>
                             
                             <div class="absolute inset-0 flex flex-col justify-between p-3 z-10">
@@ -148,7 +142,6 @@
             </button>
         </div>
 
-        <!-- ЭКРАН 3: Результат -->
         <div id="screen-result" class="w-full hidden space-y-4">
             <div class="flex flex-col items-center">
                 <h3 class="text-[10px] font-esoteric text-amber-500 tracking-wider">РАСКЛАД ЗАВЕРШЕН</h3>
@@ -157,7 +150,6 @@
 
             <div class="flex justify-center my-1">
                 <div class="bg-gradient-to-r from-amber-950/20 via-amber-500/10 to-amber-950/20 border-y border-amber-500/20 w-full py-2.5 px-4 flex items-center justify-center space-x-4">
-                    <!-- Миниатюра вытянутой карты -->
                     <div class="w-12 h-16 border border-amber-500/50 rounded-md overflow-hidden relative shadow-lg shrink-0">
                         <img id="result-badge-image" src="" class="absolute inset-0 w-full h-full object-cover">
                     </div>
@@ -168,7 +160,6 @@
                 </div>
             </div>
 
-            <!-- Текстовый свиток -->
             <div class="bg-black/40 border border-white/5 rounded-2xl p-4 max-h-[35vh] overflow-y-auto space-y-3 shadow-inner">
                 <h4 class="font-esoteric text-amber-500 text-xs font-bold flex items-center">
                     <span class="mr-1.5">✦</span> Толкование:
@@ -179,31 +170,38 @@
             <button onclick="goToQuestions()" class="w-full py-3 bg-white/5 border border-white/10 text-gray-200 font-esoteric rounded-xl text-xs uppercase tracking-wider active:scale-95">Новый вопрос</button>
         </div>
 
-        <!-- ЭКРАН 4: Магазин -->
         <div id="screen-shop" class="w-full hidden space-y-5">
             <div class="text-center">
                 <h2 class="text-xl font-esoteric text-amber-400 font-bold tracking-wider mb-1">Приобрести Энергию</h2>
                 <p class="text-gray-400 text-[10px] px-6">Пополняйте баланс в звездах Telegram</p>
             </div>
             <div class="space-y-3">
+                <!-- Пакет 1 -->
                 <div class="bg-[#180f2d] border border-white/5 rounded-2xl p-4 flex items-center justify-between shadow-lg">
                     <div>
                         <h4 class="font-esoteric text-gray-100 font-bold text-xs">Пакет «1 Вопрос»</h4>
                     </div>
                     <button onclick="buyPackage(1, 75)" class="flex items-center space-x-1 bg-amber-500 text-gray-950 px-3 py-1.5 rounded-xl font-bold"><span>75</span><span>⭐</span></button>
                 </div>
+                <!-- Пакет 5 -->
                 <div class="bg-[#21113e] border-2 border-amber-500 rounded-2xl p-4 flex items-center justify-between shadow-lg gold-glow">
                     <div>
                         <h4 class="font-esoteric text-amber-300 font-bold text-xs">Пакет «5 Вопросов»</h4>
                     </div>
                     <button onclick="buyPackage(5, 340)" class="flex items-center space-x-1 bg-amber-500 text-gray-950 px-3 py-1.5 rounded-xl font-bold"><span>340</span><span>⭐</span></button>
                 </div>
+                <!-- Пакет 15 -->
+                <div class="bg-[#180f2d] border border-white/5 rounded-2xl p-4 flex items-center justify-between shadow-lg">
+                    <div>
+                        <h4 class="font-esoteric text-gray-100 font-bold text-xs">Пакет «15 Вопросов»</h4>
+                    </div>
+                    <button onclick="buyPackage(15, 900)" class="flex items-center space-x-1 bg-amber-500 text-gray-950 px-3 py-1.5 rounded-xl font-bold"><span>900</span><span>⭐</span></button>
+                </div>
             </div>
         </div>
 
     </main>
 
-    <!-- Нижняя навигация -->
     <nav id="app-navigation" class="hidden flex justify-around items-center w-full py-2.5 px-3 bg-black/60 border-t border-white/10 rounded-t-2xl backdrop-blur-md mt-4">
         <button onclick="switchTab('questions')" class="flex flex-col items-center space-y-1 text-amber-500">
             <span class="text-xs">🔮</span><span class="text-[9px]">Вопросы</span>
@@ -214,7 +212,6 @@
     </nav>
 
     <script>
-        // Инициализация Telegram
         let tg = window.Telegram ? window.Telegram.WebApp : null;
         if (tg) { tg.ready(); tg.expand(); }
 
@@ -223,80 +220,234 @@
             selectedQuestionId: null, currentScreen: 'register'
         };
 
-        const BACKEND_URL = "https://tarot-backend-136l.onrender.com"; // Твой бэкенд
+        const BACKEND_URL = "https://tarot-backend-136l.onrender.com";
 
-        // =====================================================================
-        // 🔮 БАЗА ВОПРОСОВ (МОЖНО РЕДАКТИРОВАТЬ ТЕКСТ И КАТЕГОРИИ)
-        // =====================================================================
+        async function checkAuth() {
+            const initData = tg ? tg.initData : "dummy_data_for_browser";
+            try {
+                const res = await fetch(`${BACKEND_URL}/api/user/profile`, {
+                    method: 'GET',
+                    headers: { 'Authorization': initData }
+                });
+                if (res.ok) {
+                    const data = await res.json();
+                    if (data.registered) {
+                        state.balance = data.balance;
+                        state.registered = true;
+                        state.user_name = data.name;
+                        
+                        document.getElementById('user-name-display').innerText = data.name;
+                        document.getElementById('user-balance').innerText = `${state.balance} раскладов`;
+                        
+                        document.getElementById('screen-register').classList.add('hidden');
+                        document.getElementById('app-header').classList.remove('hidden');
+                        document.getElementById('app-navigation').classList.remove('hidden');
+                        switchTab('questions');
+                    }
+                }
+            } catch (e) {
+                console.log("Авторизация не пройдена (первый вход)");
+            }
+        }
+
+        window.addEventListener('DOMContentLoaded', checkAuth);
+
         const questionsList = [
             { id: 1, text: "Что меня ждет на работе в ближайший месяц?", category: "Карьера" },
             { id: 2, text: "Встречу ли я свою любовь в ближайшее время?", category: "Любовь" },
             { id: 3, text: "Стоит ли мне сейчас менять сферу деятельности?", category: "Выбор" },
             { id: 4, text: "Каковы перспективы моих текущих отношений?", category: "Отношения" },
-            { id: 5, text: "Что поможет мне увеличить денежный доход?", category: "Финансы" }
+            { id: 5, text: "Что поможет мне увеличить денежный доход?", category: "Финансы" },
+            { id: 6, text: "Какое скрытое препятствие стоит на моем пути?", category: "Тень" },
+            { id: 7, text: "Чего мне стоит избежать в ближайшие дни?", category: "Предупреждение" },
+            { id: 8, text: "Каков будет исход задуманного мною дела?", category: "Будущее" },
+            { id: 9, text: "В чем моя главная сила прямо сейчас?", category: "Сила" },
+            { id: 10, text: "Что принесет мне сегодняшнее решение?", category: "Совет" }
         ];
 
-        // =====================================================================
-        // 🔮 БАЗА СТАРШИХ АРКАНОВ (ИЗОБРАЖЕНИЯ И ТЕКСТЫ)
-        // КАК МЕНЯТЬ ИЗОБРАЖЕНИЕ: Вставь свою ссылку в поле imageUrl
-        // КАК МЕНЯТЬ ТЕКСТ: Меняй текст в полях "love", "career", "advice"
-        // =====================================================================
         const majorArcanaDatabase = [
-            { id: 0, name: "Дурак", number: "0", imageUrl: "https://placehold.co/400x600/1e1b4b/d97706?font=playfair-display&text=The+Fool", love: "Свободный роман с чистого листа.", career: "Время начать новый проект.", advice: "Сделайте шаг в неизвестность." },
-            { id: 1, name: "Маг", number: "I", imageUrl: "https://placehold.co/400x600/1e1b4b/d97706?font=playfair-display&text=The+Magician", love: "Вы способны влюбить в себя любого.", career: "У вас есть все ресурсы для победы.", advice: "Вы — творец своей реальности." },
-            { id: 2, name: "Верховная Жрица", number: "II", imageUrl: "https://placehold.co/400x600/1e1b4b/d97706?font=playfair-display&text=High+Priestess", love: "Доверяйте внутренним предчувствиям.", career: "Соберите информацию и затаитесь.", advice: "Посвятите время духовному росту." },
-            { id: 3, name: "Императрица", number: "III", imageUrl: "https://placehold.co/400x600/1e1b4b/d97706?font=playfair-display&text=The+Empress", love: "Период расцвета и искренней нежности.", career: "Проекты принесут богатые плоды.", advice: "Действуйте мягко и созидательно." },
-            { id: 4, name: "Император", number: "IV", imageUrl: "https://placehold.co/400x600/1e1b4b/d97706?font=playfair-display&text=The+Emperor", love: "Прочность, надежность и четкие правила.", career: "Укрепление авторитета и стабильность.", advice: "Проявите дисциплину и порядок." },
-            { id: 5, name: "Иерофант", number: "V", imageUrl: "https://placehold.co/400x600/1e1b4b/d97706?font=playfair-display&text=The+Hierophant", love: "Отношения на общих ценностях.", career: "Успех через следование правилам.", advice: "Поступайте по совести." },
-            { id: 6, name: "Влюбленные", number: "VI", imageUrl: "https://placehold.co/400x600/1e1b4b/d97706?font=playfair-display&text=The+Lovers", love: "Гармония и важный выбор сердцем.", career: "Время выгодных партнерств.", advice: "Выбирайте то, к чему лежит душа." },
-            { id: 7, name: "Колесница", number: "VII", imageUrl: "https://placehold.co/400x600/1e1b4b/d97706?font=playfair-display&text=The+Chariot", love: "Стремительное развитие отношений.", career: "Карьерный прорыв и победа.", advice: "Двигайтесь к цели на максимальной скорости." },
-            { id: 8, name: "Сила", number: "VIII", imageUrl: "https://placehold.co/400x600/1e1b4b/d97706?font=playfair-display&text=Strength", love: "Страсть и мягкое женское влияние.", career: "Упорный труд и внутренний потенциал.", advice: "Укротите свои внутренние страхи." },
-            { id: 9, name: "Отшельник", number: "IX", imageUrl: "https://placehold.co/400x600/1e1b4b/d97706?font=playfair-display&text=The+Hermit", love: "Период уединения и переосмысления.", career: "Время для спокойного анализа.", advice: "Ищите ответы внутри себя." },
-            { id: 10, name: "Колесо Фортуны", number: "X", imageUrl: "https://placehold.co/400x600/1e1b4b/d97706?font=playfair-display&text=Wheel+of+Fortune", love: "Судьбоносная встреча или перемена.", career: "Везение и неожиданный контракт.", advice: "Доверьтесь потоку вселенной." },
-            { id: 11, name: "Справедливость", number: "XI", imageUrl: "https://placehold.co/400x600/1e1b4b/d97706?font=playfair-display&text=Justice", love: "Честность, равенство или брак.", career: "Сделки завершатся по справедливости.", advice: "Взвешивайте каждое решение." },
-            { id: 12, name: "Повешенный", number: "XII", imageUrl: "https://placehold.co/400x600/1e1b4b/d97706?font=playfair-display&text=The+Hanged+Man", love: "Требуется смена взгляда на ситуацию.", career: "Временная пауза в делах.", advice: "Посмотрите на всё под другим углом." },
-            { id: 13, name: "Смерть", number: "XIII", imageUrl: "https://placehold.co/400x600/1e1b4b/d97706?font=playfair-display&text=Death", love: "Полное перерождение отношений.", career: "Кардинальные перемены и новые пути.", advice: "Отпустите то, что уже отжило." },
-            { id: 14, name: "Умеренность", number: "XIV", imageUrl: "https://placehold.co/400x600/1e1b4b/d97706?font=playfair-display&text=Temperance", love: "Мир, гармония и исцеление.", career: "Размеренное развитие без потрясений.", advice: "Избегайте крайностей и спешки." },
-            { id: 15, name: "Дьявол", number: "XV", imageUrl: "https://placehold.co/400x600/1e1b4b/d97706?font=playfair-display&text=The+Devil", love: "Безумная страсть и искушение.", career: "Соблазн легких денег.", advice: "Осознайте свои зависимости." },
-            { id: 16, name: "Башня", number: "XVI", imageUrl: "https://placehold.co/400x600/1e1b4b/d97706?font=playfair-display&text=The+Tower", love: "Разрушение иллюзий и кризис.", career: "Крах старой системы.", advice: "Примите разрушение старого без страха." },
-            { id: 17, name: "Звезда", number: "XVII", imageUrl: "https://placehold.co/400x600/1e1b4b/d97706?font=playfair-display&text=The+Star", love: "Мечты о любви начинают сбываться.", career: "Раскрытие талантов и признание.", advice: "Верьте в свою мечту и надежду." },
-            { id: 18, name: "Луна", number: "XVIII", imageUrl: "https://placehold.co/400x600/1e1b4b/d97706?font=playfair-display&text=The+Moon", love: "Тайны, ревность или иллюзии.", career: "Опасайтесь интриг и мутных схем.", advice: "Включите свет разума." },
-            { id: 19, name: "Солнце", number: "XIX", imageUrl: "https://placehold.co/400x600/1e1b4b/d97706?font=playfair-display&text=The+Sun", love: "Полное счастье и взаимопонимание.", career: "Триумф, победа и богатство.", advice: "Светите ярко и празднуйте жизнь!" },
-            { id: 20, name: "Суд", number: "XX", imageUrl: "https://placehold.co/400x600/1e1b4b/d97706?font=playfair-display&text=Judgement", love: "Духовное обновление союза.", career: "Заслуженное признание и возрождение.", advice: "Сделайте шаг к обновленной жизни." },
-            { id: 21, name: "Мир", number: "XXI", imageUrl: "https://placehold.co/400x600/1e1b4b/d97706?font=playfair-display&text=The+World", love: "Высшая точка гармонии.", career: "Успешное завершение крупного проекта.", advice: "Вы обрели свое истинное место." }
+            {
+                id: 0, name: "Дурак", number: "0",
+                imageUrl: "https://placehold.co/400x600/1e1b4b/d97706?font=playfair-display&text=The+Fool",
+                love: "Вас ждет легкий, свободный роман без лишних обязательств. Доверьтесь спонтанности.",
+                career: "Время начать новый проект, даже если он кажется рискованным. Космос благоволит смелым.",
+                advice: "Обнулите прошлые обиды и страхи. Сделайте шаг в неизвестность с открытым сердцем."
+            },
+            {
+                id: 1, name: "Маг", number: "I",
+                imageUrl: "https://placehold.co/400x600/1e1b4b/d97706?font=playfair-display&text=The+Magician",
+                love: "Ваша харизма на пике. Вы способны влюбить в себя любого. Сделайте первый шаг.",
+                career: "У вас есть все ресурсы для победы. Предлагайте руководству смелые идеи.",
+                advice: "Вы — творец своей реальности. Сконцентрируйте волю и действуйте активно."
+            },
+            {
+                id: 2, name: "Верховная Жрица", number: "II",
+                imageUrl: "https://placehold.co/400x600/1e1b4b/d97706?font=playfair-display&text=High+Priestess",
+                love: "Отношения наполнены загадками. Доверяйте интуиции, она укажет истину.",
+                career: "Не спешите действовать напролом. Соберите информацию и затаитесь.",
+                advice: "Посвятите время духовному росту и спокойствию. Держите планы в тайне."
+            },
+            {
+                id: 3, name: "Императрица", number: "III",
+                imageUrl: "https://placehold.co/400x600/1e1b4b/d97706?font=playfair-display&text=The+Empress",
+                love: "Период расцвета, искренней нежности и создания крепкого союза.",
+                career: "Проекты принесут богатые плоды. Деньги идут к вам естественным путем.",
+                advice: "Действуйте мягко и созидательно. Позвольте событиям созреть."
+            },
+            {
+                id: 4, name: "Император", number: "IV",
+                imageUrl: "https://placehold.co/400x600/1e1b4b/d97706?font=playfair-display&text=The+Emperor",
+                love: "Прочность, надежность и четкие правила. Партнер настроен очень серьезно.",
+                career: "Период наведения порядка и укрепления авторитета. Действуйте справедливо.",
+                advice: "Проявите дисциплину и организуйте свои дела. Будьте опорой для других."
+            },
+            {
+                id: 5, name: "Иерофант", number: "V",
+                imageUrl: "https://placehold.co/400x600/1e1b4b/d97706?font=playfair-display&text=The+Hierophant",
+                love: "Отношения на общих ценностях. Возможно заключение официального союза.",
+                career: "Успех придет через следование правилам и повышение квалификации.",
+                advice: "Поступайте по совести и закону. Ищите мудрые советы у авторитетов."
+            },
+            {
+                id: 6, name: "Влюбленные", number: "VI",
+                imageUrl: "https://placehold.co/400x600/1e1b4b/d97706?font=playfair-display&text=The+Lovers",
+                love: "Гармония в союзе или необходимость принять важное решение сердцем.",
+                career: "Время выгодных партнерств. Выбирайте то, к чему лежит душа.",
+                advice: "Избегайте внутренних компромиссов, которые разрушают вашу целостность."
+            },
+            {
+                id: 7, name: "Колесница", number: "VII",
+                imageUrl: "https://placehold.co/400x600/1e1b4b/d97706?font=playfair-display&text=The+Chariot",
+                love: "Стремительное развитие отношений. Возможна совместная поездка.",
+                career: "Время карьерного прорыва! Вы сметете любые преграды на пути.",
+                advice: "Двигайтесь к цели на максимальной скорости и не сомневайтесь в успехе."
+            },
+            {
+                id: 8, name: "Сила", number: "VIII",
+                imageUrl: "https://placehold.co/400x600/1e1b4b/d97706?font=playfair-display&text=Strength",
+                love: "Страсть и мягкое влияние. Вы укротите любые конфликты любовью.",
+                career: "Предстоит упорный труд, но вы справитесь благодаря потенциалу.",
+                advice: "Укротите своих внутренних страхов. Направляйте энергию в созидание."
+            },
+            {
+                id: 9, name: "Отшельник", number: "IX",
+                imageUrl: "https://placehold.co/400x600/1e1b4b/d97706?font=playfair-display&text=The+Hermit",
+                love: "Период уединения или переосмысления отношений перед контактом.",
+                career: "Время для спокойного анализа. Не стремитесь к публичности.",
+                advice: "Замедлите бег, побудьте наедине с собой. Ищите ответы внутри."
+            },
+            {
+                id: 10, name: "Колесо Фортуны", number: "X",
+                imageUrl: "https://placehold.co/400x600/1e1b4b/d97706?font=playfair-display&text=Wheel+of+Fortune",
+                love: "Неожиданная судьбоносная встреча или резкое изменение ситуации.",
+                career: "Везение на вашей стороне. Возможен неожиданный контракт или выигрыш.",
+                advice: "Не пытайтесь плыть против течения. Доверьтесь потоку Вселенной."
+            },
+            {
+                id: 11, name: "Справедливость", number: "XI",
+                imageUrl: "https://placehold.co/400x600/1e1b4b/d97706?font=playfair-display&text=Justice",
+                love: "Отношения требуют честности. Карта указывает на официальный брак.",
+                career: "Сделки и договоры завершатся справедливо. Вы получите заслуженное.",
+                advice: "Будьте честны с собой. Помните о законе причины и следствия."
+            },
+            {
+                id: 12, name: "Повешенный", number: "XII",
+                imageUrl: "https://placehold.co/400x600/1e1b4b/d97706?font=playfair-display&text=The+Hanged+Man",
+                love: "Отношения могут зависнуть. Требуется смена вашего взгляда.",
+                career: "Временная пауза в делах. Не пытайтесь форсировать события силой.",
+                advice: "Посмотрите на ситуацию под совершенно другим углом."
+            },
+            {
+                id: 13, name: "Смерть", number: "XIII",
+                imageUrl: "https://placehold.co/400x600/1e1b4b/d97706?font=playfair-display&text=Death",
+                love: "Старый этап отношений подошел к концу. Полное перерождение.",
+                career: "Кардинальные перемены на работе. Расчистите место для новой карьеры.",
+                advice: "Не цепляйтесь за прошлое. Позвольте уйти тому, что отжило."
+            },
+            {
+                id: 14, name: "Умеренность", number: "XIV",
+                imageUrl: "https://placehold.co/400x600/1e1b4b/d97706?font=playfair-display&text=Temperance",
+                love: "Период мира, гармонии и спокойного счастья в любви.",
+                career: "Спокойное развитие дел без потрясений. Финансы стабильны.",
+                advice: "Избегайте крайностей. Проявите терпение — все придет вовремя."
+            },
+            {
+                id: 15, name: "Дьявол", number: "XV",
+                imageUrl: "https://placehold.co/400x600/1e1b4b/d97706?font=playfair-display&text=The+Devil",
+                love: "Безумная страсть, но риск попасть в токсичную зависимость.",
+                career: "Соблазн легких, но нечестных денег. Будьте предельно осторожны.",
+                advice: "Осознайте свои теневые стороны. Не будьте рабом своих страстей."
+            },
+            {
+                id: 16, name: "Башня", number: "XVI",
+                imageUrl: "https://placehold.co/400x600/1e1b4b/d97706?font=playfair-display&text=The+Tower",
+                love: "Внезапный кризис или разрыв отношений. Разрушение иллюзий.",
+                career: "Крах старой неэффективной структуры, открывающий путь к новому.",
+                advice: "Примите разрушение фундамента. Башня рушит только хрупкое."
+            },
+            {
+                id: 17, name: "Звезда", number: "XVII",
+                imageUrl: "https://placehold.co/400x600/1e1b4b/d97706?font=playfair-display&text=The+Star",
+                love: "Мечты о любви начинают сбываться. Отношения наполнены надеждой.",
+                career: "Раскрытие талантов, признание и блестящие перспективы.",
+                advice: "Верьте в свою мечту и надежду. Двигайтесь за внутренним светом."
+            },
+            {
+                id: 18, name: "Луна", number: "XVIII",
+                imageUrl: "https://placehold.co/400x600/1e1b4b/d97706?font=playfair-display&text=The+Moon",
+                love: "Отношения окутаны туманом ревности, недосказанности или страхов.",
+                career: "Опасайтесь интриг и мутных схем на работе. Проверяйте документы.",
+                advice: "Загляните в лицо страхам. Туман рассеется при свете разума."
+            },
+            {
+                id: 19, name: "Солнце", number: "XIX",
+                imageUrl: "https://placehold.co/400x600/1e1b4b/d97706?font=playfair-display&text=The+Sun",
+                love: "Полное счастье, взаимная любовь, ясность чувств и триумф.",
+                career: "Полная победа и признание ваших заслуг. Вас ждут богатство и успех.",
+                advice: "Светите ярко, дарите тепло окружающим и празднуйте жизнь!"
+            },
+            {
+                id: 20, name: "Суд", number: "XX",
+                imageUrl: "https://placehold.co/400x600/1e1b4b/d97706?font=playfair-display&text=Judgement",
+                love: "Возрождение старой любви или полное духовное обновление.",
+                career: "Заслуженное признание и успешное завершение затяжного дела.",
+                advice: "Прислушайтесь к зову сердца. Пора отпустить груз прошлых ошибок."
+            },
+            {
+                id: 21, name: "Мир", number: "XXI",
+                imageUrl: "https://placehold.co/400x600/1e1b4b/d97706?font=playfair-display&text=The+World",
+                love: "Высшая точка гармонии, взаимопонимания и счастья в союзе.",
+                career: "Успешное завершение крупного проекта. Максимальный успех.",
+                advice: "Вы обрели свое место в мире. Поблагодарите Вселенную за дары."
+            }
         ];
 
-        // Масти младших арканов
         const suitMeanings = {
-            wands: { name: "Жезлов", career: "Действуйте смело, время лидерства и амбиций.", love: "Вспышка страсти и активная инициатива от партнера.", advice: "Проявите мужество, отстаивайте свои позиции." },
-            cups: { name: "Кубков", career: "Слушайте интуицию, важны гармоничные отношения с коллегами.", love: "Глубокое душевное взаимопонимание и новые чувства.", advice: "Доверяйте своему сердцу и предчувствиям." },
-            swords: { name: "Мечей", career: "Время холодных расчетов и интеллектуальных баталий.", love: "Отношения проходят проверку разумом, возможен холодок.", advice: "Отбросьте эмоции, анализируйте факты и логику." },
-            pentacles: { name: "Пентаклей", career: "Стабильный рост доходов, премия и результат упорных трудов.", love: "Прочные, надежные отношения, ориентированные на будущее.", advice: "Фокусируйтесь на практических задачах, закладывайте фундамент." }
+            wands: { name: "Жезлов", career: "Действуйте смело, время лидерства и амбиций.", love: "Вспышка страсти и активная инициатива.", advice: "Проявите мужество, отстаивайте свои позиции." },
+            cups: { name: "Кубков", career: "Слушайте интуицию, важны отношения с коллегами.", love: "Глубокое взаимопонимание и новые чувства.", advice: "Доверяйте своему сердцу и предчувствиям." },
+            swords: { name: "Мечей", career: "Время холодных расчетов и интеллектуальных баталий.", love: "Отношения проходят проверку разумом, возможен холодок.", advice: "Отбросьте эмоции, анализируйте факты." },
+            pentacles: { name: "Пентаклей", career: "Стабильный рост доходов, премия и результат трудов.", love: "Прочные, надежные отношения, ориентированные на будущее.", advice: "Фокусируйтесь на практических задачах." }
         };
 
-        // Ранги младших арканов
         const rankMeanings = {
-            1: { name: "Туз", desc: "чистый импульс, мощный старт и великолепная возможность." },
-            2: { name: "Двойка", desc: "выбор, баланс, лавирование и партнерство." },
-            3: { name: "Тройка", desc: "первые успехи, расширение влияния и совместный труд." },
+            1: { name: "Туз", desc: "чистый импульс и великолепная возможность." },
+            2: { name: "Двойка", desc: "выбор, баланс и партнерство." },
+            3: { name: "Тройка", desc: "первые успехи и совместный труд." },
             4: { name: "Четверка", desc: "стабильность, сохранение позиций и покой." },
-            5: { name: "Пятерка", desc: "вызов, кризис, временные потери или разногласия." },
-            6: { name: "Шестерка", desc: "гармония, заслуженная победа и получение помощи." },
-            7: { name: "Семерка", desc: "терпение, ожидание результатов и проверка на выносливость." },
-            8: { name: "Восьмерка", desc: "мастерство, фокус на деталях и упорный труд." },
-            9: { name: "Девятка", desc: "изобилие, самодостаточность и преддверие триумфа." },
+            5: { name: "Пятерка", desc: "вызов, кризис и временные потери." },
+            6: { name: "Шестерка", desc: "гармония и заслуженная победа." },
+            7: { name: "Семерка", desc: "терпение и проверка на выносливость." },
+            8: { name: "Восьмерка", desc: "мастерство и упорный труд." },
+            9: { name: "Девятка", desc: "изобилие и самодостаточность." },
             10: { name: "Десятка", desc: "полнота, завершение цикла и благополучие." },
-            11: { name: "Паж", desc: "новые известия, юный импульс и ученичество." },
-            12: { name: "Рыцарь", desc: "напор, движение, скорость и решительное наступление." },
-            13: { name: "Королева", desc: "зрелая мудрость и сильное покровительство." },
-            14: { name: "Король", desc: "абсолютная власть, стабильность и авторитет." }
+            11: { name: "Паж", desc: "новые известия и ученичество." },
+            12: { name: "Рыцарь", desc: "напор, движение и скорость." },
+            13: { name: "Королева", desc: "зрелая мудрость и покровительство." },
+            14: { name: "Король", desc: "абсолютная власть и стабильность." }
         };
 
-        // =====================================================================
-        // ЛОГИКА ОПРЕДЕЛЕНИЯ, КАКОЙ ТЕКСТ ВЫДАВАТЬ НА КАКОЙ ВОПРОС
-        // =====================================================================
         function getInterpretation(card, questionId) {
-            let category = "advice"; // По умолчанию выдаем текст "Совет"
+            let category = "advice";
             if ([1, 3, 5].includes(questionId)) category = "career";
             else if ([2, 4].includes(questionId)) category = "love";
 
@@ -305,49 +456,29 @@
             } else {
                 const suit = suitMeanings[card.suit];
                 const rank = rankMeanings[card.rank];
-                let categoryText = "";
-                if (category === "career") categoryText = suit.career;
-                else if (category === "love") categoryText = suit.love;
-                else categoryText = suit.advice;
-                
+                let categoryText = category === "career" ? suit.career : (category === "love" ? suit.love : suit.advice);
                 return `Вы вытянули карту: ${rank.name} ${suit.name}.\n\nЭта карта символизирует ${rank.desc}\n\nТолкование: ${categoryText}`;
             }
         }
 
-        // --- ДАЛЕЕ ИДЕТ ЛОГИКА ИНТЕРФЕЙСА ---
-
         let fullTarotDeck = [];
 
         function initFullDeck() {
-            // 1. Добавляем 22 Старших Аркана
             fullTarotDeck = [...majorArcanaDatabase];
-
-            // 2. Добавляем 56 Младших Арканов с автоматической генерацией картинок
             const suits = ["wands", "cups", "swords", "pentacles"];
             const suitNamesEN = { wands: "Wands", cups: "Cups", swords: "Swords", pentacles: "Pentacles" };
             const rankNamesEN = { 1: "Ace", 2: "2", 3: "3", 4: "4", 5: "5", 6: "6", 7: "7", 8: "8", 9: "9", 10: "10", 11: "Page", 12: "Knight", 13: "Queen", 14: "King" };
             
             let idCounter = 22;
-
             suits.forEach((suit) => {
                 for (let rank = 1; rank <= 14; rank++) {
-                    const rankInfo = rankMeanings[rank];
-                    const suitInfo = suitMeanings[suit];
-                    
-                    let romanNum = rank.toString();
-                    if (rank === 11) romanNum = "P";
-                    else if (rank === 12) romanNum = "Kn";
-                    else if (rank === 13) romanNum = "Q";
-                    else if (rank === 14) romanNum = "K";
-                    
-                    // Генерируем ссылку на картинку с названием карты на английском
                     const cardTextEN = `${rankNamesEN[rank]}+of+${suitNamesEN[suit]}`;
                     const imgUrl = `https://placehold.co/400x600/1e1b4b/d97706?font=playfair-display&text=${cardTextEN}`;
 
                     fullTarotDeck.push({
                         id: idCounter,
-                        name: `${rankInfo.name} ${suitInfo.name}`,
-                        number: romanNum,
+                        name: `${rankMeanings[rank].name} ${suitMeanings[suit].name}`,
+                        number: rank.toString(),
                         imageUrl: imgUrl,
                         suit: suit,
                         rank: rank
@@ -357,7 +488,6 @@
             });
         }
         
-        // Обязательно вызываем функцию создания колоды при загрузке
         initFullDeck();
 
         function renderQuestions() {
@@ -378,7 +508,7 @@
             const consent = document.getElementById('reg-consent').checked;
             
             if (!name || !email || !consent) {
-                alert("Пожалуйста, заполните все поля и поставьте галочку."); return;
+                alert("Пожалуйста, заполните все поля."); return;
             }
 
             const initData = tg ? tg.initData : "dummy_data_for_browser";
@@ -438,7 +568,6 @@
             setTimeout(() => {
                 const randomCard = fullTarotDeck[Math.floor(Math.random() * fullTarotDeck.length)];
                 
-                // Подставляем НАСТОЯЩЕЕ ФОТО и ТЕКСТ КАРТЫ в HTML
                 document.getElementById('card-image').src = randomCard.imageUrl;
                 document.getElementById('card-number').innerText = randomCard.number;
                 document.getElementById('card-name').innerText = randomCard.name;
@@ -457,7 +586,6 @@
             document.getElementById('result-card-fullname').innerText = card.name;
             document.getElementById('interpretation-text').innerText = interpretation;
 
-            // Списываем баланс только визуально, сервер обновит сам при реальном потоке
             state.balance--;
             document.getElementById('user-balance').innerText = `${state.balance} раскладов`;
 
@@ -467,7 +595,7 @@
         function goToQuestions() { switchTab('questions'); }
 
         async function buyPackage(pkgId, stars) {
-            if (!tg) { alert(`Оплата ${stars} звезд! (Симуляция браузера)`); return; }
+            if (!tg) { alert(`Оплата ${stars} звезд! (Симуляция)`); return; }
             try {
                 const res = await fetch(`${BACKEND_URL}/api/payment/create-invoice`, {
                     method: 'POST',
@@ -479,7 +607,7 @@
                     tg.openInvoice(data.invoice_link, function(status) {
                         if (status === 'paid') {
                             alert("Успешно! Баланс пополнен.");
-                            state.balance += (pkgId === 1 ? 1 : pkgId === 5 ? 5 : 15);
+                            state.balance += (pkgId === 1 ? 1 : (pkgId === 5 ? 5 : 15));
                             document.getElementById('user-balance').innerText = `${state.balance} раскладов`;
                             switchTab('questions');
                         }
