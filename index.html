@@ -4,9 +4,13 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Таро Оракул • Полная версия 78 Карт</title>
+    <!-- Подключение Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Подключение SDK Telegram Web App -->
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
+    <!-- Эзотерические шрифты из Google Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&family=Montserrat:wght@300;400;600&display=swap" rel="stylesheet">
+    
     <style>
         body {
             font-family: 'Montserrat', sans-serif;
@@ -20,6 +24,7 @@
         ::-webkit-scrollbar-track { background: #070311; }
         ::-webkit-scrollbar-thumb { background: #d97706; border-radius: 2px; }
         
+        /* Стили для 3D переворота карты */
         .card-container { perspective: 1000px; }
         .card-inner {
             transition: transform 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275);
@@ -34,6 +39,7 @@
         }
         .card-front { transform: rotateY(180deg); }
         
+        /* Фирменные анимации тасования */
         @keyframes shuffle-left {
             0% { transform: translateX(0) rotate(0deg); z-index: 10; }
             50% { transform: translateX(-120px) rotate(-15deg); z-index: 1; }
@@ -103,7 +109,7 @@
                 <p class="text-gray-400 text-[10px] px-6">Стоимость: 1 расклад = 1 🔮</p>
             </div>
             <div id="questions-grid" class="grid grid-cols-1 gap-2 max-h-[50vh] overflow-y-auto px-1 py-1">
-                <!-- Сюда динамически загружаются 10 вопросов -->
+                <!-- Сюда динамически загружаются 10 вопросов из JS -->
             </div>
         </div>
 
@@ -114,8 +120,12 @@
                 <div class="absolute w-52 h-52 border border-dashed border-amber-500/20 rounded-full animate-spin [animation-duration:35s]"></div>
                 
                 <div id="card-deck-container" class="relative w-40 h-56 card-container">
-                    <div id="deck-card-3" class="absolute inset-0 bg-indigo-950 border border-amber-500/40 rounded-xl p-4 shadow-2xl transition-all duration-300 transform rotate-1 scale-95 opacity-80"></div>
-                    <div id="deck-card-2" class="absolute inset-0 bg-indigo-950 border border-amber-500/60 rounded-xl p-4 shadow-2xl transition-all duration-300 transform -rotate-1 scale-98 opacity-90"></div>
+                    <div id="deck-card-3" class="absolute inset-0 bg-indigo-950 border border-amber-500/40 rounded-xl p-4 flex flex-col justify-between shadow-2xl transition-all duration-300 transform rotate-1 scale-95 opacity-80">
+                        <div class="w-full h-full border border-amber-500/10 rounded-lg flex items-center justify-center bg-[#150a2b]">🌙</div>
+                    </div>
+                    <div id="deck-card-2" class="absolute inset-0 bg-indigo-950 border border-amber-500/60 rounded-xl p-4 flex flex-col justify-between shadow-2xl transition-all duration-300 transform -rotate-1 scale-98 opacity-90">
+                        <div class="w-full h-full border border-amber-500/10 rounded-lg flex items-center justify-center bg-[#150a2b]">🔮</div>
+                    </div>
                     
                     <div id="interactive-card" class="absolute inset-0 card-inner w-full h-full">
                         <!-- Рубашка -->
@@ -222,6 +232,7 @@
 
         const BACKEND_URL = "https://tarot-backend-136l.onrender.com";
 
+        // Проверка автоматической авторизации без повторного ввода имени
         async function checkAuth() {
             const initData = tg ? tg.initData : "dummy_data_for_browser";
             try {
@@ -246,7 +257,7 @@
                     }
                 }
             } catch (e) {
-                console.log("Авторизация не пройдена (первый вход)");
+                console.log("Пользователь зашел впервые, требуется заполнение формы регистрации.");
             }
         }
 
@@ -269,7 +280,7 @@
             {
                 id: 0, name: "Дурак", number: "0",
                 imageUrl: "https://placehold.co/400x600/1e1b4b/d97706?font=playfair-display&text=The+Fool",
-                love: "Вас ждет легкий, свободный роман без лишних обязательств. Доверьтесь спонтанности.",
+                love: "Вас ждет легкий, свободный роман без обязательств. Доверьтесь спонтанности.",
                 career: "Время начать новый проект, даже если он кажется рискованным. Космос благоволит смелым.",
                 advice: "Обнулите прошлые обиды и страхи. Сделайте шаг в неизвестность с открытым сердцем."
             },
@@ -417,7 +428,7 @@
                 id: 21, name: "Мир", number: "XXI",
                 imageUrl: "https://placehold.co/400x600/1e1b4b/d97706?font=playfair-display&text=The+World",
                 love: "Высшая точка гармонии, взаимопонимания и счастья в союзе.",
-                career: "Успешное завершение крупного проекта. Максимальный успех.",
+                career: "Успешно завершенный проект. Максимальный материальный успех.",
                 advice: "Вы обрели свое место в мире. Поблагодарите Вселенную за дары."
             }
         ];
@@ -473,6 +484,7 @@
             suits.forEach((suit) => {
                 for (let rank = 1; rank <= 14; rank++) {
                     const cardTextEN = `${rankNamesEN[rank]}+of+${suitNamesEN[suit]}`;
+                    // Автоматическая генерация красивой золотой графической заглушки для каждой карты
                     const imgUrl = `https://placehold.co/400x600/1e1b4b/d97706?font=playfair-display&text=${cardTextEN}`;
 
                     fullTarotDeck.push({
