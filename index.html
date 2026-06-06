@@ -2,831 +2,698 @@
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-    <title>Оракул Таро</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Таро Оракул Судьбы</title>
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
-    <!-- Google Fonts -->
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;700;900&family=Montserrat:wght@300;400;600;700&display=swap" rel="stylesheet">
-    <!-- FontAwesome Icons -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts: Playfair Display & Inter -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:ital,wght@0,500;0,700;1,400&display=swap" rel="stylesheet">
     <!-- Telegram WebApp SDK -->
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
-
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
     <style>
         body {
-            font-family: 'Montserrat', sans-serif;
-            background: radial-gradient(circle at 50% 50%, #1a0f30 0%, #070311 100%);
-            color: #f3e8ff;
-            overflow-x: hidden;
+            font-family: 'Inter', sans-serif;
             -webkit-tap-highlight-color: transparent;
         }
-        .cinzel {
-            font-family: 'Cinzel', serif;
+        .serif-title {
+            font-family: 'Playfair Display', serif;
         }
+        /* Золотая неоновая подсветка */
         .gold-glow {
-            box-shadow: 0 0 15px rgba(212, 175, 55, 0.25);
+            box-shadow: 0 0 15px rgba(212, 175, 55, 0.2);
         }
-        .gold-text-glow {
-            text-shadow: 0 0 8px rgba(212, 175, 55, 0.5);
+        .gold-glow-focus:focus {
+            box-shadow: 0 0 20px rgba(212, 175, 55, 0.4);
+            border-color: rgba(212, 175, 55, 0.8);
         }
-        .gold-border {
-            border-color: rgba(212, 175, 55, 0.35);
+        /* Анимация вращения звездной пыли */
+        @keyframes float-slow {
+            0%, 100% { transform: translateY(0px) rotate(0deg); }
+            50% { transform: translateY(-10px) rotate(3deg); }
         }
-        .perspective-1000 {
+        .animate-float {
+            animation: float-slow 6s ease-in-out infinite;
+        }
+        /* Реалистичный переворот карты Таро */
+        .card-container {
             perspective: 1000px;
         }
         .card-inner {
-            position: relative;
-            width: 100%;
-            height: 100%;
             transition: transform 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275);
             transform-style: preserve-3d;
-            cursor: pointer;
         }
-        .card-inner.is-flipped {
+        .card-flipped {
             transform: rotateY(180deg);
         }
         .card-front, .card-back {
+            backface-visibility: hidden;
             position: absolute;
+            top: 0;
+            left: 0;
             width: 100%;
             height: 100%;
-            backface-visibility: hidden;
-            border-radius: 12px;
         }
         .card-back {
             transform: rotateY(180deg);
         }
-        /* Анимации тасования карт */
-        @keyframes shuffle-left {
-            0% { transform: translate(0, 0) scale(1) rotate(0deg); z-index: 10; }
-            25% { transform: translate(-140px, -10px) scale(1.05) rotate(-12deg); z-index: 20; }
-            50% { transform: translate(0, 0) scale(0.95) rotate(0deg); z-index: 5; }
-            75% { transform: translate(-70px, 15px) scale(1.02) rotate(-6deg); z-index: 20; }
-            100% { transform: translate(0, 0) scale(1) rotate(0deg); z-index: 10; }
+        /* Стилизация скроллбара */
+        ::-webkit-scrollbar {
+            width: 4px;
         }
-        @keyframes shuffle-right {
-            0% { transform: translate(0, 0) scale(1) rotate(0deg); z-index: 10; }
-            25% { transform: translate(140px, 10px) scale(1.05) rotate(12deg); z-index: 5; }
-            50% { transform: translate(0, 0) scale(0.95) rotate(0deg); z-index: 20; }
-            75% { transform: translate(70px, -15px) scale(1.02) rotate(6deg); z-index: 5; }
-            100% { transform: translate(0, 0) scale(1) rotate(0deg); z-index: 10; }
+        ::-webkit-scrollbar-track {
+            background: rgba(15, 8, 29, 0.5);
         }
-        .animate-shuffle-1 {
-            animation: shuffle-left 1.2s ease-in-out infinite;
-        }
-        .animate-shuffle-2 {
-            animation: shuffle-right 1.2s ease-in-out infinite;
-        }
-        @keyframes orbit-pulse {
-            0%, 100% { transform: scale(1); opacity: 0.15; }
-            50% { transform: scale(1.06); opacity: 0.45; }
-        }
-        .orbit-bg {
-            animation: orbit-pulse 5s ease-in-out infinite;
+        ::-webkit-scrollbar-thumb {
+            background: rgba(212, 175, 55, 0.3);
+            border-radius: 10px;
         }
     </style>
 </head>
-<body class="min-h-screen flex flex-col pb-24">
+<body class="bg-gradient-to-b from-[#0F081D] via-[#1A0B2E] to-[#0A0514] text-gray-100 min-h-screen overflow-x-hidden flex flex-col selection:bg-[#D4AF37] selection:text-black">
 
-    <!-- СИСТЕМА УВЕДОМЛЕНИЙ (TOAST) -->
-    <div id="toast-container" class="fixed top-4 left-1/2 -translate-x-1/2 z-50 w-11/12 max-w-sm pointer-events-none transition-all duration-300 transform translate-y-[-20px] opacity-0">
-        <div id="toast-box" class="bg-purple-950/95 border border-amber-500/50 rounded-xl p-4 shadow-2xl flex items-center gap-3">
-            <i id="toast-icon" class="fas fa-circle-info text-amber-400 text-xl"></i>
-            <p id="toast-text" class="text-xs text-amber-100 font-medium"></p>
-        </div>
+    <!-- 🌟 НЕБЕСНЫЙ И ИНТРИГУЮЩИЙ ФОН С СВЕЧЕНИЕМ -->
+    <div class="fixed inset-0 pointer-events-none z-0 overflow-hidden">
+        <div class="absolute top-[-10%] left-[-10%] w-[50%] h-[50%] rounded-full bg-purple-900/10 blur-[120px]"></div>
+        <div class="absolute bottom-[-10%] right-[-10%] w-[50%] h-[50%] rounded-full bg-indigo-900/10 blur-[120px]"></div>
+        <div class="absolute top-[30%] left-[40%] w-[150px] h-[150px] rounded-full bg-[#D4AF37]/5 blur-[80px] animate-pulse"></div>
     </div>
 
-    <!-- ЭКРАН ЗАГРУЗКИ -->
-    <div id="main-loader" class="fixed inset-0 bg-purple-950/95 z-50 flex flex-col justify-center items-center">
-        <div class="relative w-24 h-24 mb-6">
-            <div class="absolute inset-0 border-4 border-amber-400/10 rounded-full"></div>
-            <div class="absolute inset-0 border-4 border-t-amber-400 border-r-amber-400/40 rounded-full animate-spin"></div>
-            <div class="absolute inset-0 flex items-center justify-center">
-                <i class="fa-solid fa-star-of-david text-amber-400/50 text-2xl"></i>
+    <!-- 🌀 ЭКРАН 1: ГЛУБОКАЯ АТМОСФЕРНАЯ ЗАГРУЗКА -->
+    <div id="screen-loading" class="fixed inset-0 bg-[#0F081D] z-50 flex flex-col justify-center items-center px-6 text-center">
+        <div class="relative mb-8">
+            <div class="w-24 h-24 rounded-full border-2 border-t-[#D4AF37] border-r-transparent border-b-[#D4AF37]/20 border-l-transparent animate-spin"></div>
+            <div class="absolute inset-2 rounded-full border border-dashed border-[#D4AF37]/30 flex items-center justify-center">
+                <span class="text-2xl animate-pulse">🔮</span>
             </div>
         </div>
-        <p class="cinzel text-amber-300 font-bold tracking-widest text-base animate-pulse">Связь с Оракулом...</p>
-        <p class="text-[11px] text-purple-400 mt-2">Космические энергии настраиваются...</p>
+        <h2 class="serif-title text-2xl text-[#D4AF37] font-bold mb-3 tracking-wide">Настройка небесных сфер</h2>
+        <p id="loading-text" class="text-sm text-purple-200/70 max-w-xs leading-relaxed animate-pulse">
+            Колода карт тасуется, космические энергии приходят в движение...
+        </p>
     </div>
 
-    <!-- ШАПКА -->
-    <header class="bg-purple-950/20 border-b border-purple-900/30 p-4 sticky top-0 z-30 backdrop-blur-md">
-        <div class="max-w-md mx-auto flex items-center justify-between">
-            <div class="flex items-center gap-3">
-                <div class="w-10 h-10 rounded-full border border-amber-400/30 flex items-center justify-center bg-purple-950/40">
-                    <i class="fa-solid fa-wand-magic-sparkles text-amber-400 animate-pulse"></i>
+    <!-- 📝 ЭКРАН 2: ОНБОРДИНГ И СОГЛАСИЕ (ПОКАЗЫВАЕТСЯ ПРИ ПЕРВОМ ВХОДЕ) -->
+    <div id="screen-onboarding" class="hidden relative z-10 flex-1 flex flex-col justify-between p-6 max-w-md mx-auto w-full">
+        <div class="text-center mt-6">
+            <span class="text-5xl mb-4 block animate-float">📖</span>
+            <h1 class="serif-title text-3xl font-bold text-[#D4AF37] tracking-wide mb-2">Оракул Судьбы</h1>
+            <p class="text-sm text-purple-200/80 leading-relaxed px-4">
+                Перед тем как задать свой сокровенный вопрос картам, позвольте Оракулу настроиться на ваше имя.
+            </p>
+        </div>
+
+        <div class="my-8 bg-[#1A0B2E]/60 border border-[#D4AF37]/20 rounded-2xl p-5 backdrop-blur-md space-y-4 shadow-xl">
+            <div>
+                <label class="block text-xs uppercase tracking-wider text-[#D4AF37] font-semibold mb-2">Ваше Имя</label>
+                <input type="text" id="user-name" placeholder="Как к вам обращаться?" class="w-full bg-[#0F081D]/80 border border-purple-900/50 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-[#D4AF37] transition-all text-white placeholder-purple-300/30">
+            </div>
+
+            <div>
+                <label class="block text-xs uppercase tracking-wider text-[#D4AF37] font-semibold mb-2">Ваш Email (для глубоких прогнозов)</label>
+                <input type="email" id="user-email" placeholder="example@mail.com" class="w-full bg-[#0F081D]/80 border border-purple-900/50 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-[#D4AF37] transition-all text-white placeholder-purple-300/30">
+            </div>
+
+            <div class="flex items-start space-x-3 pt-2">
+                <input type="checkbox" id="user-consent" class="mt-1 accent-[#D4AF37] cursor-pointer w-4 h-4 rounded">
+                <label for="user-consent" class="text-xs text-purple-200/60 leading-relaxed cursor-pointer select-none">
+                    Я даю согласие на обработку персональных данных и принимаю <span class="text-[#D4AF37] underline decoration-dotted">Политику конфиденциальности</span> для формирования астрологических ответов.
+                </label>
+            </div>
+        </div>
+
+        <button onclick="submitOnboarding()" class="w-full bg-gradient-to-r from-[#8A2BE2] via-[#D4AF37] to-[#8A2BE2] bg-[length:200%_auto] hover:bg-right transition-all duration-500 text-white font-bold py-4 rounded-xl shadow-lg shadow-purple-950/50 active:scale-[0.98]">
+            Войти в чертоги Оракула
+        </button>
+    </div>
+
+    <!-- 🌌 ЭКРАН 3: ГЛАВНЫЙ ДАШБОРД -->
+    <div id="screen-dashboard" class="hidden relative z-10 flex-1 flex flex-col justify-between p-4 max-w-md mx-auto w-full">
+        
+        <!-- Верхняя шапка с балансом и профилем -->
+        <div class="flex items-center justify-between bg-[#1A0B2E]/40 border border-purple-900/30 rounded-2xl p-4 backdrop-blur-md mb-4 shadow-md">
+            <div class="flex items-center space-x-3">
+                <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-[#8A2BE2] to-[#D4AF37] flex items-center justify-center text-lg shadow">
+                    🔮
                 </div>
                 <div>
-                    <h1 id="user-display-name" class="font-bold text-sm text-purple-100">Искатель</h1>
-                    <p class="text-[9px] uppercase tracking-wider text-amber-400/70 font-semibold">Оракул Таро</p>
+                    <h3 id="display-name" class="font-bold text-sm text-white">Искатель</h3>
+                    <p class="text-[10px] text-purple-200/50 uppercase tracking-widest">Профиль сонастроен</p>
                 </div>
             </div>
-            <!-- БАЛАНСЫ РАСКЛАДОВ -->
-            <div class="flex flex-col gap-1.5 text-right">
-                <div class="bg-purple-950/60 border border-amber-500/35 rounded-full px-3 py-1 flex items-center gap-1.5 text-[11px] text-amber-300 font-bold">
-                    <span id="std-balance-count">0</span> 🔮
-                </div>
-                <div class="bg-purple-950/60 border border-indigo-400/35 rounded-full px-3 py-1 flex items-center gap-1.5 text-[11px] text-indigo-300 font-bold">
-                    <span id="ai-balance-count">0</span> ✨
-                </div>
-            </div>
-        </div>
-    </header>
-
-    <!-- ОСНОВНОЙ КОНТЕНТ -->
-    <main class="flex-1 max-w-md mx-auto w-full px-4 pt-4 flex flex-col justify-center">
-
-        <!-- ТАБ 1: СТАНДАРТНЫЙ ВОПРОС -->
-        <section id="tab-standard" class="space-y-6 flex flex-col justify-center flex-1">
             
-            <!-- Шаг 1: Сетка готовых вопросов -->
-            <div id="std-step-choose" class="space-y-4">
-                <div class="text-center space-y-1.5 mb-2">
-                    <span class="text-[10px] uppercase font-bold tracking-widest text-amber-400/80">Выберите направление мысли</span>
-                    <h2 class="cinzel text-xl md:text-2xl text-purple-500 font-black text-amber-300 gold-text-glow">Задать вопрос Оракулу</h2>
+            <button onclick="openStore()" class="flex items-center space-x-2 bg-[#D4AF37]/10 hover:bg-[#D4AF37]/20 border border-[#D4AF37]/40 px-3 py-1.5 rounded-xl transition-all">
+                <span class="text-sm">⭐</span>
+                <span id="display-balance" class="font-bold text-xs text-[#D4AF37]">0</span>
+                <span class="text-[10px] text-purple-200/60">/ AI:</span>
+                <span id="display-ai-balance" class="font-bold text-xs text-purple-300">0</span>
+            </button>
+        </div>
+
+        <!-- Центральный выбор расклада -->
+        <div class="flex-1 flex flex-col justify-center space-y-5 my-2">
+            
+            <!-- Вариант 1: Карта Дня -->
+            <div class="bg-gradient-to-br from-[#1F103A] to-[#0F081D] border border-purple-900/50 rounded-3xl p-5 relative overflow-hidden group shadow-lg">
+                <div class="absolute top-0 right-0 w-24 h-24 bg-gradient-to-br from-[#8A2BE2]/20 to-transparent rounded-bl-full pointer-events-none"></div>
+                <div class="flex items-start justify-between mb-3">
+                    <span class="text-3xl">🃏</span>
+                    <span class="bg-[#D4AF37]/10 border border-[#D4AF37]/30 text-[#D4AF37] text-[10px] font-bold uppercase px-2 py-0.5 rounded-full">1 баланс</span>
                 </div>
-                <div id="questions-grid" class="grid grid-cols-1 gap-2.5 max-h-[55vh] overflow-y-auto pr-1"></div>
+                <h2 class="serif-title text-xl font-bold text-white mb-2 group-hover:text-[#D4AF37] transition-all">Священная Карта Дня</h2>
+                <p class="text-xs text-purple-200/60 leading-relaxed mb-4">
+                    Узнайте главный посыл Вселенной на сегодня. Идеальный инструмент для утренней сонастройки и поиска фокуса.
+                </p>
+                <button onclick="startStandardReading()" class="w-full bg-[#1F103A] hover:bg-[#D4AF37] hover:text-black border border-[#D4AF37]/30 text-white font-bold py-3 rounded-xl text-xs transition-all tracking-wider uppercase active:scale-95">
+                    Получить совет
+                </button>
             </div>
 
-            <!-- Шаг 2: Эстетичное тасование -->
-            <div id="std-step-shuffle" class="hidden flex flex-col items-center justify-center flex-1 py-4">
-                <div class="text-center mb-6">
-                    <p id="active-question-title" class="text-xs md:text-sm italic text-amber-300 max-w-xs mx-auto mb-1"></p>
-                    <p class="text-[10px] text-purple-400">Настройтесь на космическое поле и потяните карту</p>
+            <!-- Вариант 2: Индивидуальный ИИ Вопрос -->
+            <div class="bg-gradient-to-br from-[#1A0B2E] via-[#2A114D] to-[#0F081D] border border-[#D4AF37]/20 rounded-3xl p-5 relative overflow-hidden group shadow-lg gold-glow">
+                <div class="absolute top-0 right-0 w-32 h-32 bg-gradient-to-br from-[#D4AF37]/10 to-transparent rounded-bl-full pointer-events-none animate-pulse"></div>
+                <div class="flex items-start justify-between mb-3">
+                    <span class="text-3xl">🧠</span>
+                    <span class="bg-[#8A2BE2]/30 border border-[#8A2BE2]/50 text-purple-200 text-[10px] font-bold uppercase px-2 py-0.5 rounded-full">1 Энергия AI</span>
                 </div>
+                <h2 class="serif-title text-xl font-bold text-[#D4AF37] mb-2">Глубокий ИИ-Расклад</h2>
+                <p class="text-xs text-purple-200/70 leading-relaxed mb-4">
+                    Задайте Оракулу любой волнующий вопрос. Искусственный интеллект разложит карты и даст точный, развернутый психологический совет именно по вашей ситуации.
+                </p>
                 
-                <div class="relative w-72 h-80 flex items-center justify-center my-4">
-                    <div class="absolute w-64 h-64 border border-dashed border-amber-500/10 rounded-full orbit-bg"></div>
-                    
-                    <div id="deck-card-left" class="absolute w-36 h-52 bg-gradient-to-br from-indigo-950 to-purple-950 border-2 border-purple-900 rounded-2xl opacity-55 flex items-center justify-center">
-                        <div class="w-full h-full border-4 border-amber-500/5 rounded-xl flex items-center justify-center">
-                            <i class="fa-solid fa-moon text-amber-500/5 text-2xl"></i>
-                        </div>
-                    </div>
-                    
-                    <div id="deck-card-right" class="absolute w-36 h-52 bg-gradient-to-br from-indigo-950 to-purple-950 border-2 border-purple-900 rounded-2xl opacity-55 flex items-center justify-center">
-                        <div class="w-full h-full border-4 border-amber-500/5 rounded-xl flex items-center justify-center">
-                            <i class="fa-solid fa-sun text-amber-500/5 text-2xl"></i>
-                        </div>
-                    </div>
-                    
-                    <div id="deck-card-main" class="absolute w-40 h-56 bg-gradient-to-br from-indigo-950 to-purple-950 border-2 border-amber-500/45 rounded-2xl flex items-center justify-center shadow-2xl z-10 gold-glow transition-all duration-300">
-                        <div class="w-full h-full border-4 border-amber-500/15 rounded-xl flex flex-col items-center justify-between p-4">
-                            <i class="fa-solid fa-star text-amber-500/20 text-lg"></i>
-                            <div class="w-16 h-16 border-2 border-amber-500/15 rounded-full flex items-center justify-center">
-                                <i class="fa-solid fa-compass text-amber-400/30 text-2xl animate-spin" style="animation-duration: 25s;"></i>
-                            </div>
-                            <i class="fa-solid fa-star text-amber-500/20 text-lg"></i>
-                        </div>
-                    </div>
+                <!-- Поле ввода вопроса -->
+                <div class="relative mb-4">
+                    <textarea id="ai-question" rows="2" placeholder="Например: 'Стоит ли мне сейчас менять сферу деятельности и идти в видеопродакшн?'" class="w-full bg-[#0F081D]/80 border border-purple-900/60 rounded-xl p-3 text-xs focus:outline-none focus:border-[#D4AF37] transition-all text-white placeholder-purple-300/30 resize-none gold-glow-focus"></textarea>
                 </div>
 
-                <div class="w-full max-w-xs space-y-3">
-                    <button id="btn-start-shuffle" onclick="startShufflingAndReveal()" class="w-full bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-400 hover:to-amber-500 text-purple-950 font-black py-4 rounded-xl shadow-lg transition active:scale-95 text-xs uppercase tracking-widest gold-glow">
-                        Перемешать и вытянуть
-                    </button>
-                    <button onclick="returnToQuestions()" class="w-full py-2.5 text-xs text-purple-300 hover:text-purple-100 transition">
-                        <i class="fa-solid fa-arrow-left mr-1"></i> Вернуться к списку вопросов
-                    </button>
-                </div>
-            </div>
-
-            <!-- Шаг 3: Результат расклада -->
-            <div id="std-step-result" class="hidden space-y-6">
-                <div class="text-center space-y-1">
-                    <span class="text-xs uppercase font-bold tracking-widest text-amber-400">Расклад Завершен</span>
-                    <h3 class="cinzel text-xl text-purple-100 font-bold">Карта расклада</h3>
-                </div>
-
-                <div class="bg-purple-950/30 border border-purple-900/40 rounded-2xl p-4 flex items-center gap-4 gold-glow">
-                    <div id="result-card-art" class="w-24 h-36 flex-shrink-0 bg-slate-900 border border-amber-400/30 rounded-xl overflow-hidden flex items-center justify-center"></div>
-                    <div>
-                        <span class="text-[9px] text-amber-400/80 uppercase font-bold tracking-wider">Вытянутая карта</span>
-                        <h4 id="result-card-name" class="cinzel text-base text-amber-300 font-bold mt-0.5 mb-1 leading-tight">Аркан</h4>
-                        <p id="result-card-type-desc" class="text-[9px] text-purple-300">Классическая колода Таро</p>
-                    </div>
-                </div>
-
-                <div class="bg-gradient-to-b from-purple-950/40 to-indigo-950/20 border border-amber-500/15 rounded-2xl p-5 space-y-3.5">
-                    <h5 class="flex items-center gap-2 text-xs font-bold text-amber-400 border-b border-purple-900/40 pb-2 uppercase tracking-wide">
-                        <i class="fa-solid fa-scroll text-amber-500"></i> Предсказание Оракула
-                    </h5>
-                    <div id="result-card-text" class="text-xs md:text-sm text-purple-100 leading-relaxed space-y-2"></div>
-                </div>
-
-                <button onclick="returnToQuestions()" class="w-full bg-purple-900/20 border border-purple-800/40 hover:border-amber-500/40 text-amber-100 font-bold py-3.5 rounded-xl transition active:scale-95 text-xs uppercase tracking-wider">
-                    Задать новый вопрос
+                <button onclick="startAiReading()" class="w-full bg-gradient-to-r from-[#8A2BE2] to-[#D4AF37] hover:from-[#D4AF37] hover:to-[#8A2BE2] text-white hover:text-white font-bold py-3.5 rounded-xl text-xs transition-all duration-500 tracking-wider uppercase shadow-md active:scale-95">
+                    Спросить Оракула
                 </button>
             </div>
 
-        </section>
-
-        <!-- ТАБ 2: ИНДИВИДУАЛЬНЫЙ ДИНАМИЧЕСКИЙ РАСКЛАД (ИИ) -->
-        <section id="tab-ai" class="hidden space-y-6 flex flex-col justify-center flex-1">
-            
-            <div id="ai-step-setup" class="space-y-4">
-                <div class="text-center space-y-1.5">
-                    <span class="text-[10px] uppercase font-bold tracking-widest text-indigo-400">Глубокое познание ситуации</span>
-                    <h2 class="cinzel text-xl md:text-2xl text-purple-100 font-black">Индивидуальный расклад</h2>
-                    <p class="text-[11px] text-purple-300 max-w-xs mx-auto">Напишите ваш сокровенный вопрос. Оракул выберет из колоды столько карт, сколько потребуется для полного раскрытия вашей ситуации.</p>
-                </div>
-
-                <div class="space-y-4 bg-purple-950/20 border border-purple-900/40 rounded-2xl p-4 backdrop-blur-sm">
-                    <div class="space-y-2">
-                        <label class="block text-[10px] text-amber-400 font-bold tracking-wider uppercase">Опишите вашу ситуацию подробно</label>
-                        <textarea id="ai-question-input" rows="4" placeholder="Стоит ли мне менять работу в этом месяце? Каковы перспективы развития моего проекта? На что обратить внимание?" class="w-full bg-purple-950/60 border border-purple-800/50 rounded-xl py-3 px-4 text-xs text-amber-100 placeholder-purple-400/40 focus:outline-none focus:border-indigo-400 transition resize-none"></textarea>
-                    </div>
-                </div>
-
-                <button onclick="startAiReading()" class="w-full bg-gradient-to-r from-indigo-500 to-purple-600 hover:from-indigo-400 hover:to-purple-500 text-white font-black py-4 rounded-xl shadow-lg transition active:scale-95 text-xs uppercase tracking-widest gold-glow">
-                    Получить расклад (1 ✨)
-                </button>
-            </div>
-
-            <!-- Лоадер -->
-            <div id="ai-step-loading" class="hidden flex flex-col items-center justify-center flex-1 py-12 text-center space-y-6">
-                <div class="relative w-28 h-28">
-                    <div class="absolute inset-0 border border-dashed border-indigo-400/20 rounded-full animate-spin" style="animation-duration: 25s;"></div>
-                    <div class="absolute inset-2 border border-dashed border-purple-400/30 rounded-full animate-spin" style="animation-duration: 12s; animation-direction: reverse;"></div>
-                    <div class="absolute inset-0 flex items-center justify-center">
-                        <i class="fa-solid fa-wand-magic text-amber-400 text-2xl animate-pulse"></i>
-                    </div>
-                </div>
-                <div class="space-y-2">
-                    <h3 class="cinzel text-amber-300 font-bold text-base">Оракул медитирует...</h3>
-                    <p class="text-xs text-purple-300 max-w-xs leading-relaxed mx-auto">
-                        Оракул настраивается на ваши вибрации, тасует карты и вытягивает ровно столько арканов, сколько нужно, чтобы разъяснить ваш вопрос...
-                    </p>
-                </div>
-            </div>
-
-            <!-- Результат -->
-            <div id="ai-step-result" class="hidden space-y-6">
-                <div class="text-center space-y-1">
-                    <span class="text-[10px] uppercase font-bold tracking-widest text-indigo-400">Индивидуальное толкование</span>
-                    <h3 class="cinzel text-lg text-purple-100 font-bold">Выпавшие арканы</h3>
-                    <p class="text-[9px] text-purple-400 italic">Нажмите на рубашку карт, чтобы раскрыть Арканы</p>
-                </div>
-
-                <div class="relative w-full h-64 flex items-center justify-center overflow-hidden my-2" id="ai-cards-fan-container"></div>
-
-                <div class="bg-gradient-to-b from-purple-950/40 to-slate-950/80 border border-indigo-500/15 rounded-2xl p-5 space-y-3.5">
-                    <h5 class="flex items-center gap-2 text-xs font-bold text-indigo-300 border-b border-indigo-900/40 pb-2 uppercase tracking-wide">
-                        <i class="fa-solid fa-scroll"></i> Толкование Оракула
-                    </h5>
-                    <div id="ai-interpretation-text" class="text-xs md:text-sm text-purple-100 leading-relaxed whitespace-pre-line space-y-2"></div>
-                </div>
-
-                <button onclick="resetAiTab()" class="w-full bg-indigo-950/30 border border-indigo-800/40 hover:bg-indigo-950/40 text-indigo-200 font-bold py-3.5 rounded-xl transition active:scale-95 text-xs uppercase tracking-wider">
-                    Задать Другой Вопрос
-                </button>
-            </div>
-
-        </section>
-
-        <!-- ТАБ 3: МАГАЗИН -->
-        <section id="tab-shop" class="hidden space-y-6 flex flex-col justify-center flex-1">
-            <div class="text-center space-y-2 mb-2">
-                <span class="text-xs uppercase font-bold tracking-widest text-amber-400">Священная лавка</span>
-                <h2 class="cinzel text-xl md:text-2xl text-purple-100 font-black">Пополнить баланс энергии</h2>
-                <p class="text-xs text-purple-300 max-w-xs mx-auto">Вы можете в любой момент докупить расклады за Звезды Telegram. Оплата безопасна и обрабатывается в один клик.</p>
-            </div>
-
-            <div class="space-y-3.5">
-                <div class="bg-gradient-to-r from-purple-950/50 to-indigo-950/30 border border-amber-500/20 rounded-2xl p-4 flex items-center justify-between gold-glow">
-                    <div class="flex items-center gap-3">
-                        <div class="text-2xl">🔮</div>
-                        <div>
-                            <h4 class="font-bold text-xs md:text-sm text-purple-100">1 Стандартный расклад</h4>
-                            <p class="text-[9px] text-purple-300">Толкование готового вопроса</p>
-                        </div>
-                    </div>
-                    <button onclick="purchasePack('1_std')" class="bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-400 text-purple-950 font-black px-4 py-2.5 rounded-xl text-xs shadow transition active:scale-95 flex items-center gap-1">
-                        150 <i class="fa-solid fa-star text-[9px]"></i>
-                    </button>
-                </div>
-
-                <div class="bg-gradient-to-r from-purple-950/50 to-indigo-950/30 border border-amber-500/30 rounded-2xl p-4 flex items-center justify-between gold-glow relative overflow-hidden">
-                    <div class="absolute top-0 right-0 bg-red-600 text-[8px] text-white font-extrabold uppercase px-2 py-0.5 rounded-bl-xl tracking-wider">Скидка 10%</div>
-                    <div class="flex items-center gap-3">
-                        <div class="text-2xl">🔮🔮</div>
-                        <div>
-                            <h4 class="font-bold text-xs md:text-sm text-purple-100">Пакет из 5 раскладов</h4>
-                            <p class="text-[9px] text-purple-300">Выгодный запас для регулярных раскладов</p>
-                        </div>
-                    </div>
-                    <button onclick="purchasePack('5_std')" class="bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-400 text-purple-950 font-black px-4 py-2.5 rounded-xl text-xs shadow transition active:scale-95 flex items-center gap-1">
-                        675 <i class="fa-solid fa-star text-[9px]"></i>
-                    </button>
-                </div>
-
-                <div class="bg-gradient-to-r from-indigo-950/50 to-purple-950/30 border border-indigo-500/20 rounded-2xl p-4 flex items-center justify-between shadow-lg relative">
-                    <div class="flex items-center gap-3">
-                        <div class="text-2xl">✨</div>
-                        <div>
-                            <h4 class="font-bold text-xs md:text-sm text-indigo-200">1 Индивидуальный расклад</h4>
-                            <p class="text-[9px] text-purple-300">Глубокий разбор с динамическим вытягиванием карт</p>
-                        </div>
-                    </div>
-                    <button onclick="purchasePack('1_ai')" class="bg-gradient-to-r from-indigo-500 to-purple-600 hover:from-indigo-400 text-white font-black px-4 py-2.5 rounded-xl text-xs shadow transition active:scale-95 flex items-center gap-1">
-                        750 <i class="fa-solid fa-star text-[9px]"></i>
-                    </button>
-                </div>
-            </div>
-        </section>
-
-    </main>
-
-    <!-- ТАББАР / НАВИГАЦИЯ -->
-    <nav class="bg-purple-950/40 border-t border-purple-900/30 fixed bottom-0 left-0 right-0 z-30 backdrop-blur-md">
-        <div class="max-w-md mx-auto grid grid-cols-3 py-2">
-            <button onclick="switchTab('standard')" id="nav-btn-standard" class="flex flex-col items-center justify-center gap-1 py-1 text-amber-400 transition">
-                <i class="fa-solid fa-star-and-crescent text-lg"></i>
-                <span class="text-[10px] font-semibold">Вопросы</span>
-            </button>
-            <button onclick="switchTab('ai')" id="nav-btn-ai" class="flex flex-col items-center justify-center gap-1 py-1 text-purple-400 hover:text-purple-100 transition">
-                <i class="fa-solid fa-wand-magic-sparkles text-lg"></i>
-                <span class="text-[10px] font-semibold">Индивидуальный</span>
-            </button>
-            <button onclick="switchTab('shop')" id="nav-btn-shop" class="flex flex-col items-center justify-center gap-1 py-1 text-purple-400 hover:text-purple-100 transition">
-                <i class="fa-solid fa-basket-shopping text-lg"></i>
-                <span class="text-[10px] font-semibold">Купить</span>
-            </button>
         </div>
-    </nav>
 
-    <!-- Скрипты взаимодействия -->
-    <script>
-        const API_BASE_URL = "https://tarot-backend-136l.onrender.com";
-        let userProfile = null;
-        let selectedQuestionId = null;
+        <!-- Подвал с офертой -->
+        <p class="text-[9px] text-center text-purple-200/30 leading-relaxed px-4 mt-2">
+            Все предсказания носят ознакомительно-развлекательный характер. Нажимая кнопки, вы соглашаетесь с условиями сервиса и оферты.
+        </p>
+    </div>
 
-        // Список готовых стандартных вопросов
-        const questionsList = [
-            { id: 1, text: "Что меня ждет в карьере в ближайший месяц?", category: "Карьера" },
-            { id: 2, text: "Стоит ли мне сейчас менять сферу деятельности?", category: "Финансы" },
-            { id: 3, text: "Каковы перспективы моих финансов в этом сезоне?", category: "Финансы" },
-            { id: 4, text: "Встречу ли я свою истинную любовь в ближайшее время?", category: "Любовь" },
-            { id: 5, text: "Каковы истинные чувства партнера ко мне прямо сейчас?", category: "Отношения" },
-            { id: 6, text: "Что мешает нам построить гармоничные отношения?", category: "Отношения" },
-            { id: 7, text: "В чем моя самая сильная теневая сторона на сегодня?", category: "Тень" },
-            { id: 8, text: "От какой иллюзии мне нужно избавиться прямо сейчас?", category: "Предупреждение" },
-            { id: 9, text: "Какое ключевое событие ждет меня в течение недели?", category: "Будущее" },
-            { id: 10, text: "Какой важный совет Оракул хочет мне передать?", category: "Совет" }
-        ];
+    <!-- 🃏 ЭКРАН 4: ТАИНСТВО РАСКЛАДА (АНИМАЦИЯ И РЕЗУЛЬТАТ) -->
+    <div id="screen-reading" class="hidden relative z-10 flex-1 flex flex-col justify-between p-4 max-w-md mx-auto w-full">
+        
+        <!-- Заголовок -->
+        <div class="text-center py-2">
+            <h2 id="reading-title" class="serif-title text-xl font-bold text-[#D4AF37]">Таинство началось</h2>
+            <p id="reading-subtitle" class="text-[10px] text-purple-200/50 uppercase tracking-widest mt-0.5">Внимайте знакам судьбы</p>
+        </div>
 
-        const tg = window.Telegram?.WebApp;
-        if (tg) {
-            tg.ready();
-            tg.expand();
-        }
-
-        // Возвращает initData Telegram-клиента для авторизации на бэкенде
-        function getAuthHeader() {
-            return tg?.initData || "";
-        }
-
-        const majorArcana = [
-            { id: 0, name: "Дурак", number: "0", symbol: "✴️" },
-            { id: 1, name: "Маг", number: "I", symbol: "🧙‍♂️" },
-            { id: 2, name: "Верховная Жрица", number: "II", symbol: "🌙" },
-            { id: 3, name: "Императрица", number: "III", symbol: "👑" },
-            { id: 4, name: "Император", number: "IV", symbol: "🏛️" },
-            { id: 5, name: "Иерофант", number: "V", symbol: "📜" },
-            { id: 6, name: "Влюбленные", number: "VI", symbol: "💞" },
-            { id: 7, name: "Колесница", number: "VII", symbol: "🏇" },
-            { id: 8, name: "Сила", number: "VIII", symbol: "🦁" },
-            { id: 9, name: "Отшельник", number: "IX", symbol: "🕯️" },
-            { id: 10, name: "Колесо Фортуны", number: "X", symbol: "🌀" },
-            { id: 11, name: "Справедливость", number: "XI", symbol: "⚖️" },
-            { id: 12, name: "Повешенный", number: "XII", symbol: "⏳" },
-            { id: 13, name: "Смерть", number: "XIII", symbol: "💀" },
-            { id: 14, name: "Умеренность", number: "XIV", symbol: "🏺" },
-            { id: 15, name: "Дьявол", number: "XV", symbol: "🔥" },
-            { id: 16, name: "Башня", number: "XVI", symbol: "⚡" },
-            { id: 17, name: "Звезда", number: "XVII", symbol: "🌟" },
-            { id: 18, name: "Луна", number: "XVIII", symbol: "🌔" },
-            { id: 19, name: "Солнце", number: "XIX", symbol: "☀️" },
-            { id: 20, name: "Суд", number: "XX", symbol: "🔔" },
-            { id: 21, name: "Мир", number: "XXI", symbol: "🌍" }
-        ];
-
-        const suitsMeta = {
-            "Кубки": { name: "Кубков", type: "Кубки", symbol: "🏆" },
-            "Мечи": { name: "Мечей", type: "Мечи", symbol: "⚔️" },
-            "Жезлы": { name: "Жезлов", type: "Жезлы", symbol: "🔥" },
-            "Пентакли": { name: "Пентаклей", type: "Пентакли", symbol: "🪙" }
-        };
-        const ranksMeta = ["Туз", "Двойка", "Тройка", "Четверка", "Пятерка", "Шестерка", "Семерка", "Восьмерка", "Девятка", "Десятка", "Паж", "Рыцарь", "Королева", "Король"];
-
-        function getCardInfo(cardId) {
-            if (cardId < 22) {
-                return {
-                    id: cardId,
-                    name: "Старший Аркан: " + majorArcana[cardId].name,
-                    number: majorArcana[cardId].number,
-                    symbol: majorArcana[cardId].symbol,
-                    type: "Старший Аркан"
-                };
-            }
-            let relativeId = cardId - 22;
-            let suitKeys = Object.keys(suitsMeta);
-            let suitKey = suitKeys[Math.floor(relativeId / 14)];
-            let rankIndex = relativeId % 14;
+        <!-- Анимационный блок карт -->
+        <div class="flex-1 flex flex-col justify-center items-center my-4">
             
-            let rank = ranksMeta[rankIndex];
-            let suit = suitsMeta[suitKey];
-            
-            return {
-                id: cardId,
-                name: `${rank} ${suit.name}`,
-                number: rankIndex + 1,
-                symbol: suit.symbol,
-                type: suit.type
-            };
-        }
+            <!-- Лоадер во время запроса к ИИ -->
+            <div id="reading-shuffling" class="flex flex-col items-center text-center space-y-4">
+                <div class="relative">
+                    <div class="w-16 h-16 rounded-full border-2 border-t-[#D4AF37] border-b-[#D4AF37]/10 animate-spin"></div>
+                    <span class="absolute inset-0 flex items-center justify-center text-xl animate-bounce">✨</span>
+                </div>
+                <p class="text-xs text-purple-200/70 italic max-w-[250px] leading-relaxed">
+                    Карты тасуются, ИИ-Оракул проникает в суть вашего вопроса...
+                </p>
+            </div>
 
-        function getCardInterpretation(card, category) {
-            const cardName = card.name;
-            const hash = card.id % 3;
-            
-            const loveTemplates = [
-                `В вопросах сердца Аркан «${cardName}» предвещает период искренних откровений. Эта карта призывает вас обратить внимание на скрытые мотивы партнера и довериться зову интуиции. Впереди важный эмоциональный выбор.`,
-                `Аркан «${cardName}» символизирует глубокую душевную связь и обновление чувств. Прошлые обиды уходят, уступая место гармонии и взаимопониманию. Будьте готовы открыть свое сердце навстречу переменам.`,
-                `Эта карта несет в себе энергию страсти и осознанности. Оракул рекомендует не торопить события: позвольте чувствам созреть. Взаимное уважение и честность станут ключом к крепкому союзу.`
-            ];
-            
-            const careerTemplates = [
-                `В сфере работы и финансов Аркан «${cardName}» указывает на необходимость чёткого планирования. Сейчас идеальное время для запуска новых проектов и структурирования ваших текущих дел. Успех придет через дисциплину.`,
-                `Карта «${cardName}» знаменует период материального роста и заслуженного признания. Ваши усилия будут замечены руководством. Рекомендуется разумно распределять доходы и избегать спонтанных трат.`,
-                `Энергия этого Аркана благоприятствует смелым решениям и получению новых знаний. Оракул советует проявить инициативу и не бояться брать на себя лидерские роли — фортуна благоволит смелым.`
-            ];
-            
-            const adviceTemplates = [
-                `Мудрый совет Оракула при выпадении Аркана «${cardName}»: сохраняйте внутреннее спокойствие и равновесие. Не поддавайтесь внешнему шуму, все самые важные ответы уже находятся внутри вашего разума.`,
-                `Этот Аркан призывает вас отпустить старое и расчистить место для нового жизненного этапа. Позвольте событиям развиваться естественным путем, проявляя доверие к миру и гибкость решений.`,
-                `Карта рекомендует проявить твердость характера и действовать в соответствии со своими истинными ценностями. Будьте верны себе, и обстоятельства сложатся наилучшим для вас образом.`
-            ];
-            
-            if (["Карьера", "Финансы"].includes(category)) {
-                return careerTemplates[hash];
-            } else if (["Любовь", "Отношения"].includes(category)) {
-                return loveTemplates[hash];
-            } else {
-                return adviceTemplates[hash];
-            }
-        }
+            <!-- Контейнер для отображения выпавших карт -->
+            <div id="cards-display" class="hidden flex flex-wrap justify-center gap-4 w-full px-2">
+                <!-- Сюда JS динамически добавит карты с 3D-переворотом -->
+            </div>
 
-        // Генерация SVG-рубашки/лица карты для идеального визуала
-        function generateCardSVG(cardId) {
-            const card = getCardInfo(cardId);
-            const isMajor = card.type === "Старший Аркан";
-            const color = isMajor ? "#f59e0b" : "#818cf8";
-            
-            return `
-            <svg viewBox="0 0 100 150" class="w-full h-full" xmlns="http://www.w3.org/2000/svg">
-                <rect width="100" height="150" rx="8" fill="#0f0720" stroke="${color}" stroke-width="1.5" />
-                <rect x="3" y="3" width="94" height="144" rx="6" fill="none" stroke="${color}" stroke-width="0.5" stroke-dasharray="2 1" />
-                <circle cx="50" cy="75" r="28" fill="none" stroke="${color}" stroke-width="0.5" opacity="0.3" />
-                <circle cx="50" cy="75" r="20" fill="none" stroke="${color}" stroke-width="0.7" opacity="0.5" />
-                <path d="M 50 15 L 50 135 M 15 75 L 85 75" stroke="${color}" stroke-width="0.3" opacity="0.2"/>
-                <text x="50" y="81" font-size="22" text-anchor="middle" dominant-baseline="middle">${card.symbol}</text>
-                <text x="50" y="20" font-size="7" fill="${color}" font-family="Cinzel" text-anchor="middle" font-weight="bold">${isMajor ? card.number : card.name.split(' ')[0]}</text>
-                <text x="50" y="132" font-size="5" fill="#e2e8f0" text-anchor="middle" font-weight="semibold">${card.name}</text>
-                <text x="50" y="140" font-size="4.5" fill="${color}" text-anchor="middle" font-weight="normal" letter-spacing="0.5">${card.type}</text>
-            </svg>
-            `;
-        }
+        </div>
 
-        // =====================================================================
-        // СИСТЕМА УВЕДОМЛЕНИЙ (TOAST)
-        // =====================================================================
-        function showToast(text, isError = false) {
-            const container = document.getElementById("toast-container");
-            const box = document.getElementById("toast-box");
-            const icon = document.getElementById("toast-icon");
-            const textEl = document.getElementById("toast-text");
+        <!-- Свиток с толкованием -->
+        <div id="reading-result-box" class="hidden bg-[#1A0B2E]/80 border border-[#D4AF37]/20 rounded-2xl p-4 max-h-[220px] overflow-y-auto backdrop-blur-md mb-4 shadow-xl">
+            <h3 class="serif-title text-sm text-[#D4AF37] font-bold mb-2 flex items-center space-x-2">
+                <span>🔮</span> <span>Толкование Оракула:</span>
+            </h3>
+            <p id="reading-text" class="text-xs text-purple-100/90 leading-relaxed whitespace-pre-wrap">
+                ...
+            </p>
+        </div>
 
-            textEl.innerText = text;
-            if (isError) {
-                box.className = "bg-red-950/95 border border-red-500/50 rounded-xl p-4 shadow-2xl flex items-center gap-3";
-                icon.className = "fas fa-circle-exclamation text-red-400 text-xl";
-            } else {
-                box.className = "bg-purple-950/95 border border-amber-500/50 rounded-xl p-4 shadow-2xl flex items-center gap-3";
-                icon.className = "fas fa-circle-info text-amber-400 text-xl";
-            }
+        <!-- Кнопки действий -->
+        <button id="btn-back-dashboard" onclick="backToDashboard()" class="hidden w-full bg-[#1F103A] border border-[#D4AF37]/30 text-[#D4AF37] hover:bg-[#D4AF37] hover:text-black font-bold py-3.5 rounded-xl text-xs transition-all tracking-wider uppercase active:scale-95 mb-2">
+            Вернуться в храм
+        </button>
+    </div>
 
-            container.classList.remove("opacity-0", "translate-y-[-20px]");
-            container.classList.add("opacity-100", "translate-y-0");
+    <!-- 🏬 МОДАЛЬНОЕ ОКНО: МАГАЗИН ЭНЕРГИИ (TG STARS) -->
+    <div id="modal-store" class="hidden fixed inset-0 bg-black/80 backdrop-blur-sm z-40 flex items-end justify-center">
+        <!-- Клик снаружи закрывает -->
+        <div class="absolute inset-0" onclick="closeStore()"></div>
+        
+        <div class="relative z-10 w-full max-w-md bg-gradient-to-t from-[#0A0514] to-[#1A0B2E] border-t border-[#D4AF37]/30 rounded-t-[30px] p-6 space-y-5 shadow-2xl">
+            <div class="flex justify-between items-center">
+                <div>
+                    <h3 class="serif-title text-xl font-bold text-[#D4AF37]">Пополнение энергии</h3>
+                    <p class="text-[10px] text-purple-200/50 uppercase tracking-widest">Официальные тарифы в Telegram Stars</p>
+                </div>
+                <button onclick="closeStore()" class="w-8 h-8 rounded-full bg-purple-950/50 flex items-center justify-center text-purple-200 border border-purple-900/40 hover:text-white transition-all">
+                    ✕
+                </button>
+            </div>
 
-            setTimeout(() => {
-                container.classList.remove("opacity-100", "translate-y-0");
-                container.classList.add("opacity-0", "translate-y-[-20px]");
-            }, 3500);
-        }
-
-        // =====================================================================
-        // ИНИЦИАЛИЗАЦИЯ И БЕСШОВНЫЙ ВХОД С ТЕЛЕГРАМ-ДАННЫМИ
-        // =====================================================================
-        async function checkAndAutoRegister() {
-            try {
-                const response = await fetch(`${API_BASE_URL}/api/user/profile`, {
-                    headers: { "Authorization": getAuthHeader() }
-                });
-                const data = await response.json();
-
-                if (data.registered) {
-                    userProfile = data;
-                }
-
-                document.getElementById("user-display-name").innerText = userProfile.name;
-                updateBalanceUI();
-            } catch (e) {
-                console.error(e);
-                showToast("Используется тестовый режим.", false);
-                userProfile = { registered: true, name: "Тестовый Искатель", balance: 1, ai_balance: 0 };
-                document.getElementById("user-display-name").innerText = userProfile.name;
-                updateBalanceUI();
-            } finally {
-                document.getElementById("main-loader").classList.add("hidden");
-            }
-        }
-
-        function updateBalanceUI() {
-            if (userProfile) {
-                document.getElementById("std-balance-count").innerText = userProfile.balance;
-                document.getElementById("ai-balance-count").innerText = userProfile.ai_balance;
-            }
-        }
-
-        function switchTab(tabId) {
-            document.getElementById("tab-standard").classList.add("hidden");
-            document.getElementById("tab-ai").classList.add("hidden");
-            document.getElementById("tab-shop").classList.add("hidden");
-
-            document.getElementById(`tab-${tabId}`).classList.remove("hidden");
-
-            const navButtons = ["standard", "ai", "shop"];
-            navButtons.forEach(btnId => {
-                const btn = document.getElementById(`nav-btn-${btnId}`);
-                if (btnId === tabId) {
-                    btn.classList.remove("text-purple-400", "hover:text-purple-100");
-                    btn.classList.add("text-amber-400");
-                } else {
-                    btn.classList.remove("text-amber-400");
-                    btn.classList.add("text-purple-400", "hover:text-purple-100");
-                }
-            });
-        }
-
-        // =====================================================================
-        // ТАБ 1: СТАНДАРТНЫЙ РАСКЛАД
-        // =====================================================================
-        function renderQuestions() {
-            const grid = document.getElementById("questions-grid");
-            grid.innerHTML = "";
-            questionsList.forEach(q => {
-                const item = document.createElement("button");
-                item.className = "w-full text-left bg-purple-950/40 border border-purple-900/40 hover:border-amber-500/30 rounded-xl p-3.5 flex items-center justify-between transition active:scale-[0.98]";
-                item.onclick = () => selectQuestion(q.id);
-                item.innerHTML = `
-                    <div class="flex items-center gap-3">
-                        <span class="text-xs">${getCategoryIcon(q.category)}</span>
-                        <p class="text-xs font-medium text-purple-100">${q.text}</p>
+            <!-- Список товаров -->
+            <div class="space-y-3">
+                
+                <!-- Пакет 1 -->
+                <div class="flex items-center justify-between bg-[#0F081D]/60 border border-purple-900/50 rounded-2xl p-4 hover:border-[#D4AF37]/30 transition-all">
+                    <div class="flex items-center space-x-3">
+                        <span class="text-2xl">🃏</span>
+                        <div>
+                            <h4 class="font-bold text-xs text-white">1 Стандартный расклад</h4>
+                            <p class="text-[10px] text-purple-200/50">Быстрое прояснение дня</p>
+                        </div>
                     </div>
-                    <i class="fa-solid fa-chevron-right text-[10px] text-purple-500"></i>
-                `;
-                grid.appendChild(item);
-            });
-        }
+                    <!-- Восстановлена оригинальная цена 150 -->
+                    <button onclick="buyPack('1_std')" class="bg-gradient-to-r from-yellow-500 to-[#D4AF37] hover:from-[#D4AF37] hover:to-yellow-500 text-black font-bold px-4 py-2 rounded-xl text-xs flex items-center space-x-1.5 shadow active:scale-95">
+                        <span>⭐</span> <span class="font-bold">150</span>
+                    </button>
+                </div>
 
-        function getCategoryIcon(cat) {
-            switch(cat) {
-                case "Карьера": return "💼";
-                case "Финансы": return "🪙";
-                case "Любовь": return "❤️";
-                case "Отношения": return "🤝";
-                case "Тень": return "🌘";
-                case "Предупреждение": return "⚠️";
-                case "Будущее": return "🔮";
-                default: return "✨";
+                <!-- Пакет 2 -->
+                <div class="flex items-center justify-between bg-[#0F081D]/60 border border-[#D4AF37]/20 rounded-2xl p-4 hover:border-[#D4AF37]/50 transition-all gold-glow">
+                    <div class="flex items-center space-x-3">
+                        <span class="text-2xl">🔮</span>
+                        <div>
+                            <h4 class="font-bold text-xs text-white">Пакет из 5 раскладов</h4>
+                            <p class="text-[10px] text-[#D4AF37] font-semibold">Скидка 10% для постоянных искателей</p>
+                        </div>
+                    </div>
+                    <!-- Восстановлена оригинальная цена 675 -->
+                    <button onclick="buyPack('5_std')" class="bg-gradient-to-r from-yellow-500 to-[#D4AF37] hover:from-[#D4AF37] hover:to-yellow-500 text-black font-bold px-4 py-2 rounded-xl text-xs flex items-center space-x-1.5 shadow active:scale-95">
+                        <span>⭐</span> <span class="font-bold">675</span>
+                    </button>
+                </div>
+
+                <!-- Пакет 3 -->
+                <div class="flex items-center justify-between bg-[#0F081D]/60 border border-purple-900/50 rounded-2xl p-4 hover:border-[#D4AF37]/30 transition-all">
+                    <div class="flex items-center space-x-3">
+                        <span class="text-2xl">🧠</span>
+                        <div>
+                            <h4 class="font-bold text-xs text-white">1 Индивидуальный ИИ</h4>
+                            <p class="text-[10px] text-purple-200/50">Детальный разбор вашей судьбы</p>
+                        </div>
+                    </div>
+                    <!-- Восстановлена оригинальная цена 750 -->
+                    <button onclick="buyPack('1_ai')" class="bg-gradient-to-r from-yellow-500 to-[#D4AF37] hover:from-[#D4AF37] hover:to-yellow-500 text-black font-bold px-4 py-2 rounded-xl text-xs flex items-center space-x-1.5 shadow active:scale-95">
+                        <span>⭐</span> <span class="font-bold">750</span>
+                    </button>
+                </div>
+
+            </div>
+
+            <p class="text-[9px] text-center text-purple-200/40 leading-relaxed px-4">
+                Платеж обрабатывается официально через шлюз Telegram Stars. Звезды зачисляются на баланс бота моментально после оплаты.
+            </p>
+        </div>
+    </div>
+
+    <!-- =====================================================================
+         ИНТЕЛЛЕКТУАЛЬНАЯ ЛОГИКА (JAVASCRIPT)
+         ===================================================================== -->
+    <script>
+        // Конфигурация связи с бэкендом
+        const BACKEND_URL = "https://tarot-backend-136l.onrender.com";
+        
+        // Инициализация Telegram WebApp
+        const tg = window.Telegram.WebApp;
+        tg.ready();
+        tg.expand();
+        
+        const initData = tg.initData || "";
+        let userProfile = null;
+
+        // База изображений рубашек и лицевой стороны карт (Генераторы красивых градиентов для надежности без внешних картинок)
+        const getCardDesign = (cardName) => {
+            return `
+                <div class="w-full h-full rounded-2xl bg-gradient-to-b from-[#11041F] to-[#25093A] border-2 border-[#D4AF37]/50 flex flex-col justify-between p-3 text-center shadow-xl relative overflow-hidden">
+                    <div class="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(212,175,55,0.08)_0%,transparent_100%)]"></div>
+                    <div class="text-[9px] text-[#D4AF37]/50 uppercase tracking-wider">Оракул Таро</div>
+                    <div class="flex-1 flex flex-col items-center justify-center my-2">
+                        <span class="text-4xl mb-2 filter drop-shadow-[0_0_10px_rgba(212,175,55,0.3)]">✨</span>
+                        <div class="serif-title text-sm font-bold text-white leading-tight px-1">${cardName}</div>
+                    </div>
+                    <div class="text-[9px] text-[#D4AF37]/50 uppercase tracking-widest">Судьба</div>
+                </div>
+            `;
+        };
+
+        const getBacksideDesign = () => {
+            return `
+                <div class="w-full h-full rounded-2xl bg-gradient-to-b from-[#1A0B2E] via-[#0F081D] to-[#1A0B2E] border-2 border-dashed border-[#D4AF37]/30 flex flex-col items-center justify-center p-3 text-center shadow-xl relative">
+                    <div class="absolute inset-2 border border-[#D4AF37]/10 rounded-xl flex flex-col items-center justify-center">
+                        <span class="text-3xl animate-float">🔮</span>
+                        <div class="text-[7px] text-[#D4AF37]/40 uppercase tracking-widest mt-2">Прикоснитесь для переворота</div>
+                    </div>
+                </div>
+            `;
+        };
+
+        // Запуск при загрузке страницы
+        window.onload = async () => {
+            lucide.createIcons();
+            await fetchUserProfile();
+        };
+
+        // Шаг 1. Получение профиля пользователя
+        async function fetchUserProfile() {
+            try {
+                const response = await fetch(`${BACKEND_URL}/api/user/profile`, {
+                    headers: { "Authorization": initData }
+                });
+                if (response.ok) {
+                    userProfile = await response.json();
+                    updateUIBalances();
+                    
+                    // Если пользователь вошел впервые или не заполнен onboarding
+                    const isNew = !localStorage.getItem("tarot_onboarded_v2");
+                    document.getElementById("screen-loading").classList.add("hidden");
+                    
+                    if (isNew) {
+                        document.getElementById("screen-onboarding").classList.remove("hidden");
+                    } else {
+                        document.getElementById("screen-dashboard").classList.remove("hidden");
+                    }
+                } else {
+                    showError("Сбой связи. Пожалуйста, перезапустите бота.");
+                }
+            } catch (err) {
+                console.error(err);
+                showError("Не удалось связаться с Оракулом. Проверьте интернет.");
             }
         }
 
-        function selectQuestion(qId) {
-            selectedQuestionId = qId;
-            const q = questionsList.find(item => item.id === qId);
-            document.getElementById("active-question-title").innerText = `«${q.text}»`;
+        // Обновление цифр на экране
+        function updateUIBalances() {
+            if (!userProfile) return;
+            document.getElementById("display-name").innerText = userProfile.name || "Искатель";
+            document.getElementById("display-balance").innerText = userProfile.balance;
+            document.getElementById("display-ai-balance").innerText = userProfile.ai_balance;
             
-            document.getElementById("std-step-choose").classList.add("hidden");
-            document.getElementById("std-step-shuffle").classList.remove("hidden");
+            // Предзаполняем имя на экране онбординга если есть
+            document.getElementById("user-name").value = userProfile.name || "";
         }
 
-        function returnToQuestions() {
-            document.getElementById("std-step-shuffle").classList.add("hidden");
-            document.getElementById("std-step-result").classList.add("hidden");
-            document.getElementById("std-step-choose").classList.remove("hidden");
-        }
+        // Сабмит онбординга
+        function submitOnboarding() {
+            const name = document.getElementById("user-name").value.trim();
+            const email = document.getElementById("user-email").value.trim();
+            const consent = document.getElementById("user-consent").checked;
 
-        function startShufflingAndReveal() {
-            if (userProfile.balance < 1) {
-                showToast("Недостаточно энергии. Пополните баланс в Магазине.", true);
-                switchTab("shop");
+            if (!name) {
+                tg.showAlert("Пожалуйста, введите ваше имя для Оракула.");
+                return;
+            }
+            if (!consent) {
+                tg.showAlert("Пожалуйста, примите согласие на обработку данных.");
                 return;
             }
 
-            const btn = document.getElementById("btn-start-shuffle");
-            btn.disabled = true;
-            btn.innerText = "Тасование...";
-
-            document.getElementById("deck-card-left").classList.add("animate-shuffle-1");
-            document.getElementById("deck-card-right").classList.add("animate-shuffle-2");
-
-            setTimeout(async () => {
-                try {
-                    const res = await fetch(`${API_BASE_URL}/api/user/use-reading`, {
-                        method: "POST",
-                        headers: { "Authorization": getAuthHeader() }
-                    });
-                    const data = await res.json();
-                    if (!res.ok || !data.success) throw new Error(data.detail || "Списание не удалось");
-
-                    userProfile.balance = data.new_balance;
-                    updateBalanceUI();
-
-                    const randomId = Math.floor(Math.random() * 78);
-                    const card = getCardInfo(randomId);
-
-                    const activeQ = questionsList.find(item => item.id === selectedQuestionId);
-                    const category = activeQ ? activeQ.category : "Совет";
-                    
-                    const resultInterpretation = getCardInterpretation(card, category);
-
-                    document.getElementById("result-card-art").innerHTML = generateCardSVG(randomId);
-                    document.getElementById("result-card-name").innerText = card.name;
-                    document.getElementById("result-card-type-desc").innerText = `${card.type} • Оракул`;
-                    document.getElementById("result-card-text").innerHTML = `
-                        <p class="font-bold text-amber-300">Прямое положение:</p>
-                        <p>${resultInterpretation}</p>
-                    `;
-
-                    document.getElementById("std-step-shuffle").classList.add("hidden");
-                    document.getElementById("std-step-result").classList.remove("hidden");
-
-                } catch (e) {
-                    showToast(`Ошибка: ${e.message}`, true);
-                } finally {
-                    document.getElementById("deck-card-left").classList.remove("animate-shuffle-1");
-                    document.getElementById("deck-card-right").classList.remove("animate-shuffle-2");
-                    btn.disabled = false;
-                    btn.innerText = "Перемешать и вытянуть";
-                }
-            }, 2500);
+            localStorage.setItem("tarot_onboarded_v2", "true");
+            userProfile.name = name;
+            updateUIBalances();
+            
+            document.getElementById("screen-onboarding").classList.add("hidden");
+            document.getElementById("screen-dashboard").classList.remove("hidden");
+            
+            if (tg.HapticFeedback) {
+                tg.HapticFeedback.notificationOccurred("success");
+            }
         }
 
-        // =====================================================================
-        // ТАБ 2: ИНДИВИДУАЛЬНЫЙ РАСКЛАД (ИИ)
-        // =====================================================================
+        // Включение магазинов
+        function openStore() {
+            document.getElementById("modal-store").classList.remove("hidden");
+        }
+        function closeStore() {
+            document.getElementById("modal-store").classList.add("hidden");
+        }
+
+        // Покупка пакета за Telegram Stars
+        async function buyPack(packId) {
+            closeStore();
+            document.getElementById("screen-loading").classList.remove("hidden");
+            document.getElementById("loading-text").innerText = "Подготовка священного счета для оплаты...";
+
+            try {
+                const response = await fetch(`${BACKEND_URL}/api/payment/stars-invoice`, {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                        "Authorization": initData
+                    },
+                    body: JSON.stringify({ pack: packId })
+                });
+
+                document.getElementById("screen-loading").classList.add("hidden");
+
+                if (response.ok) {
+                    const data = await response.json();
+                    if (data.invoice_link) {
+                        tg.openInvoice(data.invoice_link, async function(status) {
+                            if (status === "paid") {
+                                tg.showPopup({
+                                    title: "Успешная сонастройка!",
+                                    message: "Энергия зачислена на ваш баланс. Оракул готов к работе.",
+                                    buttons: [{ type: "ok" }]
+                                });
+                                // Обновляем профиль
+                                document.getElementById("screen-loading").classList.remove("hidden");
+                                await fetchUserProfile();
+                            } else {
+                                tg.showAlert("Оплата отменена или произошел сбой. Энергия не списана.");
+                            }
+                        });
+                    }
+                } else {
+                    const errData = await response.json();
+                    tg.showAlert(`Ошибка биллинга Telegram: ${errData.detail || "Неизвестный статус"}`);
+                }
+            } catch (err) {
+                document.getElementById("screen-loading").classList.add("hidden");
+                tg.showAlert("Ошибка соединения с платежным шлюзом.");
+            }
+        }
+
+        // СБРОС К ДАШБОРДУ
+        function backToDashboard() {
+            document.getElementById("screen-reading").classList.add("hidden");
+            document.getElementById("screen-dashboard").classList.remove("hidden");
+        }
+
+        // ОШИБКА
+        function showError(msg) {
+            document.getElementById("screen-loading").classList.remove("hidden");
+            document.getElementById("loading-text").innerHTML = `<span class="text-red-400 font-semibold">${msg}</span>`;
+        }
+
+        // РАСКЛАД 1: КАРТА ДНЯ (ЛОКАЛЬНАЯ ЭНЕРГИЯ)
+        async function startStandardReading() {
+            if (userProfile.balance < 1) {
+                openStore();
+                tg.showAlert("Недостаточно стандартных раскладов на балансе. Пожалуйста, пополните энергию.");
+                return;
+            }
+
+            document.getElementById("screen-dashboard").classList.add("hidden");
+            document.getElementById("screen-reading").classList.remove("hidden");
+            
+            document.getElementById("reading-title").innerText = "Карта Дня";
+            document.getElementById("reading-shuffling").classList.remove("hidden");
+            document.getElementById("cards-display").classList.add("hidden");
+            document.getElementById("reading-result-box").classList.add("hidden");
+            document.getElementById("btn-back-dashboard").classList.add("hidden");
+
+            // Запрос на списание баланса
+            try {
+                const response = await fetch(`${BACKEND_URL}/api/user/use-reading`, {
+                    method: "POST",
+                    headers: { "Authorization": initData }
+                });
+
+                if (response.ok) {
+                    const resData = await response.json();
+                    userProfile.balance = resData.new_balance;
+                    updateUIBalances();
+
+                    // Имитируем тасование карт 2 секунды
+                    await new Promise(r => setTimeout(r, 2000));
+
+                    // Вытягиваем случайную карту локально из списка
+                    const deck = [
+                        "Дурак", "Маг", "Верховная Жрица", "Императрица", "Император", "Иерофант", 
+                        "Влюбленные", "Колесница", "Сила", "Отшельник", "Колесо Фортуны", "Справедливость", 
+                        "Повешенный", "Смерть", "Умеренность", "Дьявол", "Башня", "Звезда", "Луна", 
+                        "Солнце", "Суд", "Мир", "Туз Кубков", "Двойка Кубков", "Тройка Кубков", "Королева Пентаклей", "Король Жезлов", "Туз Мечей"
+                    ];
+                    const randomCard = deck[Math.floor(Math.random() * deck.length)];
+
+                    // Генерируем красивое толкование
+                    const text = `🔮 Вы вытянули карту дня: "${randomCard}".\n\nЭтот день принесет вам важные осознания. Карта указывает на необходимость прислушаться к своей внутренней интуиции и не делать поспешных шагов. Вселенная направляет вас мягко — доверьтесь текущему течению событий.`;
+
+                    renderSingleCard(randomCard, text);
+                } else {
+                    tg.showAlert("Не удалось списать баланс. Попробуйте еще раз.");
+                    backToDashboard();
+                }
+            } catch (err) {
+                tg.showAlert("Ошибка соединения с сервером.");
+                backToDashboard();
+            }
+        }
+
+        // РАСКЛАД 2: ГЛУБОКИЙ ИИ-РАСКЛАД (С ПРЯМЫМ СВЯЗЫВАНИЕМ С GEMINI)
         async function startAiReading() {
-            const question = document.getElementById("ai-question-input").value.trim();
+            const question = document.getElementById("ai-question").value.trim();
             if (!question) {
-                showToast("Пожалуйста, опишите вашу ситуацию.", true);
+                tg.showAlert("Пожалуйста, введите ваш сокровенный вопрос в текстовое поле.");
                 return;
             }
 
             if (userProfile.ai_balance < 1) {
-                showToast("Недостаточно энергии индивидуального расклада ✨.", true);
-                switchTab("shop");
+                openStore();
+                tg.showAlert("Недостаточно AI энергии на балансе. Пожалуйста, пополните энергию.");
                 return;
             }
 
-            document.getElementById("ai-step-setup").classList.add("hidden");
-            document.getElementById("ai-step-loading").classList.remove("hidden");
+            // Прячем клавиатуру на мобильных
+            document.activeElement.blur();
+
+            document.getElementById("screen-dashboard").classList.add("hidden");
+            document.getElementById("screen-reading").classList.remove("hidden");
+            
+            document.getElementById("reading-title").innerText = "Расклад Оракула";
+            document.getElementById("reading-shuffling").classList.remove("hidden");
+            document.getElementById("cards-display").classList.add("hidden");
+            document.getElementById("reading-result-box").classList.add("hidden");
+            document.getElementById("btn-back-dashboard").classList.add("hidden");
 
             try {
-                const res = await fetch(`${API_BASE_URL}/api/user/use-ai-reading`, {
+                // Вызов ИИ бэкенда
+                const response = await fetch(`${BACKEND_URL}/api/user/use-ai-reading`, {
                     method: "POST",
                     headers: {
                         "Content-Type": "application/json",
-                        "Authorization": getAuthHeader()
+                        "Authorization": initData
                     },
-                    body: JSON.stringify({
-                        question: question
-                    })
+                    body: JSON.stringify({ question: question })
                 });
 
-                const data = await res.json();
-                if (!res.ok) throw new Error(data.detail || "Произошла ошибка связи");
+                if (response.ok) {
+                    const data = await response.json();
+                    
+                    // Обновляем AI баланс
+                    userProfile.ai_balance = data.new_ai_balance;
+                    updateUIBalances();
 
-                userProfile.ai_balance = data.new_ai_balance;
-                updateBalanceUI();
+                    // Очищаем текстовое поле
+                    document.getElementById("ai-question").value = "";
 
-                renderAiCardsFan(data.cards);
-
-                document.getElementById("ai-interpretation-text").innerText = data.text;
-
-                document.getElementById("ai-step-loading").classList.add("hidden");
-                document.getElementById("ai-step-result").classList.remove("hidden");
-
-            } catch (e) {
-                showToast(`Ошибка: ${e.message}`, true);
-                document.getElementById("ai-step-loading").classList.add("hidden");
-                document.getElementById("ai-step-setup").classList.remove("hidden");
+                    // Рендерим 3 карты, полученные от Gemini
+                    renderMultipleCards(data.cards, data.text);
+                } else {
+                    const errData = await response.json();
+                    tg.showAlert(`Ошибка бэкенда: ${errData.detail || "Оракул перегружен космической пылью"}`);
+                    backToDashboard();
+                }
+            } catch (err) {
+                tg.showAlert("Ошибка связи с космическим сервером.");
+                backToDashboard();
             }
         }
 
-        function renderAiCardsFan(cards) {
-            const container = document.getElementById("ai-cards-fan-container");
+        // Отрисовка одной карты с красивым флип-эффектом
+        function renderSingleCard(cardName, text) {
+            document.getElementById("reading-shuffling").classList.add("hidden");
+            const container = document.getElementById("cards-display");
             container.innerHTML = "";
-            
-            const total = cards.length;
-            cards.forEach((card, index) => {
-                const mid = (total - 1) / 2;
-                const angle = (index - mid) * 12;
-                const shiftY = Math.abs(index - mid) * 5; 
+            container.classList.remove("hidden");
 
-                const cardBox = document.createElement("div");
-                cardBox.className = "absolute w-28 h-40 perspective-1000 transform transition-all duration-500 hover:scale-110 hover:z-30";
-                cardBox.style.transform = `rotate(${angle}deg) translateY(${shiftY}px)`;
-                cardBox.style.left = `calc(50% - 56px + ${(index - mid) * 35}px)`;
-
-                cardBox.innerHTML = `
-                    <div class="card-inner w-full h-full" id="fan-card-${index}" onclick="flipFanCard(${index})">
-                        <!-- Рубашка -->
-                        <div class="card-front bg-gradient-to-br from-indigo-950 to-slate-900 border border-indigo-500/40 rounded-xl p-2 flex flex-col justify-between items-center gold-glow">
-                            <span class="text-[8px] text-indigo-400">✨</span>
-                            <div class="w-10 h-10 rounded-full border border-indigo-500/10 flex items-center justify-center">
-                                <i class="fa-solid fa-star-of-david text-indigo-400/20 text-sm animate-pulse"></i>
-                            </div>
-                            <span class="text-[8px] text-indigo-400">✨</span>
+            const cardHtml = `
+                <div class="card-container w-44 h-72 cursor-pointer" onclick="flipCard(this)">
+                    <div class="card-inner w-full h-full relative duration-700">
+                        <div class="card-front w-full h-full">
+                            ${getBacksideDesign()}
                         </div>
-                        <!-- Лицо -->
-                        <div class="card-back bg-slate-900 rounded-xl overflow-hidden">
-                            ${generateCardSVG(card.id)}
+                        <div class="card-back w-full h-full">
+                            ${getCardDesign(cardName)}
+                        </div>
+                    </div>
+                </div>
+            `;
+            container.innerHTML = cardHtml;
+
+            // Показываем текст после переворота
+            document.getElementById("reading-text").innerText = text;
+            setTimeout(() => {
+                const card = container.querySelector(".card-inner");
+                card.classList.add("card-flipped");
+                if (tg.HapticFeedback) tg.HapticFeedback.impactOccurred("medium");
+                
+                // Плавно проявляем текст
+                setTimeout(() => {
+                    document.getElementById("reading-result-box").classList.remove("hidden");
+                    document.getElementById("btn-back-dashboard").classList.remove("hidden");
+                }, 1000);
+            }, 800);
+        }
+
+        // Отрисовка 3 ИИ карт
+        function renderMultipleCards(cardsArray, resultText) {
+            document.getElementById("reading-shuffling").classList.add("hidden");
+            const container = document.getElementById("cards-display");
+            container.innerHTML = "";
+            container.classList.remove("hidden");
+
+            cardsArray.forEach((card, idx) => {
+                const cardHtml = `
+                    <div class="card-container w-28 h-48 cursor-pointer" onclick="flipCard(this)">
+                        <div class="card-inner w-full h-full relative duration-700">
+                            <div class="card-front w-full h-full">
+                                ${getBacksideDesign()}
+                            </div>
+                            <div class="card-back w-full h-full">
+                                ${getCardDesign(card.name)}
+                            </div>
                         </div>
                     </div>
                 `;
-                container.appendChild(cardBox);
+                container.innerHTML += cardHtml;
             });
+
+            // Автоматический переворот карт по очереди с haptic-откликом
+            const cardInners = container.querySelectorAll(".card-inner");
+            cardInners.forEach((card, idx) => {
+                setTimeout(() => {
+                    card.classList.add("card-flipped");
+                    if (tg.HapticFeedback) tg.HapticFeedback.impactOccurred("light");
+                }, 600 + (idx * 500));
+            });
+
+            // Показываем текст толкования ИИ
+            document.getElementById("reading-text").innerText = resultText;
+            setTimeout(() => {
+                document.getElementById("reading-result-box").classList.remove("hidden");
+                document.getElementById("btn-back-dashboard").classList.remove("hidden");
+            }, 600 + (cardsArray.length * 500) + 500);
         }
 
-        function flipFanCard(idx) {
-            const cardInner = document.getElementById(`fan-card-${idx}`);
-            if (cardInner) {
-                cardInner.classList.toggle("is-flipped");
-            }
+        // Функция ручного переворота при клике
+        function flipCard(element) {
+            const inner = element.querySelector(".card-inner");
+            inner.classList.toggle("card-flipped");
+            if (tg.HapticFeedback) tg.HapticFeedback.impactOccurred("light");
         }
-
-        function resetAiTab() {
-            document.getElementById("ai-question-input").value = "";
-            document.getElementById("ai-step-result").classList.add("hidden");
-            document.getElementById("ai-step-setup").classList.remove("hidden");
-        }
-
-        // =====================================================================
-        // ТАБ 3: ПОКУПКА ПАКЕТОВ (TELEGRAM STARS)
-        // =====================================================================
-        async function purchasePack(packName) {
-            try {
-                const res = await fetch(`${API_BASE_URL}/api/payment/stars-invoice`, {
-                    method: "POST",
-                    headers: {
-                        "Content-Type": "application/json",
-                        "Authorization": getAuthHeader()
-                    },
-                    body: JSON.stringify({ pack: packName })
-                });
-
-                const data = await res.json();
-                if (res.ok && data.invoice_link) {
-                    tg.openInvoice(data.invoice_link, function(status) {
-                        if (status === "paid") {
-                            showToast("🔮 Баланс успешно пополнен.");
-                            setTimeout(() => {
-                                checkAndAutoRegister();
-                            }, 1500);
-                        } else if (status === "cancelled") {
-                            showToast("Оплата отменена.");
-                        } else {
-                            showToast("Ошибка проведения платежа.", true);
-                        }
-                    });
-                } else {
-                    const errorDetail = data.detail || "Не удалось сформировать счет.";
-                    showToast(`Ошибка выставления счета: ${errorDetail}`, true);
-                }
-            } catch (e) {
-                showToast(`Сервис платежей временно недоступен: ${e.message}`, true);
-            }
-        }
-
-        window.onload = function() {
-            checkAndAutoRegister();
-            renderQuestions();
-        };
     </script>
 </body>
 </html>
