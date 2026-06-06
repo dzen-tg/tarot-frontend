@@ -59,7 +59,7 @@
         .card-back {
             transform: rotateY(180deg);
         }
-        /* Анимации тасования */
+        /* Анимации тасования карт */
         @keyframes shuffle-left {
             0% { transform: translate(0, 0) scale(1) rotate(0deg); z-index: 10; }
             25% { transform: translate(-140px, -10px) scale(1.05) rotate(-12deg); z-index: 20; }
@@ -91,15 +91,15 @@
 </head>
 <body class="min-h-screen flex flex-col pb-24">
 
-    <!-- СИСТЕМА УВЕДОМЛЕНИЙ -->
+    <!-- СИСТЕМА УВЕДОМЛЕНИЙ (TOAST) -->
     <div id="toast-container" class="fixed top-4 left-1/2 -translate-x-1/2 z-50 w-11/12 max-w-sm pointer-events-none transition-all duration-300 transform translate-y-[-20px] opacity-0">
         <div id="toast-box" class="bg-purple-950/95 border border-amber-500/50 rounded-xl p-4 shadow-2xl flex items-center gap-3">
             <i id="toast-icon" class="fas fa-circle-info text-amber-400 text-xl"></i>
-            <p id="toast-text" class="text-sm text-amber-100 font-medium"></p>
+            <p id="toast-text" class="text-xs text-amber-100 font-medium"></p>
         </div>
     </div>
 
-    <!-- ЭКРАН ЗАГРУЗКИ / АВТОРИЗАЦИИ -->
+    <!-- ЭКРАН ЗАГРУЗКИ -->
     <div id="main-loader" class="fixed inset-0 bg-purple-950/95 z-50 flex flex-col justify-center items-center">
         <div class="relative w-24 h-24 mb-6">
             <div class="absolute inset-0 border-4 border-amber-400/10 rounded-full"></div>
@@ -108,8 +108,8 @@
                 <i class="fa-solid fa-star-of-david text-amber-400/50 text-2xl"></i>
             </div>
         </div>
-        <p class="cinzel text-amber-300 font-bold tracking-widest text-base">Авторизация духа...</p>
-        <p class="text-[11px] text-purple-400 mt-2">Синхронизация с базой судеб Supabase</p>
+        <p class="cinzel text-amber-300 font-bold tracking-widest text-base animate-pulse">Связь с Оракулом...</p>
+        <p class="text-[11px] text-purple-400 mt-2">Синхронизация судеб через бэкенд</p>
     </div>
 
     <!-- ШАПКА -->
@@ -117,14 +117,14 @@
         <div class="max-w-md mx-auto flex items-center justify-between">
             <div class="flex items-center gap-3">
                 <div class="w-10 h-10 rounded-full border border-amber-400/30 flex items-center justify-center bg-purple-950/40">
-                    <i class="fa-solid fa-wand-magic-sparkles text-amber-400"></i>
+                    <i class="fa-solid fa-wand-magic-sparkles text-amber-400 animate-pulse"></i>
                 </div>
                 <div>
                     <h1 id="user-display-name" class="font-bold text-sm text-purple-100">Искатель</h1>
                     <p class="text-[9px] uppercase tracking-wider text-amber-400/70 font-semibold">Оракул Таро</p>
                 </div>
             </div>
-            <!-- БАЛАНСЫ -->
+            <!-- БАЛАНСЫ РАСКЛАДОВ -->
             <div class="flex flex-col gap-1.5 text-right">
                 <div class="bg-purple-950/60 border border-amber-500/35 rounded-full px-3 py-1 flex items-center gap-1.5 text-[11px] text-amber-300 font-bold">
                     <span id="std-balance-count">0</span> 🔮
@@ -142,16 +142,16 @@
         <!-- ТАБ 1: СТАНДАРТНЫЙ ВОПРОС -->
         <section id="tab-standard" class="space-y-6 flex flex-col justify-center flex-1">
             
-            <!-- Шаг 1: Сетка вопросов -->
+            <!-- Шаг 1: Сетка готовых вопросов -->
             <div id="std-step-choose" class="space-y-4">
                 <div class="text-center space-y-1.5 mb-2">
                     <span class="text-[10px] uppercase font-bold tracking-widest text-amber-400/80">Выберите направление мысли</span>
-                    <h2 class="cinzel text-xl md:text-2xl text-purple-500 font-black">Задать вопрос Оракулу</h2>
+                    <h2 class="cinzel text-xl md:text-2xl text-purple-500 font-black text-amber-300 gold-text-glow">Задать вопрос Оракулу</h2>
                 </div>
                 <div id="questions-grid" class="grid grid-cols-1 gap-2.5 max-h-[55vh] overflow-y-auto pr-1"></div>
             </div>
 
-            <!-- Шаг 2: Тасование -->
+            <!-- Шаг 2: Эстетичное тасование -->
             <div id="std-step-shuffle" class="hidden flex flex-col items-center justify-center flex-1 py-4">
                 <div class="text-center mb-6">
                     <p id="active-question-title" class="text-xs md:text-sm italic text-amber-300 max-w-xs mx-auto mb-1"></p>
@@ -194,7 +194,7 @@
                 </div>
             </div>
 
-            <!-- Шаг 3: Результат -->
+            <!-- Шаг 3: Результат расклада -->
             <div id="std-step-result" class="hidden space-y-6">
                 <div class="text-center space-y-1">
                     <span class="text-xs uppercase font-bold tracking-widest text-amber-400">Расклад Завершен</span>
@@ -224,7 +224,7 @@
 
         </section>
 
-        <!-- ТАБ 2: ИНДИВИДУАЛЬНЫЙ ДИНАМИЧЕСКИЙ РАСКЛАД -->
+        <!-- ТАБ 2: ИНДИВИДУАЛЬНЫЙ ДИНАМИЧЕСКИЙ РАСКЛАД (ИИ) -->
         <section id="tab-ai" class="hidden space-y-6 flex flex-col justify-center flex-1">
             
             <div id="ai-step-setup" class="space-y-4">
@@ -340,7 +340,7 @@
 
     </main>
 
-    <!-- ТАББАР -->
+    <!-- ТАББАР / НАВИГАЦИЯ -->
     <nav class="bg-purple-950/40 border-t border-purple-900/30 fixed bottom-0 left-0 right-0 z-30 backdrop-blur-md">
         <div class="max-w-md mx-auto grid grid-cols-3 py-2">
             <button onclick="switchTab('standard')" id="nav-btn-standard" class="flex flex-col items-center justify-center gap-1 py-1 text-amber-400 transition">
@@ -358,12 +358,13 @@
         </div>
     </nav>
 
-    <!-- Скрипты -->
+    <!-- Скрипты взаимодействия -->
     <script>
         const API_BASE_URL = "https://tarot-backend-136l.onrender.com";
         let userProfile = null;
         let selectedQuestionId = null;
 
+        // Список готовых стандартных вопросов
         const questionsList = [
             { id: 1, text: "Что меня ждет в карьере в ближайший месяц?", category: "Карьера" },
             { id: 2, text: "Стоит ли мне сейчас менять сферу деятельности?", category: "Финансы" },
@@ -383,11 +384,11 @@
             tg.expand();
         }
 
+        // Возвращает initData Telegram-клиента для авторизации на бэкенде
         function getAuthHeader() {
             return tg?.initData || "";
         }
 
-        // Компактная оффлайн база 22 Старших Арканов
         const majorArcana = [
             { id: 0, name: "Дурак", number: "0", symbol: "✴️" },
             { id: 1, name: "Маг", number: "I", symbol: "🧙‍♂️" },
@@ -448,7 +449,6 @@
             };
         }
 
-        // Роскошный и компактный генератор текстов для всех 78 карт
         function getCardInterpretation(card, category) {
             const cardName = card.name;
             const hash = card.id % 3;
@@ -480,6 +480,7 @@
             }
         }
 
+        // Генерация SVG-рубашки/лица карты для идеального визуала
         function generateCardSVG(cardId) {
             const card = getCardInfo(cardId);
             const isMajor = card.type === "Старший Аркан";
@@ -528,7 +529,7 @@
         }
 
         // =====================================================================
-        // ИНИЦИАЛИЗАЦИЯ И БЕСШОВНЫЙ ВХОД С ТЕЛЕГРАМ-ИМЕНЕМ
+        // ИНИЦИАЛИЗАЦИЯ И БЕСШОВНЫЙ ВХОД С ТЕЛЕГРАМ-ДАННЫМИ
         // =====================================================================
         async function checkAndAutoRegister() {
             try {
@@ -651,7 +652,7 @@
                         headers: { "Authorization": getAuthHeader() }
                     });
                     const data = await res.json();
-                    if (!data.success) throw new Error("Списание не удалось");
+                    if (!res.ok || !data.success) throw new Error(data.detail || "Списание не удалось");
 
                     userProfile.balance = data.new_balance;
                     updateBalanceUI();
@@ -676,7 +677,7 @@
                     document.getElementById("std-step-result").classList.remove("hidden");
 
                 } catch (e) {
-                    showToast("Космические помехи. Повторите попытку.", true);
+                    showToast(`Ошибка: ${e.message}`, true);
                 } finally {
                     document.getElementById("deck-card-left").classList.remove("animate-shuffle-1");
                     document.getElementById("deck-card-right").classList.remove("animate-shuffle-2");
@@ -687,7 +688,7 @@
         }
 
         // =====================================================================
-        // ТАБ 2: ИНДИВИДУАЛЬНЫЙ РАСКЛАД
+        // ТАБ 2: ИНДИВИДУАЛЬНЫЙ РАСКЛАД (ИИ)
         // =====================================================================
         async function startAiReading() {
             const question = document.getElementById("ai-question-input").value.trim();
@@ -731,7 +732,7 @@
                 document.getElementById("ai-step-result").classList.remove("hidden");
 
             } catch (e) {
-                showToast(e.message || "Ошибка подключения", true);
+                showToast(`Ошибка: ${e.message}`, true);
                 document.getElementById("ai-step-loading").classList.add("hidden");
                 document.getElementById("ai-step-setup").classList.remove("hidden");
             }
@@ -800,7 +801,7 @@
                 });
 
                 const data = await res.json();
-                if (data.invoice_link) {
+                if (res.ok && data.invoice_link) {
                     tg.openInvoice(data.invoice_link, function(status) {
                         if (status === "paid") {
                             showToast("🔮 Баланс успешно пополнен.");
@@ -814,10 +815,11 @@
                         }
                     });
                 } else {
-                    showToast("Не удалось сформировать счет.", true);
+                    const errorDetail = data.detail || "Не удалось сформировать счет.";
+                    showToast(`Ошибка выставления счета: ${errorDetail}`, true);
                 }
             } catch (e) {
-                showToast("Сервис платежей временно недоступен.", true);
+                showToast(`Сервис платежей временно недоступен: ${e.message}`, true);
             }
         }
 
