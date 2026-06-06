@@ -97,7 +97,7 @@
     <!-- 🌌 ЭКРАН 2: ГЛАВНЫЙ ДАШБОРД (ПЕРЕХОД СЮДА СРАЗУ ПОСЛЕ ЗАГРУЗКИ) -->
     <div id="screen-dashboard" class="hidden relative z-10 flex-1 flex flex-col justify-between p-4 max-w-md mx-auto w-full">
         
-        <!-- Верхняя шапка с балансом и профилем -->
+        <!-- Верхняя шапка с единым балансом -->
         <div class="flex items-center justify-between bg-[#1A0B2E]/40 border border-purple-900/30 rounded-2xl p-4 backdrop-blur-md mb-4 shadow-md">
             <div class="flex items-center space-x-3">
                 <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-[#8A2BE2] to-[#D4AF37] flex items-center justify-center text-lg shadow">
@@ -109,14 +109,11 @@
                 </div>
             </div>
             
-            <!-- Баланс разделен на три типа для точного отображения -->
-            <button onclick="openStore()" class="flex items-center space-x-1.5 bg-[#D4AF37]/10 hover:bg-[#D4AF37]/20 border border-[#D4AF37]/40 px-2 py-1.5 rounded-xl transition-all">
-                <span class="text-[10px] text-purple-200/60">Карты дня:</span>
-                <span id="display-daily-balance" class="font-bold text-xs text-[#D4AF37]">0</span>
-                <span class="text-[10px] text-purple-200/60">/ Обычные:</span>
+            <!-- ОДИН КРАСИВЫЙ ОБЪЕДИНЕННЫЙ БАЛАНС -->
+            <button onclick="openStore()" class="flex items-center space-x-2 bg-[#D4AF37]/10 hover:bg-[#D4AF37]/20 border border-[#D4AF37]/40 px-3.5 py-2 rounded-xl transition-all gold-glow">
+                <span class="text-sm">✨</span>
+                <span class="text-[11px] text-purple-200/85 font-medium">Энергия:</span>
                 <span id="display-balance" class="font-bold text-xs text-[#D4AF37]">0</span>
-                <span class="text-[10px] text-purple-200/60">/ Особые:</span>
-                <span id="display-ai-balance" class="font-bold text-xs text-purple-300">0</span>
             </button>
         </div>
 
@@ -128,7 +125,7 @@
                 <div class="absolute top-0 right-0 w-24 h-24 bg-gradient-to-br from-[#8A2BE2]/20 to-transparent rounded-bl-full pointer-events-none"></div>
                 <div class="flex items-start justify-between mb-3">
                     <span class="text-3xl">🃏</span>
-                    <span class="bg-[#D4AF37]/10 border border-[#D4AF37]/30 text-[#D4AF37] text-[10px] font-bold uppercase px-2 py-0.5 rounded-full">1 баланс дня</span>
+                    <span class="bg-[#D4AF37]/10 border border-[#D4AF37]/30 text-[#D4AF37] text-[10px] font-bold uppercase px-2 py-0.5 rounded-full">75 энергии</span>
                 </div>
                 <h2 class="serif-title text-xl font-bold text-white mb-2 group-hover:text-[#D4AF37] transition-all">Карта Дня</h2>
                 <p class="text-xs text-purple-200/60 leading-relaxed mb-4">
@@ -139,12 +136,12 @@
                 </button>
             </div>
 
-            <!-- Вариант 2: Заготовленные Вопросы (1 обычный баланс) -->
+            <!-- Вариант 2: Заготовленные Вопросы (150 энергии) -->
             <div class="bg-gradient-to-br from-[#1F103A] to-[#0F081D] border border-purple-900/50 rounded-3xl p-5 relative overflow-hidden group shadow-lg">
                 <div class="absolute top-0 right-0 w-24 h-24 bg-gradient-to-br from-[#8A2BE2]/20 to-transparent rounded-bl-full pointer-events-none"></div>
                 <div class="flex items-start justify-between mb-3">
                     <span class="text-3xl">❓</span>
-                    <span class="bg-[#D4AF37]/10 border border-[#D4AF37]/30 text-[#D4AF37] text-[10px] font-bold uppercase px-2 py-0.5 rounded-full">1 обычный баланс</span>
+                    <span class="bg-[#D4AF37]/10 border border-[#D4AF37]/30 text-[#D4AF37] text-[10px] font-bold uppercase px-2 py-0.5 rounded-full">150 энергии</span>
                 </div>
                 <h2 class="serif-title text-xl font-bold text-white mb-2 group-hover:text-[#D4AF37] transition-all">Готовые Вопросы</h2>
                 <p class="text-xs text-purple-200/60 leading-relaxed mb-4">
@@ -175,12 +172,12 @@
                 </button>
             </div>
 
-            <!-- Вариант 3: Индивидуальный разбор (Особая Энергия) -->
+            <!-- Вариант 3: Индивидуальный разбор (750 энергии) -->
             <div class="bg-gradient-to-br from-[#1A0B2E] via-[#2A114D] to-[#0F081D] border border-[#D4AF37]/20 rounded-3xl p-5 relative overflow-hidden group shadow-lg gold-glow">
                 <div class="absolute top-0 right-0 w-32 h-32 bg-gradient-to-br from-[#D4AF37]/10 to-transparent rounded-bl-full pointer-events-none animate-pulse"></div>
                 <div class="flex items-start justify-between mb-3">
                     <span class="text-3xl">🔮</span>
-                    <span class="bg-[#8A2BE2]/30 border border-[#8A2BE2]/50 text-purple-200 text-[10px] font-bold uppercase px-2 py-0.5 rounded-full">1 Особая Энергия</span>
+                    <span class="bg-[#8A2BE2]/30 border border-[#8A2BE2]/50 text-purple-200 text-[10px] font-bold uppercase px-2 py-0.5 rounded-full">750 энергии</span>
                 </div>
                 <h2 class="serif-title text-xl font-bold text-[#D4AF37] mb-2">Индивидуальный разбор</h2>
                 <p class="text-xs text-purple-200/70 leading-relaxed mb-4">
@@ -259,7 +256,7 @@
         <div class="relative z-10 w-full max-w-md bg-gradient-to-t from-[#0A0514] to-[#1A0B2E] border-t border-[#D4AF37]/30 rounded-t-[30px] p-6 space-y-5 shadow-2xl">
             <div class="flex justify-between items-center">
                 <div>
-                    <h3 class="serif-title text-xl font-bold text-[#D4AF37]">Пополнение энергии</h3>
+                    <h3 class="serif-title text-xl font-bold text-[#D4AF37]">Пополнение Энергии</h3>
                     <p class="text-[10px] text-purple-200/50 uppercase tracking-widest">Официальные тарифы в Telegram Stars</p>
                 </div>
                 <button onclick="closeStore()" class="w-8 h-8 rounded-full bg-purple-950/50 flex items-center justify-center text-purple-200 border border-purple-900/40 hover:text-white transition-all">
@@ -275,11 +272,10 @@
                     <div class="flex items-center space-x-3">
                         <span class="text-2xl">🃏</span>
                         <div>
-                            <h4 class="font-bold text-xs text-white">1 Карта Дня</h4>
-                            <p class="text-[10px] text-purple-200/50">Быстрое прояснение дня</p>
+                            <h4 class="font-bold text-xs text-white">+75 Энергии</h4>
+                            <p class="text-[10px] text-purple-200/50">Достаточно на 1 Карту Дня</p>
                         </div>
                     </div>
-                    <!-- ИСПРАВЛЕНО: Карта дня 75 звезд -->
                     <button onclick="buyPack('1_daily')" class="bg-gradient-to-r from-yellow-500 to-[#D4AF37] hover:from-[#D4AF37] hover:to-yellow-500 text-black font-bold px-4 py-2 rounded-xl text-xs flex items-center space-x-1.5 shadow active:scale-95">
                         <span>⭐</span> <span class="font-bold">75</span>
                     </button>
@@ -290,11 +286,10 @@
                     <div class="flex items-center space-x-3">
                         <span class="text-2xl">❓</span>
                         <div>
-                            <h4 class="font-bold text-xs text-white">1 Обычный расклад</h4>
-                            <p class="text-[10px] text-purple-200/50">Ответ на один готовый вопрос</p>
+                            <h4 class="font-bold text-xs text-white">+150 Энергии</h4>
+                            <p class="text-[10px] text-purple-200/50">Достаточно на 1 Готовый вопрос</p>
                         </div>
                     </div>
-                    <!-- ИСПРАВЛЕНО: Стандартный расклад 150 звезд -->
                     <button onclick="buyPack('1_std')" class="bg-gradient-to-r from-yellow-500 to-[#D4AF37] hover:from-[#D4AF37] hover:to-yellow-500 text-black font-bold px-4 py-2 rounded-xl text-xs flex items-center space-x-1.5 shadow active:scale-95">
                         <span>⭐</span> <span class="font-bold">150</span>
                     </button>
@@ -305,11 +300,10 @@
                     <div class="flex items-center space-x-3">
                         <span class="text-2xl">🔮</span>
                         <div>
-                            <h4 class="font-bold text-xs text-white">Пакет из 5 обычных раскладов</h4>
-                            <p class="text-[10px] text-[#D4AF37] font-semibold">Для детальной проработки разных сфер</p>
+                            <h4 class="font-bold text-xs text-white">+750 Энергии</h4>
+                            <p class="text-[10px] text-[#D4AF37] font-semibold">Скидка 10% (эквивалент 5 Обычных раскладов)</p>
                         </div>
                     </div>
-                    <!-- ИСПРАВЛЕНО: Пакет из 5 штук за 675 звезд (со скидкой 10%) -->
                     <button onclick="buyPack('5_std')" class="bg-gradient-to-r from-yellow-500 to-[#D4AF37] hover:from-[#D4AF37] hover:to-yellow-500 text-black font-bold px-4 py-2 rounded-xl text-xs flex items-center space-x-1.5 shadow active:scale-95">
                         <span>⭐</span> <span class="font-bold">675</span>
                     </button>
@@ -320,11 +314,10 @@
                     <div class="flex items-center space-x-3">
                         <span class="text-2xl">✨</span>
                         <div>
-                            <h4 class="font-bold text-xs text-white">1 Индивидуальный разбор</h4>
-                            <p class="text-[10px] text-purple-200/50">Глубокое, масштабное и детальное толкование</p>
+                            <h4 class="font-bold text-xs text-white">+750 Энергии (Премиум)</h4>
+                            <p class="text-[10px] text-purple-200/50">На 1 глубокий психологический разбор</p>
                         </div>
                     </div>
-                    <!-- ИСПРАВЛЕНО: Индивидуальный разбор 750 звезд -->
                     <button onclick="buyPack('1_ai')" class="bg-gradient-to-r from-yellow-500 to-[#D4AF37] hover:from-[#D4AF37] hover:to-yellow-500 text-black font-bold px-4 py-2 rounded-xl text-xs flex items-center space-x-1.5 shadow active:scale-95">
                         <span>⭐</span> <span class="font-bold">750</span>
                     </button>
@@ -342,10 +335,8 @@
          ИНТЕЛЛЕКТУАЛЬНАЯ ЛОГИКА (JAVASCRIPT)
          ==================================================================== -->
     <script>
-        // Конфигурация связи с бэкендом
         const BACKEND_URL = "https://tarot-backend-136l.onrender.com";
         
-        // Инициализация Telegram WebApp
         const tg = window.Telegram.WebApp;
         tg.ready();
         tg.expand();
@@ -353,7 +344,6 @@
         const initData = tg.initData || "";
         let userProfile = null;
 
-        // База изображений рубашек и лицевой стороны карт
         const getCardDesign = (cardName) => {
             return `
                 <div class="w-full h-full rounded-2xl bg-gradient-to-b from-[#11041F] to-[#25093A] border-2 border-[#D4AF37]/50 flex flex-col justify-between p-3 text-center shadow-xl relative overflow-hidden">
@@ -379,13 +369,11 @@
             `;
         };
 
-        // Запуск при загрузке страницы
         window.onload = async () => {
             lucide.createIcons();
             await fetchUserProfile();
         };
 
-        // Шаг 1. Получение профиля пользователя
         async function fetchUserProfile() {
             try {
                 const response = await fetch(`${BACKEND_URL}/api/user/profile`, {
@@ -395,7 +383,6 @@
                     userProfile = await response.json();
                     updateUIBalances();
                     
-                    // Сразу прячем загрузчик и открываем Храм Оракула без лишних форм!
                     document.getElementById("screen-loading").classList.add("hidden");
                     document.getElementById("screen-dashboard").classList.remove("hidden");
                 } else {
@@ -407,16 +394,13 @@
             }
         }
 
-        // Обновление цифр на экране
         function updateUIBalances() {
             if (!userProfile) return;
             document.getElementById("display-name").innerText = userProfile.name || "Искатель";
-            document.getElementById("display-daily-balance").innerText = userProfile.daily_balance !== undefined ? userProfile.daily_balance : 0;
+            // Показываем единый объединенный баланс
             document.getElementById("display-balance").innerText = userProfile.balance;
-            document.getElementById("display-ai-balance").innerText = userProfile.ai_balance;
         }
 
-        // Включение магазинов
         function openStore() {
             document.getElementById("modal-store").classList.remove("hidden");
         }
@@ -424,7 +408,6 @@
             document.getElementById("modal-store").classList.add("hidden");
         }
 
-        // Покупка пакета за Telegram Stars
         async function buyPack(packId) {
             closeStore();
             document.getElementById("screen-loading").classList.remove("hidden");
@@ -452,7 +435,6 @@
                                     message: "Энергия зачислена на ваш баланс. Оракул готов к работе.",
                                     buttons: [{ type: "ok" }]
                                 });
-                                // Обновляем профиль
                                 document.getElementById("screen-loading").classList.remove("hidden");
                                 await fetchUserProfile();
                             } else {
@@ -470,23 +452,21 @@
             }
         }
 
-        // СБРОС К ДАШБОРДУ
         function backToDashboard() {
             document.getElementById("screen-reading").classList.add("hidden");
             document.getElementById("screen-dashboard").classList.remove("hidden");
         }
 
-        // ОШИБКА
         function showError(msg) {
             document.getElementById("screen-loading").classList.remove("hidden");
             document.getElementById("loading-text").innerHTML = `<span class="text-red-400 font-semibold">${msg}</span>`;
         }
 
-        // РАСКЛАД 1: КАРТА ДНЯ (1 баланс дня)
+        // РАСКЛАД 1: КАРТА ДНЯ (списывает 75 энергии)
         async function startStandardReading() {
-            if (userProfile.daily_balance < 1) {
+            if (userProfile.balance < 75) {
                 openStore();
-                tg.showAlert("Недостаточно баланса Карт Дня. Пожалуйста, пополните энергию.");
+                tg.showAlert("Недостаточно энергии на балансе. Требуется 75 Энергии.");
                 return;
             }
 
@@ -499,7 +479,6 @@
             document.getElementById("reading-result-box").classList.add("hidden");
             document.getElementById("btn-back-dashboard").classList.add("hidden");
 
-            // Запрос на списание баланса карт дня
             try {
                 const response = await fetch(`${BACKEND_URL}/api/user/use-daily-reading`, {
                     method: "POST",
@@ -508,13 +487,11 @@
 
                 if (response.ok) {
                     const resData = await response.json();
-                    userProfile.daily_balance = resData.new_daily_balance;
+                    userProfile.balance = resData.new_balance;
                     updateUIBalances();
 
-                    // Имитируем тасование карт 2 секунды
                     await new Promise(r => setTimeout(r, 2000));
 
-                    // Вытягиваем случайную карту локально из списка
                     const deck = [
                         "Дурак", "Маг", "Верховная Жрица", "Императрица", "Император", "Иерофант", 
                         "Влюбленные", "Колесница", "Сила", "Отшельник", "Колесо Фортуны", "Справедливость", 
@@ -523,7 +500,6 @@
                     ];
                     const randomCard = deck[Math.floor(Math.random() * deck.length)];
 
-                    // Генерируем красивое толкование
                     const text = `🔮 Вы вытянули Карту Дня: "${randomCard}".\n\nЭтот день несет в себе глубокий смысл. Выпавший Аркан призывает вас замедлиться, прислушаться к своей внутренней мудрости и действовать осознанно. Вселенная подсказывает, что ответы на волнующие вопросы уже созрели внутри вас, нужно лишь довериться естественному ходу событий.`;
 
                     renderSingleCard(randomCard, text);
@@ -537,12 +513,12 @@
             }
         }
 
-        // ВАРИАНТ 2: РАСКЛАД ПО ГОТОВЫМ ВОПРОСАМ (1 обычный баланс)
+        // ВАРИАНТ 2: РАСКЛАД ПО ГОТОВЫМ ВОПРОСАМ (списывает 150 энергии)
         async function startPresetReading() {
             const question = document.getElementById("preset-question").value;
-            if (userProfile.balance < 1) {
+            if (userProfile.balance < 150) {
                 openStore();
-                tg.showAlert("Недостаточно обычных раскладов на балансе. Пожалуйста, пополните энергию.");
+                tg.showAlert("Недостаточно энергии на балансе. Требуется 150 Энергии.");
                 return;
             }
 
@@ -566,10 +542,8 @@
                     userProfile.balance = resData.new_balance;
                     updateUIBalances();
 
-                    // Имитируем тасование карт 2.5 секунды
                     await new Promise(r => setTimeout(r, 2500));
 
-                    // Вытягиваем 3 случайные уникальные карты
                     const deck = [
                         "Дурак", "Маг", "Верховная Жрица", "Императрица", "Император", "Иерофант", 
                         "Влюбленные", "Колесница", "Сила", "Отшельник", "Колесо Фортуны", "Справедливость", 
@@ -585,7 +559,6 @@
                         }
                     }
 
-                    // Генерация расклада
                     let readingText = `🔮 Ваш вопрос: "${question}"\n\n`;
                     readingText += `Аркан I (Прошлое / Корни ситуации) — «${selectedCards[0]}»\n`;
                     readingText += `Он указывает на то, с чего все началось. Эта карта говорит, что накопленный ранее опыт и прошлые решения привели вас к текущей развилке.\n\n`;
@@ -606,7 +579,7 @@
             }
         }
 
-        // РАСКЛАД 3: ИНДИВИДУАЛЬНЫЙ РАЗБОР С ПОДКЛЮЧЕНИЕМ ОРАКУЛА (Особая Энергия)
+        // РАСКЛАД 3: ИНДИВИДУАЛЬНЫЙ РАЗБОР (списывает 750 энергии)
         async function startAiReading() {
             const question = document.getElementById("ai-question").value.trim();
             if (!question) {
@@ -614,13 +587,12 @@
                 return;
             }
 
-            if (userProfile.ai_balance < 1) {
+            if (userProfile.balance < 750) {
                 openStore();
-                tg.showAlert("Недостаточно особой энергии на балансе. Пожалуйста, пополните баланс.");
+                tg.showAlert("Недостаточно энергии на балансе. Требуется 750 Энергии.");
                 return;
             }
 
-            // Прячем клавиатуру на мобильных
             document.activeElement.blur();
 
             document.getElementById("screen-dashboard").classList.add("hidden");
@@ -633,7 +605,6 @@
             document.getElementById("btn-back-dashboard").classList.add("hidden");
 
             try {
-                // Вызов бэкенда
                 const response = await fetch(`${BACKEND_URL}/api/user/use-ai-reading`, {
                     method: "POST",
                     headers: {
@@ -646,14 +617,11 @@
                 if (response.ok) {
                     const data = await response.json();
                     
-                    // Обновляем баланс
-                    userProfile.ai_balance = data.new_ai_balance;
+                    userProfile.balance = data.new_balance;
                     updateUIBalances();
 
-                    // Очищаем текстовое поле
                     document.getElementById("ai-question").value = "";
 
-                    // Рендерим 3 карты
                     renderMultipleCards(data.cards, data.text);
                 } else {
                     const errData = await response.json();
@@ -666,7 +634,6 @@
             }
         }
 
-        // Отрисовка одной карты с красивым флип-эффектом
         function renderSingleCard(cardName, text) {
             document.getElementById("reading-shuffling").classList.add("hidden");
             const container = document.getElementById("cards-display");
@@ -687,14 +654,12 @@
             `;
             container.innerHTML = cardHtml;
 
-            // Показываем текст после переворота
             document.getElementById("reading-text").innerText = text;
             setTimeout(() => {
                 const card = container.querySelector(".card-inner");
                 card.classList.add("card-flipped");
                 if (tg.HapticFeedback) tg.HapticFeedback.impactOccurred("medium");
                 
-                // Плавно проявляем текст
                 setTimeout(() => {
                     document.getElementById("reading-result-box").classList.remove("hidden");
                     document.getElementById("btn-back-dashboard").classList.remove("hidden");
@@ -702,7 +667,6 @@
             }, 800);
         }
 
-        // Отрисовка 3 карт
         function renderMultipleCards(cardsArray, resultText) {
             document.getElementById("reading-shuffling").classList.add("hidden");
             const container = document.getElementById("cards-display");
@@ -725,7 +689,6 @@
                 container.innerHTML += cardHtml;
             });
 
-            // Автоматический переворот карт по очереди с haptic-откликом
             const cardInners = container.querySelectorAll(".card-inner");
             cardInners.forEach((card, idx) => {
                 setTimeout(() => {
@@ -734,7 +697,6 @@
                 }, 600 + (idx * 500));
             });
 
-            // Показываем текст толкования
             document.getElementById("reading-text").innerText = resultText;
             setTimeout(() => {
                 document.getElementById("reading-result-box").classList.remove("hidden");
@@ -742,7 +704,6 @@
             }, 600 + (cardsArray.length * 500) + 500);
         }
 
-        // Функция ручного переворота при клике
         function flipCard(element) {
             const inner = element.querySelector(".card-inner");
             inner.classList.toggle("card-flipped");
