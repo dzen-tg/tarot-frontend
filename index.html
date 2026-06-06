@@ -94,7 +94,7 @@
         </p>
     </div>
 
-    <!-- 🌌 ЭКРАН 2: ГЛАВНЫЙ ДАШБОРД (ПЕРЕХОД СЮДА СРАЗУ ПОСЛЕ ЗАГРУЗКИ) -->
+    <!-- 🌌 ЭКРАН 2: ГЛАВНЫЙ ДАШБОРД (КОМПАКТНЫЙ И СТИЛЬНЫЙ) -->
     <div id="screen-dashboard" class="hidden relative z-10 flex-1 flex flex-col justify-between p-4 max-w-md mx-auto w-full">
         
         <!-- Верхняя шапка с единым балансом -->
@@ -117,80 +117,57 @@
             </button>
         </div>
 
-        <!-- Центральный выбор расклада -->
-        <div class="flex-1 flex flex-col justify-center space-y-4 my-2 overflow-y-auto max-h-[80vh] pr-1">
+        <!-- Центральный выбор расклада: Карточки стали тонкими и эргономичными -->
+        <div class="flex-1 flex flex-col justify-center space-y-3.5 my-2">
             
-            <!-- Вариант 1: Карта Дня -->
-            <div class="bg-gradient-to-br from-[#1F103A] to-[#0F081D] border border-purple-900/50 rounded-3xl p-5 relative overflow-hidden group shadow-lg">
-                <div class="absolute top-0 right-0 w-24 h-24 bg-gradient-to-br from-[#8A2BE2]/20 to-transparent rounded-bl-full pointer-events-none"></div>
-                <div class="flex items-start justify-between mb-3">
+            <!-- Вариант 1: Карта Дня (Компактный) -->
+            <div class="bg-gradient-to-r from-[#1F103A] to-[#0F081D] border border-purple-900/40 rounded-2xl p-4 relative overflow-hidden group shadow-md flex items-center justify-between">
+                <div class="flex items-center space-x-3">
                     <span class="text-3xl">🃏</span>
-                    <span class="bg-[#D4AF37]/10 border border-[#D4AF37]/30 text-[#D4AF37] text-[10px] font-bold uppercase px-2 py-0.5 rounded-full">75 энергии</span>
-                </div>
-                <h2 class="serif-title text-xl font-bold text-white mb-2 group-hover:text-[#D4AF37] transition-all">Карта Дня</h2>
-                <p class="text-xs text-purple-200/60 leading-relaxed mb-4">
-                    Узнайте главный посыл Вселенной на сегодня. Идеальный инструмент для утренней сонастройки и поиска фокуса.
-                </p>
-                <button onclick="startStandardReading()" class="w-full bg-[#1F103A] hover:bg-[#D4AF37] hover:text-black border border-[#D4AF37]/30 text-white font-bold py-3 rounded-xl text-xs transition-all tracking-wider uppercase active:scale-95">
-                    Получить совет
-                </button>
-            </div>
-
-            <!-- Вариант 2: Заготовленные Вопросы (150 энергии) -->
-            <div class="bg-gradient-to-br from-[#1F103A] to-[#0F081D] border border-purple-900/50 rounded-3xl p-5 relative overflow-hidden group shadow-lg">
-                <div class="absolute top-0 right-0 w-24 h-24 bg-gradient-to-br from-[#8A2BE2]/20 to-transparent rounded-bl-full pointer-events-none"></div>
-                <div class="flex items-start justify-between mb-3">
-                    <span class="text-3xl">❓</span>
-                    <span class="bg-[#D4AF37]/10 border border-[#D4AF37]/30 text-[#D4AF37] text-[10px] font-bold uppercase px-2 py-0.5 rounded-full">150 энергии</span>
-                </div>
-                <h2 class="serif-title text-xl font-bold text-white mb-2 group-hover:text-[#D4AF37] transition-all">Готовые Вопросы</h2>
-                <p class="text-xs text-purple-200/60 leading-relaxed mb-4">
-                    Выберите один из 10 классических вопросов для мгновенного и точного расклада Оракула на 3 карты.
-                </p>
-                
-                <!-- Селектор заготовленных вопросов -->
-                <div class="relative mb-4">
-                    <select id="preset-question" class="w-full bg-[#0F081D] border border-purple-900/60 rounded-xl p-3 text-xs focus:outline-none focus:border-[#D4AF37] transition-all text-white cursor-pointer appearance-none">
-                        <option value="Что меня ждет сегодня?">1. Что меня ждет сегодня?</option>
-                        <option value="Любит ли меня загаданный человек?">2. Любит ли меня загаданный человек?</option>
-                        <option value="Позвонит/напишет ли он в ближайшее время?">3. Позвонит/напишет ли он в ближайшее время?</option>
-                        <option value="Что он чувствует ко мне сейчас?">4. Что он чувствует ко мне сейчас?</option>
-                        <option value="Стоит ли делать первый шаг?">5. Стоит ли делать первый шаг?</option>
-                        <option value="Какие перспективы на этой работе?">6. Какие перспективы на этой работе?</option>
-                        <option value="Будет ли финансовый рост в этом месяце?">7. Будет ли финансовый рост в этом месяце?</option>
-                        <option value="Какое решение мне лучше принять?">8. Какое решение мне лучше принять?</option>
-                        <option value="Что мешает мне двигаться дальше?">9. Что мешает мне двигаться дальше?</option>
-                        <option value="Какой главный совет от карт на будущее?">10. Какой главный совет от карт на будущее?</option>
-                    </select>
-                    <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-3 text-purple-300">
-                        <span class="text-[10px]">▼</span>
+                    <div>
+                        <div class="flex items-center space-x-2">
+                            <h2 class="serif-title text-base font-bold text-white group-hover:text-[#D4AF37] transition-all">Карта Дня</h2>
+                            <span class="bg-[#D4AF37]/10 border border-[#D4AF37]/30 text-[#D4AF37] text-[9px] font-bold uppercase px-1.5 py-0.5 rounded-full">75</span>
+                        </div>
+                        <p class="text-[11px] text-purple-200/50">Главный совет Вселенной на сегодня</p>
                     </div>
                 </div>
-
-                <button onclick="startPresetReading()" class="w-full bg-[#1F103A] hover:bg-[#D4AF37] hover:text-black border border-[#D4AF37]/30 text-white font-bold py-3 rounded-xl text-xs transition-all tracking-wider uppercase active:scale-95">
-                    Получить ответ на вопрос
+                <button onclick="openDetailModal('daily')" class="bg-[#1F103A] hover:bg-[#D4AF37] hover:text-black border border-[#D4AF37]/30 text-white font-bold px-4 py-2 rounded-xl text-xs transition-all tracking-wider uppercase active:scale-95">
+                    Выбрать
                 </button>
             </div>
 
-            <!-- Вариант 3: Индивидуальный разбор (750 энергии) -->
-            <div class="bg-gradient-to-br from-[#1A0B2E] via-[#2A114D] to-[#0F081D] border border-[#D4AF37]/20 rounded-3xl p-5 relative overflow-hidden group shadow-lg gold-glow">
-                <div class="absolute top-0 right-0 w-32 h-32 bg-gradient-to-br from-[#D4AF37]/10 to-transparent rounded-bl-full pointer-events-none animate-pulse"></div>
-                <div class="flex items-start justify-between mb-3">
-                    <span class="text-3xl">🔮</span>
-                    <span class="bg-[#8A2BE2]/30 border border-[#8A2BE2]/50 text-purple-200 text-[10px] font-bold uppercase px-2 py-0.5 rounded-full">750 энергии</span>
+            <!-- Вариант 2: Готовые Вопросы (Компактный) -->
+            <div class="bg-gradient-to-r from-[#1F103A] to-[#0F081D] border border-purple-900/40 rounded-2xl p-4 relative overflow-hidden group shadow-md flex items-center justify-between">
+                <div class="flex items-center space-x-3">
+                    <span class="text-3xl">❓</span>
+                    <div>
+                        <div class="flex items-center space-x-2">
+                            <h2 class="serif-title text-base font-bold text-white group-hover:text-[#D4AF37] transition-all">Готовые Вопросы</h2>
+                            <span class="bg-[#D4AF37]/10 border border-[#D4AF37]/30 text-[#D4AF37] text-[9px] font-bold uppercase px-1.5 py-0.5 rounded-full">150</span>
+                        </div>
+                        <p class="text-[11px] text-purple-200/50">Точный ответ на классический вопрос</p>
+                    </div>
                 </div>
-                <h2 class="serif-title text-xl font-bold text-[#D4AF37] mb-2">Индивидуальный разбор</h2>
-                <p class="text-xs text-purple-200/70 leading-relaxed mb-4">
-                    Задайте Оракулу любой сокровенный или детальный вопрос. Программа проведет глубокий, масштабный анализ вашей ситуации без каких-либо ограничений по объему.
-                </p>
-                
-                <!-- Поле ввода вопроса -->
-                <div class="relative mb-4">
-                    <textarea id="ai-question" rows="2" placeholder="Например: 'Стоит ли мне сейчас развивать свой проект и уходить со старой работы?'" class="w-full bg-[#0F081D]/80 border border-purple-900/60 rounded-xl p-3 text-xs focus:outline-none focus:border-[#D4AF37] transition-all text-white placeholder-purple-300/30 resize-none gold-glow-focus"></textarea>
-                </div>
+                <button onclick="openDetailModal('preset')" class="bg-[#1F103A] hover:bg-[#D4AF37] hover:text-black border border-[#D4AF37]/30 text-white font-bold px-4 py-2 rounded-xl text-xs transition-all tracking-wider uppercase active:scale-95">
+                    Выбрать
+                </button>
+            </div>
 
-                <button onclick="startAiReading()" class="w-full bg-gradient-to-r from-[#8A2BE2] to-[#D4AF37] hover:from-[#D4AF37] hover:to-[#8A2BE2] text-white hover:text-white font-bold py-3.5 rounded-xl text-xs transition-all duration-500 tracking-wider uppercase shadow-md active:scale-95">
-                    Запустить разбор
+            <!-- Вариант 3: Индивидуальный разбор (Компактный) -->
+            <div class="bg-gradient-to-r from-[#1A0B2E] to-[#0F081D] border border-[#D4AF37]/20 rounded-2xl p-4 relative overflow-hidden group shadow-md flex items-center justify-between gold-glow">
+                <div class="flex items-center space-x-3">
+                    <span class="text-3xl">🔮</span>
+                    <div>
+                        <div class="flex items-center space-x-2">
+                            <h2 class="serif-title text-base font-bold text-[#D4AF37]">Свой Вопрос</h2>
+                            <span class="bg-[#8A2BE2]/30 border border-[#8A2BE2]/50 text-purple-200 text-[9px] font-bold uppercase px-1.5 py-0.5 rounded-full">750</span>
+                        </div>
+                        <p class="text-[11px] text-purple-200/50">Глубокий ИИ-разбор вашей ситуации</p>
+                    </div>
+                </div>
+                <button onclick="openDetailModal('ai')" class="bg-gradient-to-r from-[#8A2BE2] to-[#D4AF37] hover:from-[#D4AF37] hover:to-[#8A2BE2] text-white font-bold px-4 py-2 rounded-xl text-xs transition-all duration-300 tracking-wider uppercase active:scale-95">
+                    Открыть
                 </button>
             </div>
 
@@ -201,6 +178,151 @@
             Все предсказания носят ознакомительно-развлекательный характер. Нажимая кнопки, вы соглашаетесь с условиями сервиса и оферты.
         </p>
     </div>
+
+
+    <!-- =====================================================================
+         МОДАЛЬНЫЕ ОКНА ДЕТАЛЕЙ (ОПИСАНИЕ И ПОЛНОЕ ОБЪЯСНЕНИЕ ВНУТРИ)
+         ==================================================================== -->
+
+    <!-- Модальное окно: Карта Дня -->
+    <div id="modal-detail-daily" class="hidden fixed inset-0 bg-black/80 backdrop-blur-md z-40 flex items-end justify-center">
+        <div class="absolute inset-0" onclick="closeDetailModal('daily')"></div>
+        <div class="relative z-10 w-full max-w-md bg-gradient-to-t from-[#0A0514] to-[#1A0B2E] border-t border-[#D4AF37]/30 rounded-t-[30px] p-6 space-y-4 shadow-2xl overflow-y-auto max-h-[85vh]">
+            <div class="flex justify-between items-center">
+                <div class="flex items-center space-x-2">
+                    <span class="text-2xl">🃏</span>
+                    <h3 class="serif-title text-xl font-bold text-[#D4AF37]">Карта Дня</h3>
+                </div>
+                <button onclick="closeDetailModal('daily')" class="w-8 h-8 rounded-full bg-purple-950/50 flex items-center justify-center text-purple-200 border border-purple-900/40 hover:text-white transition-all">✕</button>
+            </div>
+            
+            <div class="space-y-3 text-xs text-purple-200/80 leading-relaxed">
+                <p class="font-semibold text-white">Для чего нужен этот расклад?</p>
+                <p>Ежедневная Карта Дня — это ваш ментальный и духовный ориентир на ближайшие 24 часа. Оракул вытягивает одну ключевую карту из колоды Таро, которая подсветит скрытые течения сегодняшнего дня, укажет на возможные риски и даст мудрое напутствие.</p>
+                <p class="italic text-[#D4AF37]/90">Рекомендуется проходить каждое утро в спокойной обстановке для лучшей сонастройки со своими истинными целями.</p>
+            </div>
+
+            <div class="bg-[#0F081D]/60 border border-purple-900/40 rounded-xl p-3 flex justify-between items-center">
+                <span class="text-xs text-purple-300">Стоимость сонастройки:</span>
+                <span class="text-sm font-bold text-[#D4AF37]">75 энергии</span>
+            </div>
+
+            <button onclick="triggerDailyReading()" class="w-full bg-gradient-to-r from-yellow-500 to-[#D4AF37] text-black font-bold py-3.5 rounded-xl text-xs transition-all tracking-wider uppercase shadow-md active:scale-95">
+                Вытянуть Карту Дня
+            </button>
+        </div>
+    </div>
+
+    <!-- Модальное окно: Готовые Вопросы -->
+    <div id="modal-detail-preset" class="hidden fixed inset-0 bg-black/80 backdrop-blur-md z-40 flex items-end justify-center">
+        <div class="absolute inset-0" onclick="closeDetailModal('preset')"></div>
+        <div class="relative z-10 w-full max-w-md bg-gradient-to-t from-[#0A0514] to-[#1A0B2E] border-t border-[#D4AF37]/30 rounded-t-[30px] p-6 space-y-4 shadow-2xl overflow-y-auto max-h-[90vh]">
+            <div class="flex justify-between items-center">
+                <div class="flex items-center space-x-2">
+                    <span class="text-2xl">❓</span>
+                    <h3 class="serif-title text-xl font-bold text-[#D4AF37]">Готовые Вопросы</h3>
+                </div>
+                <button onclick="closeDetailModal('preset')" class="w-8 h-8 rounded-full bg-purple-950/50 flex items-center justify-center text-purple-200 border border-purple-900/40 hover:text-white transition-all">✕</button>
+            </div>
+            
+            <div class="space-y-2 text-xs text-purple-200/85 leading-relaxed">
+                <p class="font-semibold text-white">Как это работает?</p>
+                <p>Классический расклад Оракула на 3 карты. Каждая карта отвечает за свой временной пласт: **Прошлое** (корни вашей ситуации), **Настоящее** (вызов, с которым вы столкнулись прямо сейчас) и **Будущее** (окончательный совет карт).</p>
+                <p class="text-purple-300/80">Выберите наиболее волнующий вас вопрос из списка ниже перед запуском сеанса:</p>
+            </div>
+
+            <!-- ИНТЕРАКТИВНЫЙ СПИСОК ВОПРОСОВ (ВНУТРИ ОКНА) -->
+            <div class="space-y-1.5 max-h-48 overflow-y-auto pr-1 scrollbar-thin">
+                <button onclick="selectQuestion(this, 'Что меня ждет сегодня?')" class="w-full text-left bg-[#D4AF37]/10 border border-[#D4AF37] rounded-xl p-2.5 text-xs text-[#D4AF37] transition-all flex items-center justify-between active:scale-[0.98] question-btn border-l-4 border-l-[#D4AF37]">
+                    <span>1. Что меня ждет сегодня?</span>
+                    <span class="text-[10px]">✨</span>
+                </button>
+                <button onclick="selectQuestion(this, 'Любит ли меня загаданный человек?')" class="w-full text-left bg-[#0F081D]/80 border border-purple-900/60 hover:border-[#D4AF37]/50 rounded-xl p-2.5 text-xs text-purple-200 transition-all flex items-center justify-between active:scale-[0.98] question-btn border-l-4 border-l-purple-500">
+                    <span>2. Любит ли меня загаданный человек?</span>
+                    <span class="text-[10px]">🔮</span>
+                </button>
+                <button onclick="selectQuestion(this, 'Позвонит/напишет ли он в ближайшее время?')" class="w-full text-left bg-[#0F081D]/80 border border-purple-900/60 hover:border-[#D4AF37]/50 rounded-xl p-2.5 text-xs text-purple-200 transition-all flex items-center justify-between active:scale-[0.98] question-btn border-l-4 border-l-purple-500">
+                    <span>3. Позвонит/напишет ли он в ближайшее время?</span>
+                    <span class="text-[10px]">💬</span>
+                </button>
+                <button onclick="selectQuestion(this, 'Что он чувствует ко мне сейчас?')" class="w-full text-left bg-[#0F081D]/80 border border-purple-900/60 hover:border-[#D4AF37]/50 rounded-xl p-2.5 text-xs text-purple-200 transition-all flex items-center justify-between active:scale-[0.98] question-btn border-l-4 border-l-purple-500">
+                    <span>4. Что он чувствует ко мне сейчас?</span>
+                    <span class="text-[10px]">❤️</span>
+                </button>
+                <button onclick="selectQuestion(this, 'Стоит ли делать первый шаг?')" class="w-full text-left bg-[#0F081D]/80 border border-purple-900/60 hover:border-[#D4AF37]/50 rounded-xl p-2.5 text-xs text-purple-200 transition-all flex items-center justify-between active:scale-[0.98] question-btn border-l-4 border-l-purple-500">
+                    <span>5. Стоит ли делать первый шаг?</span>
+                    <span class="text-[10px]">🚶‍♀️</span>
+                </button>
+                <button onclick="selectQuestion(this, 'Какие перспективы на этой работе?')" class="w-full text-left bg-[#0F081D]/80 border border-purple-900/60 hover:border-[#D4AF37]/50 rounded-xl p-2.5 text-xs text-purple-200 transition-all flex items-center justify-between active:scale-[0.98] question-btn border-l-4 border-l-purple-500">
+                    <span>6. Какие перспективы на этой работе?</span>
+                    <span class="text-[10px]">💼</span>
+                </button>
+                <button onclick="selectQuestion(this, 'Будет ли финансовый рост в этом месяце?')" class="w-full text-left bg-[#0F081D]/80 border border-purple-900/60 hover:border-[#D4AF37]/50 rounded-xl p-2.5 text-xs text-purple-200 transition-all flex items-center justify-between active:scale-[0.98] question-btn border-l-4 border-l-purple-500">
+                    <span>7. Будет ли финансовый рост в этом месяце?</span>
+                    <span class="text-[10px]">💰</span>
+                </button>
+                <button onclick="selectQuestion(this, 'Какое решение мне лучше принять?')" class="w-full text-left bg-[#0F081D]/80 border border-purple-900/60 hover:border-[#D4AF37]/50 rounded-xl p-2.5 text-xs text-purple-200 transition-all flex items-center justify-between active:scale-[0.98] question-btn border-l-4 border-l-purple-500">
+                    <span>8. Какое решение мне лучше принять?</span>
+                    <span class="text-[10px]">⚖️</span>
+                </button>
+                <button onclick="selectQuestion(this, 'Что мешает мне двигаться дальше?')" class="w-full text-left bg-[#0F081D]/80 border border-purple-900/60 hover:border-[#D4AF37]/50 rounded-xl p-2.5 text-xs text-purple-200 transition-all flex items-center justify-between active:scale-[0.98] question-btn border-l-4 border-l-purple-500">
+                    <span>9. Что мешает мне двигаться дальше?</span>
+                    <span class="text-[10px]">🛑</span>
+                </button>
+                <button onclick="selectQuestion(this, 'Какой главный совет от карт на будущее?')" class="w-full text-left bg-[#0F081D]/80 border border-purple-900/60 hover:border-[#D4AF37]/50 rounded-xl p-2.5 text-xs text-purple-200 transition-all flex items-center justify-between active:scale-[0.98] question-btn border-l-4 border-l-purple-500">
+                    <span>10. Какой главный совет от карт на будущее?</span>
+                    <span class="text-[10px]">🌟</span>
+                </button>
+            </div>
+            
+            <input type="hidden" id="selected-preset-question" value="Что меня ждет сегодня?">
+
+            <div class="bg-[#0F081D]/60 border border-purple-900/40 rounded-xl p-3 flex justify-between items-center text-xs">
+                <span class="text-purple-300">Стоимость расклада:</span>
+                <span class="font-bold text-[#D4AF37]">150 энергии</span>
+            </div>
+
+            <button onclick="triggerPresetReading()" class="w-full bg-gradient-to-r from-yellow-500 to-[#D4AF37] text-black font-bold py-3.5 rounded-xl text-xs transition-all tracking-wider uppercase shadow-md active:scale-95">
+                Запустить расклад
+            </button>
+        </div>
+    </div>
+
+    <!-- Модальное окно: Индивидуальный разбор -->
+    <div id="modal-detail-ai" class="hidden fixed inset-0 bg-black/80 backdrop-blur-md z-40 flex items-end justify-center">
+        <div class="absolute inset-0" onclick="closeDetailModal('ai')"></div>
+        <div class="relative z-10 w-full max-w-md bg-gradient-to-t from-[#0A0514] to-[#1A0B2E] border-t border-[#D4AF37]/30 rounded-t-[30px] p-6 space-y-4 shadow-2xl overflow-y-auto max-h-[85vh]">
+            <div class="flex justify-between items-center">
+                <div class="flex items-center space-x-2">
+                    <span class="text-2xl">🔮</span>
+                    <h3 class="serif-title text-xl font-bold text-[#D4AF37]">Индивидуальный разбор</h3>
+                </div>
+                <button onclick="closeDetailModal('ai')" class="w-8 h-8 rounded-full bg-purple-950/50 flex items-center justify-center text-purple-200 border border-purple-900/40 hover:text-white transition-all">✕</button>
+            </div>
+            
+            <div class="space-y-3 text-xs text-purple-200/80 leading-relaxed">
+                <p class="font-semibold text-white">Что вы получите в результате разбора?</p>
+                <p>Это самый мощный и глубокий инструмент самопознания. Здесь нет заготовленных шаблонов. Вы можете задать абсолютно любой, даже самый сложный или сокровенный вопрос о жизни, карьере, отношениях или духовных блоках.</p>
+                <p>Оракул проведет **комплексный, детальный анализ ситуации** (более 600-800 слов). ИИ детально разберет карты в их взаимодействии, подсветит подсознательные страхи и составит для вас пошаговый план действий.</p>
+            </div>
+
+            <!-- ТЕКСТОВОЕ ПОЛЕ ВВОДА (ВНУТРИ ОКНА) -->
+            <div class="space-y-1.5">
+                <label class="text-[10px] text-purple-300 uppercase tracking-widest font-semibold">Ваш вопрос Оракулу:</label>
+                <textarea id="ai-question" rows="3" placeholder="Например: 'Стоит ли мне сейчас развивать свой проект и уходить со старой работы? Что поможет справиться со страхом?'" class="w-full bg-[#0F081D]/80 border border-purple-900/60 rounded-xl p-3 text-xs focus:outline-none focus:border-[#D4AF37] transition-all text-white placeholder-purple-300/30 resize-none gold-glow-focus"></textarea>
+            </div>
+
+            <div class="bg-[#0F081D]/60 border border-purple-900/40 rounded-xl p-3 flex justify-between items-center">
+                <span class="text-xs text-purple-300">Стоимость разбора:</span>
+                <span class="text-sm font-bold text-[#D4AF37]">750 энергии</span>
+            </div>
+
+            <button onclick="triggerAiReading()" class="w-full bg-gradient-to-r from-[#8A2BE2] to-[#D4AF37] text-white font-bold py-3.5 rounded-xl text-xs transition-all tracking-wider uppercase shadow-md active:scale-95">
+                Запустить разбор ИИ
+            </button>
+        </div>
+    </div>
+
 
     <!-- 🃏 ЭКРАН 3: ТАИНСТВО РАСКЛАДА (АНИМАЦИЯ И РЕЗУЛЬТАТ) -->
     <div id="screen-reading" class="hidden relative z-10 flex-1 flex flex-col justify-between p-4 max-w-md mx-auto w-full">
@@ -397,7 +519,6 @@
         function updateUIBalances() {
             if (!userProfile) return;
             document.getElementById("display-name").innerText = userProfile.name || "Искатель";
-            // Показываем единый объединенный баланс
             document.getElementById("display-balance").innerText = userProfile.balance;
         }
 
@@ -406,6 +527,16 @@
         }
         function closeStore() {
             document.getElementById("modal-store").classList.add("hidden");
+        }
+
+        // Функции управления модальными окнами описания
+        function openDetailModal(type) {
+            document.getElementById(`modal-detail-${type}`).classList.remove("hidden");
+            if (tg.HapticFeedback) tg.HapticFeedback.impactOccurred("light");
+        }
+
+        function closeDetailModal(type) {
+            document.getElementById(`modal-detail-${type}`).classList.add("hidden");
         }
 
         async function buyPack(packId) {
@@ -452,6 +583,30 @@
             }
         }
 
+        // Интерактивный выбор заготовленного вопроса
+        function selectQuestion(element, questionText) {
+            const allButtons = document.querySelectorAll(".question-btn");
+            allButtons.forEach(btn => {
+                btn.classList.remove("border-[#D4AF37]", "bg-[#D4AF37]/10", "text-[#D4AF37]", "border-l-4");
+                btn.classList.add("border-purple-900/60", "bg-[#0F081D]/80", "text-purple-200", "border-l-4");
+                
+                const icon = btn.querySelector("span:last-child");
+                if (icon) icon.classList.remove("text-[#D4AF37]");
+            });
+
+            element.classList.remove("border-purple-900/60", "bg-[#0F081D]/80", "text-purple-200");
+            element.classList.add("border-[#D4AF37]", "bg-[#D4AF37]/10", "text-[#D4AF37]");
+            
+            const activeIcon = element.querySelector("span:last-child");
+            if (activeIcon) activeIcon.classList.add("text-[#D4AF37]");
+
+            document.getElementById("selected-preset-question").value = questionText;
+
+            if (tg.HapticFeedback) {
+                tg.HapticFeedback.impactOccurred("light");
+            }
+        }
+
         function backToDashboard() {
             document.getElementById("screen-reading").classList.add("hidden");
             document.getElementById("screen-dashboard").classList.remove("hidden");
@@ -460,6 +615,22 @@
         function showError(msg) {
             document.getElementById("screen-loading").classList.remove("hidden");
             document.getElementById("loading-text").innerHTML = `<span class="text-red-400 font-semibold">${msg}</span>`;
+        }
+
+        // Обертки-триггеры для запуска из модальных окон
+        function triggerDailyReading() {
+            closeDetailModal('daily');
+            startStandardReading();
+        }
+
+        function triggerPresetReading() {
+            closeDetailModal('preset');
+            startPresetReading();
+        }
+
+        function triggerAiReading() {
+            closeDetailModal('ai');
+            startAiReading();
         }
 
         // РАСКЛАД 1: КАРТА ДНЯ (списывает 75 энергии)
@@ -515,7 +686,7 @@
 
         // ВАРИАНТ 2: РАСКЛАД ПО ГОТОВЫМ ВОПРОСАМ (списывает 150 энергии)
         async function startPresetReading() {
-            const question = document.getElementById("preset-question").value;
+            const question = document.getElementById("selected-preset-question").value;
             if (userProfile.balance < 150) {
                 openStore();
                 tg.showAlert("Недостаточно энергии на балансе. Требуется 150 Энергии.");
