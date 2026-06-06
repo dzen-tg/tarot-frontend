@@ -94,41 +94,7 @@
         </p>
     </div>
 
-    <!-- 📝 ЭКРАН 2: ОНБОРДИНГ И СОГЛАСИЕ (ПОКАЗЫВАЕТСЯ ПРИ ПЕРВОМ ВХОДЕ) -->
-    <div id="screen-onboarding" class="hidden relative z-10 flex-1 flex flex-col justify-between p-6 max-w-md mx-auto w-full">
-        <div class="text-center mt-6">
-            <span class="text-5xl mb-4 block animate-float">📖</span>
-            <h1 class="serif-title text-3xl font-bold text-[#D4AF37] tracking-wide mb-2">Оракул Судьбы</h1>
-            <p class="text-sm text-purple-200/80 leading-relaxed px-4">
-                Перед тем как задать свой сокровенный вопрос картам, позвольте Оракулу настроиться на ваше имя.
-            </p>
-        </div>
-
-        <div class="my-8 bg-[#1A0B2E]/60 border border-[#D4AF37]/20 rounded-2xl p-5 backdrop-blur-md space-y-4 shadow-xl">
-            <div>
-                <label class="block text-xs uppercase tracking-wider text-[#D4AF37] font-semibold mb-2">Ваше Имя</label>
-                <input type="text" id="user-name" placeholder="Как к вам обращаться?" class="w-full bg-[#0F081D]/80 border border-purple-900/50 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-[#D4AF37] transition-all text-white placeholder-purple-300/30">
-            </div>
-
-            <div>
-                <label class="block text-xs uppercase tracking-wider text-[#D4AF37] font-semibold mb-2">Ваш Email (для глубоких прогнозов)</label>
-                <input type="email" id="user-email" placeholder="example@mail.com" class="w-full bg-[#0F081D]/80 border border-purple-900/50 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-[#D4AF37] transition-all text-white placeholder-purple-300/30">
-            </div>
-
-            <div class="flex items-start space-x-3 pt-2">
-                <input type="checkbox" id="user-consent" class="mt-1 accent-[#D4AF37] cursor-pointer w-4 h-4 rounded">
-                <label for="user-consent" class="text-xs text-purple-200/60 leading-relaxed cursor-pointer select-none">
-                    Я даю согласие на обработку персональных данных и принимаю <span class="text-[#D4AF37] underline decoration-dotted">Политику конфиденциальности</span> для формирования астрологических ответов.
-                </label>
-            </div>
-        </div>
-
-        <button onclick="submitOnboarding()" class="w-full bg-gradient-to-r from-[#8A2BE2] via-[#D4AF37] to-[#8A2BE2] bg-[length:200%_auto] hover:bg-right transition-all duration-500 text-white font-bold py-4 rounded-xl shadow-lg shadow-purple-950/50 active:scale-[0.98]">
-            Войти в чертоги Оракула
-        </button>
-    </div>
-
-    <!-- 🌌 ЭКРАН 3: ГЛАВНЫЙ ДАШБОРД -->
+    <!-- 🌌 ЭКРАН 2: ГЛАВНЫЙ ДАШБОРД (ПЕРЕХОД СЮДА СРАЗУ ПОСЛЕ ЗАГРУЗКИ) -->
     <div id="screen-dashboard" class="hidden relative z-10 flex-1 flex flex-col justify-between p-4 max-w-md mx-auto w-full">
         
         <!-- Верхняя шапка с балансом и профилем -->
@@ -200,7 +166,7 @@
         </p>
     </div>
 
-    <!-- 🃏 ЭКРАН 4: ТАИНСТВО РАСКЛАДА (АНИМАЦИЯ И РЕЗУЛЬТАТ) -->
+    <!-- 🃏 ЭКРАН 3: ТАИНСТВО РАСКЛАДА (АНИМАЦИЯ И РЕЗУЛЬТАТ) -->
     <div id="screen-reading" class="hidden relative z-10 flex-1 flex flex-col justify-between p-4 max-w-md mx-auto w-full">
         
         <!-- Заголовок -->
@@ -274,7 +240,6 @@
                             <p class="text-[10px] text-purple-200/50">Быстрое прояснение дня</p>
                         </div>
                     </div>
-                    <!-- Восстановлена оригинальная цена 150 -->
                     <button onclick="buyPack('1_std')" class="bg-gradient-to-r from-yellow-500 to-[#D4AF37] hover:from-[#D4AF37] hover:to-yellow-500 text-black font-bold px-4 py-2 rounded-xl text-xs flex items-center space-x-1.5 shadow active:scale-95">
                         <span>⭐</span> <span class="font-bold">150</span>
                     </button>
@@ -289,7 +254,6 @@
                             <p class="text-[10px] text-[#D4AF37] font-semibold">Скидка 10% для постоянных искателей</p>
                         </div>
                     </div>
-                    <!-- Восстановлена оригинальная цена 675 -->
                     <button onclick="buyPack('5_std')" class="bg-gradient-to-r from-yellow-500 to-[#D4AF37] hover:from-[#D4AF37] hover:to-yellow-500 text-black font-bold px-4 py-2 rounded-xl text-xs flex items-center space-x-1.5 shadow active:scale-95">
                         <span>⭐</span> <span class="font-bold">675</span>
                     </button>
@@ -304,7 +268,6 @@
                             <p class="text-[10px] text-purple-200/50">Детальный разбор вашей судьбы</p>
                         </div>
                     </div>
-                    <!-- Восстановлена оригинальная цена 750 -->
                     <button onclick="buyPack('1_ai')" class="bg-gradient-to-r from-yellow-500 to-[#D4AF37] hover:from-[#D4AF37] hover:to-yellow-500 text-black font-bold px-4 py-2 rounded-xl text-xs flex items-center space-x-1.5 shadow active:scale-95">
                         <span>⭐</span> <span class="font-bold">750</span>
                     </button>
@@ -333,7 +296,7 @@
         const initData = tg.initData || "";
         let userProfile = null;
 
-        // База изображений рубашек и лицевой стороны карт (Генераторы красивых градиентов для надежности без внешних картинок)
+        // База изображений рубашек и лицевой стороны карт
         const getCardDesign = (cardName) => {
             return `
                 <div class="w-full h-full rounded-2xl bg-gradient-to-b from-[#11041F] to-[#25093A] border-2 border-[#D4AF37]/50 flex flex-col justify-between p-3 text-center shadow-xl relative overflow-hidden">
@@ -375,15 +338,9 @@
                     userProfile = await response.json();
                     updateUIBalances();
                     
-                    // Если пользователь вошел впервые или не заполнен onboarding
-                    const isNew = !localStorage.getItem("tarot_onboarded_v2");
+                    // Сразу прячем загрузчик и открываем Храм Оракула без лишних форм!
                     document.getElementById("screen-loading").classList.add("hidden");
-                    
-                    if (isNew) {
-                        document.getElementById("screen-onboarding").classList.remove("hidden");
-                    } else {
-                        document.getElementById("screen-dashboard").classList.remove("hidden");
-                    }
+                    document.getElementById("screen-dashboard").classList.remove("hidden");
                 } else {
                     showError("Сбой связи. Пожалуйста, перезапустите бота.");
                 }
@@ -399,36 +356,6 @@
             document.getElementById("display-name").innerText = userProfile.name || "Искатель";
             document.getElementById("display-balance").innerText = userProfile.balance;
             document.getElementById("display-ai-balance").innerText = userProfile.ai_balance;
-            
-            // Предзаполняем имя на экране онбординга если есть
-            document.getElementById("user-name").value = userProfile.name || "";
-        }
-
-        // Сабмит онбординга
-        function submitOnboarding() {
-            const name = document.getElementById("user-name").value.trim();
-            const email = document.getElementById("user-email").value.trim();
-            const consent = document.getElementById("user-consent").checked;
-
-            if (!name) {
-                tg.showAlert("Пожалуйста, введите ваше имя для Оракула.");
-                return;
-            }
-            if (!consent) {
-                tg.showAlert("Пожалуйста, примите согласие на обработку данных.");
-                return;
-            }
-
-            localStorage.setItem("tarot_onboarded_v2", "true");
-            userProfile.name = name;
-            updateUIBalances();
-            
-            document.getElementById("screen-onboarding").classList.add("hidden");
-            document.getElementById("screen-dashboard").classList.remove("hidden");
-            
-            if (tg.HapticFeedback) {
-                tg.HapticFeedback.notificationOccurred("success");
-            }
         }
 
         // Включение магазинов
