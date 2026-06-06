@@ -7,7 +7,7 @@
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
     <!-- Google Fonts: Playfair Display & Inter -->
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:ital,wght@0,500;0,700;1,400&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:ital,wght=0,500;0,700;1,400&display=swap" rel="stylesheet">
     <!-- Telegram WebApp SDK -->
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <!-- Lucide Icons -->
@@ -105,12 +105,15 @@
                 </div>
                 <div>
                     <h3 id="display-name" class="font-bold text-sm text-white">Искатель</h3>
-                    <p class="text-[10px] text-purple-200/50 uppercase tracking-widest">Профиль сонастроен</p>
+                    <p class="text-[10px] text-purple-200/50 uppercase tracking-widest">Таро Оракул</p>
                 </div>
             </div>
             
-            <button onclick="openStore()" class="flex items-center space-x-2 bg-[#D4AF37]/10 hover:bg-[#D4AF37]/20 border border-[#D4AF37]/40 px-3 py-1.5 rounded-xl transition-all">
-                <span class="text-sm">⭐</span>
+            <!-- Баланс разделен на три типа для точного отображения -->
+            <button onclick="openStore()" class="flex items-center space-x-1.5 bg-[#D4AF37]/10 hover:bg-[#D4AF37]/20 border border-[#D4AF37]/40 px-2 py-1.5 rounded-xl transition-all">
+                <span class="text-[10px] text-purple-200/60">Карты дня:</span>
+                <span id="display-daily-balance" class="font-bold text-xs text-[#D4AF37]">0</span>
+                <span class="text-[10px] text-purple-200/60">/ Обычные:</span>
                 <span id="display-balance" class="font-bold text-xs text-[#D4AF37]">0</span>
                 <span class="text-[10px] text-purple-200/60">/ Особые:</span>
                 <span id="display-ai-balance" class="font-bold text-xs text-purple-300">0</span>
@@ -118,16 +121,16 @@
         </div>
 
         <!-- Центральный выбор расклада -->
-        <div class="flex-1 flex flex-col justify-center space-y-5 my-2">
+        <div class="flex-1 flex flex-col justify-center space-y-4 my-2 overflow-y-auto max-h-[80vh] pr-1">
             
             <!-- Вариант 1: Карта Дня -->
             <div class="bg-gradient-to-br from-[#1F103A] to-[#0F081D] border border-purple-900/50 rounded-3xl p-5 relative overflow-hidden group shadow-lg">
                 <div class="absolute top-0 right-0 w-24 h-24 bg-gradient-to-br from-[#8A2BE2]/20 to-transparent rounded-bl-full pointer-events-none"></div>
                 <div class="flex items-start justify-between mb-3">
                     <span class="text-3xl">🃏</span>
-                    <span class="bg-[#D4AF37]/10 border border-[#D4AF37]/30 text-[#D4AF37] text-[10px] font-bold uppercase px-2 py-0.5 rounded-full">1 баланс</span>
+                    <span class="bg-[#D4AF37]/10 border border-[#D4AF37]/30 text-[#D4AF37] text-[10px] font-bold uppercase px-2 py-0.5 rounded-full">1 баланс дня</span>
                 </div>
-                <h2 class="serif-title text-xl font-bold text-white mb-2 group-hover:text-[#D4AF37] transition-all">Священная Карта Дня</h2>
+                <h2 class="serif-title text-xl font-bold text-white mb-2 group-hover:text-[#D4AF37] transition-all">Карта Дня</h2>
                 <p class="text-xs text-purple-200/60 leading-relaxed mb-4">
                     Узнайте главный посыл Вселенной на сегодня. Идеальный инструмент для утренней сонастройки и поиска фокуса.
                 </p>
@@ -136,25 +139,61 @@
                 </button>
             </div>
 
-            <!-- Вариант 2: Индивидуальный Вопрос -->
+            <!-- Вариант 2: Заготовленные Вопросы (1 обычный баланс) -->
+            <div class="bg-gradient-to-br from-[#1F103A] to-[#0F081D] border border-purple-900/50 rounded-3xl p-5 relative overflow-hidden group shadow-lg">
+                <div class="absolute top-0 right-0 w-24 h-24 bg-gradient-to-br from-[#8A2BE2]/20 to-transparent rounded-bl-full pointer-events-none"></div>
+                <div class="flex items-start justify-between mb-3">
+                    <span class="text-3xl">❓</span>
+                    <span class="bg-[#D4AF37]/10 border border-[#D4AF37]/30 text-[#D4AF37] text-[10px] font-bold uppercase px-2 py-0.5 rounded-full">1 обычный баланс</span>
+                </div>
+                <h2 class="serif-title text-xl font-bold text-white mb-2 group-hover:text-[#D4AF37] transition-all">Готовые Вопросы</h2>
+                <p class="text-xs text-purple-200/60 leading-relaxed mb-4">
+                    Выберите один из 10 классических вопросов для мгновенного и точного расклада Оракула на 3 карты.
+                </p>
+                
+                <!-- Селектор заготовленных вопросов -->
+                <div class="relative mb-4">
+                    <select id="preset-question" class="w-full bg-[#0F081D] border border-purple-900/60 rounded-xl p-3 text-xs focus:outline-none focus:border-[#D4AF37] transition-all text-white cursor-pointer appearance-none">
+                        <option value="Что меня ждет сегодня?">1. Что меня ждет сегодня?</option>
+                        <option value="Любит ли меня загаданный человек?">2. Любит ли меня загаданный человек?</option>
+                        <option value="Позвонит/напишет ли он в ближайшее время?">3. Позвонит/напишет ли он в ближайшее время?</option>
+                        <option value="Что он чувствует ко мне сейчас?">4. Что он чувствует ко мне сейчас?</option>
+                        <option value="Стоит ли делать первый шаг?">5. Стоит ли делать первый шаг?</option>
+                        <option value="Какие перспективы на этой работе?">6. Какие перспективы на этой работе?</option>
+                        <option value="Будет ли финансовый рост в этом месяце?">7. Будет ли финансовый рост в этом месяце?</option>
+                        <option value="Какое решение мне лучше принять?">8. Какое решение мне лучше принять?</option>
+                        <option value="Что мешает мне двигаться дальше?">9. Что мешает мне двигаться дальше?</option>
+                        <option value="Какой главный совет от карт на будущее?">10. Какой главный совет от карт на будущее?</option>
+                    </select>
+                    <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-3 text-purple-300">
+                        <span class="text-[10px]">▼</span>
+                    </div>
+                </div>
+
+                <button onclick="startPresetReading()" class="w-full bg-[#1F103A] hover:bg-[#D4AF37] hover:text-black border border-[#D4AF37]/30 text-white font-bold py-3 rounded-xl text-xs transition-all tracking-wider uppercase active:scale-95">
+                    Получить ответ на вопрос
+                </button>
+            </div>
+
+            <!-- Вариант 3: Индивидуальный разбор (Особая Энергия) -->
             <div class="bg-gradient-to-br from-[#1A0B2E] via-[#2A114D] to-[#0F081D] border border-[#D4AF37]/20 rounded-3xl p-5 relative overflow-hidden group shadow-lg gold-glow">
                 <div class="absolute top-0 right-0 w-32 h-32 bg-gradient-to-br from-[#D4AF37]/10 to-transparent rounded-bl-full pointer-events-none animate-pulse"></div>
                 <div class="flex items-start justify-between mb-3">
-                    <span class="text-3xl">🧠</span>
+                    <span class="text-3xl">🔮</span>
                     <span class="bg-[#8A2BE2]/30 border border-[#8A2BE2]/50 text-purple-200 text-[10px] font-bold uppercase px-2 py-0.5 rounded-full">1 Особая Энергия</span>
                 </div>
-                <h2 class="serif-title text-xl font-bold text-[#D4AF37] mb-2">Глубокий Расклад</h2>
+                <h2 class="serif-title text-xl font-bold text-[#D4AF37] mb-2">Индивидуальный разбор</h2>
                 <p class="text-xs text-purple-200/70 leading-relaxed mb-4">
-                    Задайте Оракулу любой волнующий вопрос. Карты будут разложены специальным образом, чтобы дать точный, развернутый психологический совет именно по вашей ситуации.
+                    Задайте Оракулу любой сокровенный или детальный вопрос. Программа проведет глубокий, масштабный анализ вашей ситуации без каких-либо ограничений по объему.
                 </p>
                 
                 <!-- Поле ввода вопроса -->
                 <div class="relative mb-4">
-                    <textarea id="ai-question" rows="2" placeholder="Например: 'Стоит ли мне сейчас менять сферу деятельности и идти в видеопродакшн?'" class="w-full bg-[#0F081D]/80 border border-purple-900/60 rounded-xl p-3 text-xs focus:outline-none focus:border-[#D4AF37] transition-all text-white placeholder-purple-300/30 resize-none gold-glow-focus"></textarea>
+                    <textarea id="ai-question" rows="2" placeholder="Например: 'Стоит ли мне сейчас развивать свой проект и уходить со старой работы?'" class="w-full bg-[#0F081D]/80 border border-purple-900/60 rounded-xl p-3 text-xs focus:outline-none focus:border-[#D4AF37] transition-all text-white placeholder-purple-300/30 resize-none gold-glow-focus"></textarea>
                 </div>
 
                 <button onclick="startAiReading()" class="w-full bg-gradient-to-r from-[#8A2BE2] to-[#D4AF37] hover:from-[#D4AF37] hover:to-[#8A2BE2] text-white hover:text-white font-bold py-3.5 rounded-xl text-xs transition-all duration-500 tracking-wider uppercase shadow-md active:scale-95">
-                    Спросить Оракула
+                    Запустить разбор
                 </button>
             </div>
 
@@ -197,7 +236,7 @@
         </div>
 
         <!-- Свиток с толкованием -->
-        <div id="reading-result-box" class="hidden bg-[#1A0B2E]/80 border border-[#D4AF37]/20 rounded-2xl p-4 max-h-[220px] overflow-y-auto backdrop-blur-md mb-4 shadow-xl">
+        <div id="reading-result-box" class="hidden bg-[#1A0B2E]/80 border border-[#D4AF37]/20 rounded-2xl p-4 max-h-[300px] overflow-y-auto backdrop-blur-md mb-4 shadow-xl">
             <h3 class="serif-title text-sm text-[#D4AF37] font-bold mb-2 flex items-center space-x-2">
                 <span>🔮</span> <span>Толкование Оракула:</span>
             </h3>
@@ -228,46 +267,64 @@
                 </button>
             </div>
 
-            <!-- Список товаров -->
+            <!-- Список товаров с восстановленными ценами -->
             <div class="space-y-3">
                 
-                <!-- Пакет 1 -->
+                <!-- Товар 1: Карта Дня -->
                 <div class="flex items-center justify-between bg-[#0F081D]/60 border border-purple-900/50 rounded-2xl p-4 hover:border-[#D4AF37]/30 transition-all">
                     <div class="flex items-center space-x-3">
                         <span class="text-2xl">🃏</span>
                         <div>
-                            <h4 class="font-bold text-xs text-white">1 Стандартный расклад</h4>
+                            <h4 class="font-bold text-xs text-white">1 Карта Дня</h4>
                             <p class="text-[10px] text-purple-200/50">Быстрое прояснение дня</p>
                         </div>
                     </div>
+                    <!-- ИСПРАВЛЕНО: Карта дня 75 звезд -->
+                    <button onclick="buyPack('1_daily')" class="bg-gradient-to-r from-yellow-500 to-[#D4AF37] hover:from-[#D4AF37] hover:to-yellow-500 text-black font-bold px-4 py-2 rounded-xl text-xs flex items-center space-x-1.5 shadow active:scale-95">
+                        <span>⭐</span> <span class="font-bold">75</span>
+                    </button>
+                </div>
+
+                <!-- Товар 2: 1 Стандартный расклад -->
+                <div class="flex items-center justify-between bg-[#0F081D]/60 border border-purple-900/50 rounded-2xl p-4 hover:border-[#D4AF37]/30 transition-all">
+                    <div class="flex items-center space-x-3">
+                        <span class="text-2xl">❓</span>
+                        <div>
+                            <h4 class="font-bold text-xs text-white">1 Обычный расклад</h4>
+                            <p class="text-[10px] text-purple-200/50">Ответ на один готовый вопрос</p>
+                        </div>
+                    </div>
+                    <!-- ИСПРАВЛЕНО: Стандартный расклад 150 звезд -->
                     <button onclick="buyPack('1_std')" class="bg-gradient-to-r from-yellow-500 to-[#D4AF37] hover:from-[#D4AF37] hover:to-yellow-500 text-black font-bold px-4 py-2 rounded-xl text-xs flex items-center space-x-1.5 shadow active:scale-95">
                         <span>⭐</span> <span class="font-bold">150</span>
                     </button>
                 </div>
 
-                <!-- Пакет 2 -->
+                <!-- Товар 3: Пакет из 5 обычных раскладов -->
                 <div class="flex items-center justify-between bg-[#0F081D]/60 border border-[#D4AF37]/20 rounded-2xl p-4 hover:border-[#D4AF37]/50 transition-all gold-glow">
                     <div class="flex items-center space-x-3">
                         <span class="text-2xl">🔮</span>
                         <div>
-                            <h4 class="font-bold text-xs text-white">Пакет из 5 раскладов</h4>
-                            <p class="text-[10px] text-[#D4AF37] font-semibold">Скидка 10% для постоянных искателей</p>
+                            <h4 class="font-bold text-xs text-white">Пакет из 5 обычных раскладов</h4>
+                            <p class="text-[10px] text-[#D4AF37] font-semibold">Для детальной проработки разных сфер</p>
                         </div>
                     </div>
+                    <!-- ИСПРАВЛЕНО: Пакет из 5 штук за 675 звезд (со скидкой 10%) -->
                     <button onclick="buyPack('5_std')" class="bg-gradient-to-r from-yellow-500 to-[#D4AF37] hover:from-[#D4AF37] hover:to-yellow-500 text-black font-bold px-4 py-2 rounded-xl text-xs flex items-center space-x-1.5 shadow active:scale-95">
                         <span>⭐</span> <span class="font-bold">675</span>
                     </button>
                 </div>
 
-                <!-- Пакет 3 -->
+                <!-- Товар 4: 1 Индивидуальный разбор -->
                 <div class="flex items-center justify-between bg-[#0F081D]/60 border border-purple-900/50 rounded-2xl p-4 hover:border-[#D4AF37]/30 transition-all">
                     <div class="flex items-center space-x-3">
                         <span class="text-2xl">✨</span>
                         <div>
-                            <h4 class="font-bold text-xs text-white">1 Глубокий расклад</h4>
-                            <p class="text-[10px] text-purple-200/50">Детальный разбор вашей судьбы</p>
+                            <h4 class="font-bold text-xs text-white">1 Индивидуальный разбор</h4>
+                            <p class="text-[10px] text-purple-200/50">Глубокое, масштабное и детальное толкование</p>
                         </div>
                     </div>
+                    <!-- ИСПРАВЛЕНО: Индивидуальный разбор 750 звезд -->
                     <button onclick="buyPack('1_ai')" class="bg-gradient-to-r from-yellow-500 to-[#D4AF37] hover:from-[#D4AF37] hover:to-yellow-500 text-black font-bold px-4 py-2 rounded-xl text-xs flex items-center space-x-1.5 shadow active:scale-95">
                         <span>⭐</span> <span class="font-bold">750</span>
                     </button>
@@ -354,6 +411,7 @@
         function updateUIBalances() {
             if (!userProfile) return;
             document.getElementById("display-name").innerText = userProfile.name || "Искатель";
+            document.getElementById("display-daily-balance").innerText = userProfile.daily_balance !== undefined ? userProfile.daily_balance : 0;
             document.getElementById("display-balance").innerText = userProfile.balance;
             document.getElementById("display-ai-balance").innerText = userProfile.ai_balance;
         }
@@ -424,11 +482,11 @@
             document.getElementById("loading-text").innerHTML = `<span class="text-red-400 font-semibold">${msg}</span>`;
         }
 
-        // РАСКЛАД 1: КАРТА ДНЯ (ЛОКАЛЬНАЯ ЭНЕРГИЯ)
+        // РАСКЛАД 1: КАРТА ДНЯ (1 баланс дня)
         async function startStandardReading() {
-            if (userProfile.balance < 1) {
+            if (userProfile.daily_balance < 1) {
                 openStore();
-                tg.showAlert("Недостаточно стандартных раскладов на балансе. Пожалуйста, пополните энергию.");
+                tg.showAlert("Недостаточно баланса Карт Дня. Пожалуйста, пополните энергию.");
                 return;
             }
 
@@ -441,16 +499,16 @@
             document.getElementById("reading-result-box").classList.add("hidden");
             document.getElementById("btn-back-dashboard").classList.add("hidden");
 
-            // Запрос на списание баланса
+            // Запрос на списание баланса карт дня
             try {
-                const response = await fetch(`${BACKEND_URL}/api/user/use-reading`, {
+                const response = await fetch(`${BACKEND_URL}/api/user/use-daily-reading`, {
                     method: "POST",
                     headers: { "Authorization": initData }
                 });
 
                 if (response.ok) {
                     const resData = await response.json();
-                    userProfile.balance = resData.new_balance;
+                    userProfile.daily_balance = resData.new_daily_balance;
                     updateUIBalances();
 
                     // Имитируем тасование карт 2 секунды
@@ -466,7 +524,7 @@
                     const randomCard = deck[Math.floor(Math.random() * deck.length)];
 
                     // Генерируем красивое толкование
-                    const text = `🔮 Вы вытянули карту дня: "${randomCard}".\n\nЭтот день принесет вам важные осознания. Карта указывает на необходимость прислушаться к своей внутренней интуиции и не делать поспешных шагов. Вселенная направляет вас мягко — доверьтесь текущему течению событий.`;
+                    const text = `🔮 Вы вытянули Карту Дня: "${randomCard}".\n\nЭтот день несет в себе глубокий смысл. Выпавший Аркан призывает вас замедлиться, прислушаться к своей внутренней мудрости и действовать осознанно. Вселенная подсказывает, что ответы на волнующие вопросы уже созрели внутри вас, нужно лишь довериться естественному ходу событий.`;
 
                     renderSingleCard(randomCard, text);
                 } else {
@@ -479,7 +537,76 @@
             }
         }
 
-        // РАСКЛАД 2: ГЛУБОКИЙ РАСКЛАД С ПОДКЛЮЧЕНИЕМ ОРАКУЛА
+        // ВАРИАНТ 2: РАСКЛАД ПО ГОТОВЫМ ВОПРОСАМ (1 обычный баланс)
+        async function startPresetReading() {
+            const question = document.getElementById("preset-question").value;
+            if (userProfile.balance < 1) {
+                openStore();
+                tg.showAlert("Недостаточно обычных раскладов на балансе. Пожалуйста, пополните энергию.");
+                return;
+            }
+
+            document.getElementById("screen-dashboard").classList.add("hidden");
+            document.getElementById("screen-reading").classList.remove("hidden");
+            
+            document.getElementById("reading-title").innerText = "Ответ Оракула";
+            document.getElementById("reading-shuffling").classList.remove("hidden");
+            document.getElementById("cards-display").classList.add("hidden");
+            document.getElementById("reading-result-box").classList.add("hidden");
+            document.getElementById("btn-back-dashboard").classList.add("hidden");
+
+            try {
+                const response = await fetch(`${BACKEND_URL}/api/user/use-reading`, {
+                    method: "POST",
+                    headers: { "Authorization": initData }
+                });
+
+                if (response.ok) {
+                    const resData = await response.json();
+                    userProfile.balance = resData.new_balance;
+                    updateUIBalances();
+
+                    // Имитируем тасование карт 2.5 секунды
+                    await new Promise(r => setTimeout(r, 2500));
+
+                    // Вытягиваем 3 случайные уникальные карты
+                    const deck = [
+                        "Дурак", "Маг", "Верховная Жрица", "Императрица", "Император", "Иерофант", 
+                        "Влюбленные", "Колесница", "Сила", "Отшельник", "Колесо Фортуны", "Справедливость", 
+                        "Повешенный", "Смерть", "Умеренность", "Дьявол", "Башня", "Звезда", "Луна", 
+                        "Солнце", "Суд", "Мир", "Туз Кубков", "Двойка Кубков", "Тройка Кубков", "Королева Пентаклей", "Король Жезлов", "Туз Мечей"
+                    ];
+                    
+                    const selectedCards = [];
+                    while (selectedCards.length < 3) {
+                        const card = deck[Math.floor(Math.random() * deck.length)];
+                        if (!selectedCards.includes(card)) {
+                            selectedCards.push(card);
+                        }
+                    }
+
+                    // Генерация расклада
+                    let readingText = `🔮 Ваш вопрос: "${question}"\n\n`;
+                    readingText += `Аркан I (Прошлое / Корни ситуации) — «${selectedCards[0]}»\n`;
+                    readingText += `Он указывает на то, с чего все началось. Эта карта говорит, что накопленный ранее опыт и прошлые решения привели вас к текущей развилке.\n\n`;
+                    readingText += `Аркан II (Настоящее / Текущий вызов) — «${selectedCards[1]}»\n`;
+                    readingText += `Отражает реальное положение дел прямо сейчас. Этот символ требует от вас осознанности, терпения и хладнокровия при принятии любого решения.\n\n`;
+                    readingText += `Аркан III (Будущее / Совет карт) — «${selectedCards[2]}»\n`;
+                    readingText += `Финальный совет. Двигайтесь вперед без страха. Карты рекомендуют довериться интуиции и проявить стойкость, тогда все космические энергии сложатся в вашу пользу.`;
+
+                    const cardsObjects = selectedCards.map(name => ({ name: name }));
+                    renderMultipleCards(cardsObjects, readingText);
+                } else {
+                    tg.showAlert("Не удалось списать баланс. Попробуйте еще раз.");
+                    backToDashboard();
+                }
+            } catch (err) {
+                tg.showAlert("Ошибка соединения с сервером.");
+                backToDashboard();
+            }
+        }
+
+        // РАСКЛАД 3: ИНДИВИДУАЛЬНЫЙ РАЗБОР С ПОДКЛЮЧЕНИЕМ ОРАКУЛА (Особая Энергия)
         async function startAiReading() {
             const question = document.getElementById("ai-question").value.trim();
             if (!question) {
@@ -499,7 +626,7 @@
             document.getElementById("screen-dashboard").classList.add("hidden");
             document.getElementById("screen-reading").classList.remove("hidden");
             
-            document.getElementById("reading-title").innerText = "Глубокий Расклад";
+            document.getElementById("reading-title").innerText = "Индивидуальный разбор";
             document.getElementById("reading-shuffling").classList.remove("hidden");
             document.getElementById("cards-display").classList.add("hidden");
             document.getElementById("reading-result-box").classList.add("hidden");
