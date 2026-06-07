@@ -1,0 +1,653 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Таро Оракул Судьбы</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:ital,wght@0,500;0,700;1,400&display=swap" rel="stylesheet">
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
+    <style>
+        body { font-family: 'Inter', sans-serif; -webkit-tap-highlight-color: transparent; }
+        .serif { font-family: 'Playfair Display', serif; }
+
+        /* === АНИМАЦИИ === */
+        @keyframes float-slow {
+            0%,100% { transform: translateY(0) rotate(0deg); }
+            50% { transform: translateY(-10px) rotate(3deg); }
+        }
+        .animate-float { animation: float-slow 6s ease-in-out infinite; }
+
+        /* Колода карт — тасование */
+        .shuffle-deck { position: relative; width: 90px; height: 130px; margin: 0 auto; }
+        .shuffle-card {
+            position: absolute; width: 72px; height: 110px;
+            border-radius: 10px; border: 1.5px solid rgba(212,175,55,0.5);
+            background: linear-gradient(135deg,#1A0B2E,#0F081D,#25093A);
+            display: flex; align-items: center; justify-content: center;
+            font-size: 22px; box-shadow: 0 4px 15px rgba(0,0,0,0.5);
+            left: 9px; transform-origin: center bottom;
+        }
+        .shuffle-card:nth-child(1) { top: 9px;  animation: sh1 2.6s ease-in-out infinite; }
+        .shuffle-card:nth-child(2) { top: 6px;  animation: sh2 2.6s ease-in-out infinite .15s; }
+        .shuffle-card:nth-child(3) { top: 3px;  animation: sh3 2.6s ease-in-out infinite .3s; }
+        .shuffle-card:nth-child(4) { top: 0px;  animation: sh4 2.6s ease-in-out infinite .45s; }
+        @keyframes sh1 { 0%,40%,100%{transform:translate(0,0) rotate(0)} 20%{transform:translate(-26px,-16px) rotate(-18deg);opacity:.6} }
+        @keyframes sh2 { 0%,40%,100%{transform:translate(0,0) rotate(0)} 20%{transform:translate(28px,-11px) rotate(15deg);opacity:.6} }
+        @keyframes sh3 { 0%,40%,100%{transform:translate(0,0) rotate(0)} 20%{transform:translate(-20px,-26px) rotate(-10deg);opacity:.6} }
+        @keyframes sh4 { 0%,40%,100%{transform:translate(0,0) rotate(0)} 20%{transform:translate(23px,-21px) rotate(12deg);opacity:.6} }
+
+        /* Dots bounce */
+        @keyframes bncDot { 0%,80%,100%{transform:translateY(0)} 40%{transform:translateY(-6px)} }
+        .dot1 { animation: bncDot 1.2s .0s infinite; }
+        .dot2 { animation: bncDot 1.2s .2s infinite; }
+        .dot3 { animation: bncDot 1.2s .4s infinite; }
+
+        /* === КАРТЫ === */
+        .card-wrap { perspective: 1000px; }
+        .card-inner {
+            transition: transform .8s cubic-bezier(.175,.885,.32,1.275);
+            transform-style: preserve-3d; position: relative; width: 100%; height: 100%;
+        }
+        .card-flipped { transform: rotateY(180deg); }
+        .card-face, .card-face-back {
+            backface-visibility: hidden; position: absolute;
+            inset: 0; border-radius: 12px; overflow: hidden;
+        }
+        .card-face-back { transform: rotateY(180deg); }
+
+        @keyframes cardIn { from{opacity:0;transform:translateY(20px) scale(.9)} to{opacity:1;transform:none} }
+        .card-in { animation: cardIn .5s ease-out forwards; }
+
+        /* Текст расклада */
+        .reading-body strong { color: #D4AF37; font-weight: 700; }
+        .reading-body .sec { font-family:'Playfair Display',serif; color:#D4AF37; font-weight:700; font-size:.85rem; display:block; margin: .9rem 0 .3rem; }
+
+        /* Скроллбар */
+        ::-webkit-scrollbar { width: 4px; }
+        ::-webkit-scrollbar-thumb { background: rgba(212,175,55,.3); border-radius: 10px; }
+    </style>
+</head>
+<body class="min-h-screen flex flex-col overflow-x-hidden text-gray-100"
+      style="background:linear-gradient(160deg,#0F081D 0%,#1A0B2E 50%,#0A0514 100%)">
+
+<!-- Фоновые свечения -->
+<div class="fixed inset-0 pointer-events-none z-0 overflow-hidden">
+    <div class="absolute rounded-full" style="top:-10%;left:-10%;width:50%;height:50%;background:rgba(88,28,135,.08);filter:blur(120px)"></div>
+    <div class="absolute rounded-full" style="bottom:-10%;right:-10%;width:50%;height:50%;background:rgba(55,48,163,.08);filter:blur(120px)"></div>
+    <div class="absolute rounded-full animate-pulse" style="top:30%;left:40%;width:140px;height:140px;background:rgba(212,175,55,.04);filter:blur(80px)"></div>
+</div>
+
+<!-- ══════════════════ ЭКРАН ЗАГРУЗКИ ══════════════════ -->
+<div id="s-loading" class="fixed inset-0 z-50 flex flex-col items-center justify-center px-6 text-center" style="background:#0F081D">
+    <div class="relative mb-8">
+        <div class="w-24 h-24 rounded-full animate-spin" style="border:2px solid transparent;border-top-color:#D4AF37;border-bottom-color:rgba(212,175,55,.15)"></div>
+        <div class="absolute inset-2 rounded-full flex items-center justify-center" style="border:1px dashed rgba(212,175,55,.3)">
+            <span class="text-2xl animate-pulse">🔮</span>
+        </div>
+    </div>
+    <h2 class="serif text-2xl font-bold mb-3 tracking-wide" style="color:#D4AF37">Настройка небесных сфер</h2>
+    <p id="loading-text" class="text-sm leading-relaxed animate-pulse" style="color:rgba(196,181,253,.7);max-width:280px">
+        Колода карт тасуется, космические энергии приходят в движение...
+    </p>
+</div>
+
+<!-- ══════════════════ ГЛАВНЫЙ ДАШБОРД ══════════════════ -->
+<div id="s-dashboard" class="hidden relative z-10 flex-1 flex flex-col justify-between p-4 mx-auto w-full" style="max-width:420px">
+
+    <!-- Шапка -->
+    <div class="flex items-center justify-between rounded-2xl p-4 mb-4" style="background:rgba(26,11,46,.45);border:1px solid rgba(88,28,135,.3);backdrop-filter:blur(12px)">
+        <div class="flex items-center space-x-3">
+            <div class="w-10 h-10 rounded-xl flex items-center justify-center text-lg shadow" style="background:linear-gradient(135deg,#7c3aed,#D4AF37)">🔮</div>
+            <div>
+                <h3 id="disp-name" class="font-bold text-sm text-white">Искатель</h3>
+                <p class="text-purple-200 uppercase tracking-widest" style="font-size:9px;opacity:.5">Таро Оракул</p>
+            </div>
+        </div>
+        <button onclick="openStore()" class="flex items-center space-x-2 rounded-xl px-3.5 py-2 transition-all" style="background:rgba(212,175,55,.08);border:1px solid rgba(212,175,55,.4)">
+            <span class="text-sm">✨</span>
+            <span class="text-purple-200 font-medium" style="font-size:11px;opacity:.85">Энергия:</span>
+            <span id="disp-bal" class="font-bold text-xs" style="color:#D4AF37">0</span>
+        </button>
+    </div>
+
+    <!-- Карточки услуг -->
+    <div class="flex-1 flex flex-col justify-center space-y-3.5 my-2">
+
+        <!-- Карта Дня -->
+        <div class="flex items-center justify-between rounded-2xl p-4 shadow-md overflow-hidden" style="background:linear-gradient(to right,#1F103A,#0F081D);border:1px solid rgba(88,28,135,.4)">
+            <div class="flex items-center space-x-3">
+                <span class="text-3xl">🃏</span>
+                <div>
+                    <div class="flex items-center space-x-2">
+                        <h2 class="serif text-base font-bold text-white">Карта Дня</h2>
+                        <span class="font-bold uppercase px-1.5 py-0.5 rounded-full" style="background:rgba(212,175,55,.1);border:1px solid rgba(212,175,55,.3);color:#D4AF37;font-size:9px">75</span>
+                    </div>
+                    <p class="text-purple-200" style="font-size:11px;opacity:.5">Главный совет Вселенной на сегодня</p>
+                </div>
+            </div>
+            <button onclick="openModal('daily')" class="font-bold rounded-xl px-4 py-2 text-xs tracking-wider uppercase transition-all active:scale-95 text-white" style="background:#1F103A;border:1px solid rgba(212,175,55,.3)">
+                Выбрать
+            </button>
+        </div>
+
+        <!-- Готовые Вопросы -->
+        <div class="flex items-center justify-between rounded-2xl p-4 shadow-md overflow-hidden" style="background:linear-gradient(to right,#1F103A,#0F081D);border:1px solid rgba(88,28,135,.4)">
+            <div class="flex items-center space-x-3">
+                <span class="text-3xl">❓</span>
+                <div>
+                    <div class="flex items-center space-x-2">
+                        <h2 class="serif text-base font-bold text-white">Готовые Вопросы</h2>
+                        <span class="font-bold uppercase px-1.5 py-0.5 rounded-full" style="background:rgba(212,175,55,.1);border:1px solid rgba(212,175,55,.3);color:#D4AF37;font-size:9px">150</span>
+                    </div>
+                    <p class="text-purple-200" style="font-size:11px;opacity:.5">Точный ответ на классический вопрос</p>
+                </div>
+            </div>
+            <button onclick="openModal('preset')" class="font-bold rounded-xl px-4 py-2 text-xs tracking-wider uppercase transition-all active:scale-95 text-white" style="background:#1F103A;border:1px solid rgba(212,175,55,.3)">
+                Выбрать
+            </button>
+        </div>
+
+        <!-- Свой Вопрос -->
+        <div class="flex items-center justify-between rounded-2xl p-4 shadow-md overflow-hidden" style="background:linear-gradient(to right,#1A0B2E,#0F081D);border:1px solid rgba(212,175,55,.2);box-shadow:0 0 15px rgba(212,175,55,.12)">
+            <div class="flex items-center space-x-3">
+                <span class="text-3xl">🔮</span>
+                <div>
+                    <div class="flex items-center space-x-2">
+                        <h2 class="serif text-base font-bold" style="color:#D4AF37">Свой Вопрос</h2>
+                        <span class="font-bold uppercase px-1.5 py-0.5 rounded-full" style="background:rgba(124,58,237,.25);border:1px solid rgba(124,58,237,.5);color:rgba(196,181,253,.9);font-size:9px">750</span>
+                    </div>
+                    <p class="text-purple-200" style="font-size:11px;opacity:.5">Глубокий ИИ-разбор вашей ситуации</p>
+                </div>
+            </div>
+            <button onclick="openModal('ai')" class="font-bold rounded-xl px-4 py-2 text-xs tracking-wider uppercase transition-all active:scale-95 text-white" style="background:linear-gradient(to right,#7c3aed,#D4AF37)">
+                Открыть
+            </button>
+        </div>
+
+    </div>
+
+    <p class="text-center px-4 mt-2 leading-relaxed" style="font-size:9px;color:rgba(196,181,253,.3)">
+        Все предсказания носят ознакомительно-развлекательный характер. Нажимая кнопки, вы соглашаетесь с условиями сервиса.
+    </p>
+</div>
+
+
+<!-- ══════════════════ МОДАЛКА: КАРТА ДНЯ ══════════════════ -->
+<div id="modal-daily" class="hidden fixed inset-0 z-40 flex items-end justify-center" style="background:rgba(0,0,0,.8);backdrop-filter:blur(10px)">
+    <div class="absolute inset-0" onclick="closeModal('daily')"></div>
+    <div class="relative z-10 w-full rounded-t-3xl p-6 space-y-4 shadow-2xl overflow-y-auto" style="max-width:420px;max-height:85vh;background:linear-gradient(to top,#0A0514,#1A0B2E);border-top:1px solid rgba(212,175,55,.3)">
+        <div class="flex justify-between items-center">
+            <div class="flex items-center space-x-2">
+                <span class="text-2xl">🃏</span>
+                <h3 class="serif text-xl font-bold" style="color:#D4AF37">Карта Дня</h3>
+            </div>
+            <button onclick="closeModal('daily')" class="w-8 h-8 rounded-full flex items-center justify-center text-purple-200" style="background:rgba(49,10,77,.5);border:1px solid rgba(88,28,135,.4)">✕</button>
+        </div>
+        <div class="space-y-3 text-xs leading-relaxed" style="color:rgba(196,181,253,.8)">
+            <p class="font-semibold text-white">Для чего нужен этот расклад?</p>
+            <p>Ежедневная Карта Дня — это ваш ментальный и духовный ориентир на ближайшие 24 часа. Оракул вытягивает одну ключевую карту, которая подсветит скрытые течения сегодняшнего дня и даст мудрое напутствие.</p>
+            <p class="italic" style="color:rgba(212,175,55,.9)">Рекомендуется проходить каждое утро в спокойной обстановке.</p>
+        </div>
+        <div class="flex justify-between items-center rounded-xl p-3" style="background:rgba(15,8,29,.6);border:1px solid rgba(88,28,135,.4)">
+            <span class="text-xs" style="color:rgba(196,181,253,.7)">Стоимость:</span>
+            <span class="text-sm font-bold" style="color:#D4AF37">75 энергии</span>
+        </div>
+        <button onclick="triggerDaily()" class="w-full font-bold py-3.5 rounded-xl text-xs tracking-wider uppercase active:scale-95 text-black" style="background:linear-gradient(to right,#eab308,#D4AF37)">
+            Вытянуть Карту Дня
+        </button>
+    </div>
+</div>
+
+<!-- ══════════════════ МОДАЛКА: ГОТОВЫЕ ВОПРОСЫ ══════════════════ -->
+<div id="modal-preset" class="hidden fixed inset-0 z-40 flex items-end justify-center" style="background:rgba(0,0,0,.8);backdrop-filter:blur(10px)">
+    <div class="absolute inset-0" onclick="closeModal('preset')"></div>
+    <div class="relative z-10 w-full rounded-t-3xl p-6 space-y-4 shadow-2xl overflow-y-auto" style="max-width:420px;max-height:90vh;background:linear-gradient(to top,#0A0514,#1A0B2E);border-top:1px solid rgba(212,175,55,.3)">
+        <div class="flex justify-between items-center">
+            <div class="flex items-center space-x-2">
+                <span class="text-2xl">❓</span>
+                <h3 class="serif text-xl font-bold" style="color:#D4AF37">Готовые Вопросы</h3>
+            </div>
+            <button onclick="closeModal('preset')" class="w-8 h-8 rounded-full flex items-center justify-center text-purple-200" style="background:rgba(49,10,77,.5);border:1px solid rgba(88,28,135,.4)">✕</button>
+        </div>
+        <div class="space-y-2 text-xs leading-relaxed" style="color:rgba(196,181,253,.85)">
+            <p class="font-semibold text-white">Как это работает?</p>
+            <p>Расклад на 3 карты — Прошлое, Настоящее, Будущее. ИИ даёт живой уникальный ответ применительно именно к вашему вопросу.</p>
+        </div>
+
+        <!-- Список вопросов -->
+        <div class="space-y-1.5 overflow-y-auto pr-1" style="max-height:46vh">
+            <button onclick="pickQ(this,'Что меня ждет сегодня?')" class="q-btn q-active w-full text-left rounded-xl p-2.5 text-xs transition-all flex items-center justify-between active:scale-[0.98]">
+                <span>1. Что меня ждет сегодня?</span><span style="font-size:10px">✨</span>
+            </button>
+            <button onclick="pickQ(this,'Любит ли меня загаданный человек?')" class="q-btn w-full text-left rounded-xl p-2.5 text-xs transition-all flex items-center justify-between active:scale-[0.98]">
+                <span>2. Любит ли меня загаданный человек?</span><span style="font-size:10px">🔮</span>
+            </button>
+            <button onclick="pickQ(this,'Позвонит/напишет ли он в ближайшее время?')" class="q-btn w-full text-left rounded-xl p-2.5 text-xs transition-all flex items-center justify-between active:scale-[0.98]">
+                <span>3. Позвонит/напишет ли он в ближайшее время?</span><span style="font-size:10px">💬</span>
+            </button>
+            <button onclick="pickQ(this,'Что он чувствует ко мне сейчас?')" class="q-btn w-full text-left rounded-xl p-2.5 text-xs transition-all flex items-center justify-between active:scale-[0.98]">
+                <span>4. Что он чувствует ко мне сейчас?</span><span style="font-size:10px">❤️</span>
+            </button>
+            <button onclick="pickQ(this,'Стоит ли делать первый шаг?')" class="q-btn w-full text-left rounded-xl p-2.5 text-xs transition-all flex items-center justify-between active:scale-[0.98]">
+                <span>5. Стоит ли делать первый шаг?</span><span style="font-size:10px">🚶</span>
+            </button>
+            <button onclick="pickQ(this,'Какие перспективы на этой работе?')" class="q-btn w-full text-left rounded-xl p-2.5 text-xs transition-all flex items-center justify-between active:scale-[0.98]">
+                <span>6. Какие перспективы на этой работе?</span><span style="font-size:10px">💼</span>
+            </button>
+            <button onclick="pickQ(this,'Будет ли финансовый рост в этом месяце?')" class="q-btn w-full text-left rounded-xl p-2.5 text-xs transition-all flex items-center justify-between active:scale-[0.98]">
+                <span>7. Будет ли финансовый рост в этом месяце?</span><span style="font-size:10px">💰</span>
+            </button>
+            <button onclick="pickQ(this,'Какое решение мне лучше принять?')" class="q-btn w-full text-left rounded-xl p-2.5 text-xs transition-all flex items-center justify-between active:scale-[0.98]">
+                <span>8. Какое решение мне лучше принять?</span><span style="font-size:10px">⚖️</span>
+            </button>
+            <button onclick="pickQ(this,'Что мешает мне двигаться дальше?')" class="q-btn w-full text-left rounded-xl p-2.5 text-xs transition-all flex items-center justify-between active:scale-[0.98]">
+                <span>9. Что мешает мне двигаться дальше?</span><span style="font-size:10px">🛑</span>
+            </button>
+            <button onclick="pickQ(this,'Какой главный совет от карт на будущее?')" class="q-btn w-full text-left rounded-xl p-2.5 text-xs transition-all flex items-center justify-between active:scale-[0.98]">
+                <span>10. Какой главный совет от карт на будущее?</span><span style="font-size:10px">🌟</span>
+            </button>
+        </div>
+        <input type="hidden" id="sel-q" value="Что меня ждет сегодня?">
+
+        <div class="flex justify-between items-center rounded-xl p-3 text-xs" style="background:rgba(15,8,29,.6);border:1px solid rgba(88,28,135,.4)">
+            <span style="color:rgba(196,181,253,.7)">Стоимость расклада:</span>
+            <span class="font-bold" style="color:#D4AF37">150 энергии</span>
+        </div>
+        <button onclick="triggerPreset()" class="w-full font-bold py-3.5 rounded-xl text-xs tracking-wider uppercase active:scale-95 text-black" style="background:linear-gradient(to right,#eab308,#D4AF37)">
+            Запустить расклад
+        </button>
+    </div>
+</div>
+
+<!-- ══════════════════ МОДАЛКА: СВОЙ ВОПРОС ══════════════════ -->
+<div id="modal-ai" class="hidden fixed inset-0 z-40 flex items-end justify-center" style="background:rgba(0,0,0,.8);backdrop-filter:blur(10px)">
+    <div class="absolute inset-0" onclick="closeModal('ai')"></div>
+    <div class="relative z-10 w-full rounded-t-3xl p-6 space-y-4 shadow-2xl overflow-y-auto" style="max-width:420px;max-height:85vh;background:linear-gradient(to top,#0A0514,#1A0B2E);border-top:1px solid rgba(212,175,55,.3)">
+        <div class="flex justify-between items-center">
+            <div class="flex items-center space-x-2">
+                <span class="text-2xl">🔮</span>
+                <h3 class="serif text-xl font-bold" style="color:#D4AF37">Индивидуальный разбор</h3>
+            </div>
+            <button onclick="closeModal('ai')" class="w-8 h-8 rounded-full flex items-center justify-center text-purple-200" style="background:rgba(49,10,77,.5);border:1px solid rgba(88,28,135,.4)">✕</button>
+        </div>
+        <div class="space-y-3 text-xs leading-relaxed" style="color:rgba(196,181,253,.8)">
+            <p class="font-semibold text-white">Что вы получите в результате разбора?</p>
+            <p>Это самый мощный инструмент. Никаких шаблонов — ИИ разберёт именно вашу ситуацию (600–800 слов). Задайте любой вопрос: о жизни, карьере, отношениях, внутренних блоках.</p>
+        </div>
+        <div class="space-y-1.5">
+            <label class="uppercase tracking-widest font-semibold" style="font-size:10px;color:rgba(196,181,253,.7)">Ваш вопрос Оракулу:</label>
+            <textarea id="ai-q" rows="3" placeholder="Например: «Стоит ли уходить со старой работы и чего мне бояться?»"
+                class="w-full rounded-xl p-3 text-xs text-white resize-none focus:outline-none transition-all"
+                style="background:rgba(15,8,29,.8);border:1px solid rgba(88,28,135,.6);placeholder-color:rgba(196,181,253,.3)"></textarea>
+        </div>
+        <div class="flex justify-between items-center rounded-xl p-3" style="background:rgba(15,8,29,.6);border:1px solid rgba(88,28,135,.4)">
+            <span class="text-xs" style="color:rgba(196,181,253,.7)">Стоимость разбора:</span>
+            <span class="text-sm font-bold" style="color:#D4AF37">750 энергии</span>
+        </div>
+        <button onclick="triggerAi()" class="w-full font-bold py-3.5 rounded-xl text-xs tracking-wider uppercase active:scale-95 text-white" style="background:linear-gradient(to right,#7c3aed,#D4AF37)">
+            Запустить разбор ИИ
+        </button>
+    </div>
+</div>
+
+
+<!-- ══════════════════ ЭКРАН РАСКЛАДА ══════════════════ -->
+<div id="s-reading" class="hidden relative z-10 flex-1 flex flex-col justify-between p-4 mx-auto w-full" style="max-width:420px">
+
+    <div class="text-center py-2">
+        <h2 id="r-title" class="serif text-xl font-bold" style="color:#D4AF37">Таинство началось</h2>
+        <p id="r-sub" class="uppercase tracking-widest mt-0.5" style="font-size:10px;color:rgba(196,181,253,.5)">Внимайте знакам судьбы</p>
+    </div>
+
+    <div class="flex-1 flex flex-col items-center justify-center my-4">
+
+        <!-- Анимация тасования -->
+        <div id="r-shuffle" class="flex flex-col items-center space-y-5 text-center">
+            <div class="shuffle-deck">
+                <div class="shuffle-card">🔮</div>
+                <div class="shuffle-card">✨</div>
+                <div class="shuffle-card">⭐</div>
+                <div class="shuffle-card">🌙</div>
+            </div>
+            <div>
+                <p id="shuf-txt" class="text-xs italic leading-relaxed" style="color:rgba(196,181,253,.7);max-width:240px">Оракул тасует колоду...</p>
+                <div class="flex justify-center space-x-1 mt-2">
+                    <span class="w-1.5 h-1.5 rounded-full dot1" style="background:rgba(212,175,55,.65)"></span>
+                    <span class="w-1.5 h-1.5 rounded-full dot2" style="background:rgba(212,175,55,.65)"></span>
+                    <span class="w-1.5 h-1.5 rounded-full dot3" style="background:rgba(212,175,55,.65)"></span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Карты -->
+        <div id="r-cards" class="hidden flex flex-wrap justify-center gap-4 w-full px-2"></div>
+
+    </div>
+
+    <!-- Текст расклада -->
+    <div id="r-result" class="hidden rounded-2xl p-4 mb-4 overflow-y-auto" style="background:rgba(26,11,46,.8);border:1px solid rgba(212,175,55,.2);max-height:320px;backdrop-filter:blur(8px)">
+        <h3 class="serif text-sm font-bold mb-3 flex items-center space-x-2" style="color:#D4AF37">
+            <span>🔮</span><span>Толкование Оракула:</span>
+        </h3>
+        <div id="r-text" class="text-xs leading-relaxed reading-body" style="color:rgba(220,214,255,.9)">...</div>
+    </div>
+
+    <button id="btn-back" onclick="goBack()" class="hidden w-full font-bold py-3.5 rounded-xl text-xs tracking-wider uppercase active:scale-95 mb-2 transition-all" style="background:#1F103A;border:1px solid rgba(212,175,55,.3);color:#D4AF37">
+        Вернуться в храм
+    </button>
+</div>
+
+
+<!-- ══════════════════ МАГАЗИН ══════════════════ -->
+<div id="modal-store" class="hidden fixed inset-0 z-40 flex items-end justify-center" style="background:rgba(0,0,0,.8);backdrop-filter:blur(8px)">
+    <div class="absolute inset-0" onclick="closeStore()"></div>
+    <div class="relative z-10 w-full rounded-t-3xl p-6 space-y-4 shadow-2xl" style="max-width:420px;background:linear-gradient(to top,#0A0514,#1A0B2E);border-top:1px solid rgba(212,175,55,.3)">
+        <div class="flex justify-between items-center">
+            <div>
+                <h3 class="serif text-xl font-bold" style="color:#D4AF37">Пополнение Энергии</h3>
+                <p class="uppercase tracking-widest mt-0.5" style="font-size:9px;color:rgba(196,181,253,.5)">Официальные тарифы в Telegram Stars</p>
+            </div>
+            <button onclick="closeStore()" class="w-8 h-8 rounded-full flex items-center justify-center text-purple-200" style="background:rgba(49,10,77,.5);border:1px solid rgba(88,28,135,.4)">✕</button>
+        </div>
+        <div class="space-y-3">
+            <!-- Товары -->
+            <div class="flex items-center justify-between rounded-2xl p-4" style="background:rgba(15,8,29,.6);border:1px solid rgba(88,28,135,.5)">
+                <div class="flex items-center space-x-3">
+                    <span class="text-2xl">🃏</span>
+                    <div>
+                        <h4 class="font-bold text-xs text-white">+75 Энергии</h4>
+                        <p style="font-size:10px;color:rgba(196,181,253,.5)">Достаточно на 1 Карту Дня</p>
+                    </div>
+                </div>
+                <button onclick="buyPack('1_daily')" class="flex items-center space-x-1.5 font-bold px-4 py-2 rounded-xl text-xs active:scale-95 text-black shadow" style="background:linear-gradient(to right,#eab308,#D4AF37)">
+                    <span>⭐</span><span>75</span>
+                </button>
+            </div>
+            <div class="flex items-center justify-between rounded-2xl p-4" style="background:rgba(15,8,29,.6);border:1px solid rgba(88,28,135,.5)">
+                <div class="flex items-center space-x-3">
+                    <span class="text-2xl">❓</span>
+                    <div>
+                        <h4 class="font-bold text-xs text-white">+150 Энергии</h4>
+                        <p style="font-size:10px;color:rgba(196,181,253,.5)">Достаточно на 1 Готовый вопрос</p>
+                    </div>
+                </div>
+                <button onclick="buyPack('1_std')" class="flex items-center space-x-1.5 font-bold px-4 py-2 rounded-xl text-xs active:scale-95 text-black shadow" style="background:linear-gradient(to right,#eab308,#D4AF37)">
+                    <span>⭐</span><span>150</span>
+                </button>
+            </div>
+            <div class="flex items-center justify-between rounded-2xl p-4" style="background:rgba(15,8,29,.6);border:1px solid rgba(212,175,55,.25);box-shadow:0 0 12px rgba(212,175,55,.1)">
+                <div class="flex items-center space-x-3">
+                    <span class="text-2xl">🔮</span>
+                    <div>
+                        <h4 class="font-bold text-xs text-white">+750 Энергии</h4>
+                        <p class="font-semibold" style="font-size:10px;color:#D4AF37">Скидка 10% — пакет 5 раскладов</p>
+                    </div>
+                </div>
+                <button onclick="buyPack('5_std')" class="flex items-center space-x-1.5 font-bold px-4 py-2 rounded-xl text-xs active:scale-95 text-black shadow" style="background:linear-gradient(to right,#eab308,#D4AF37)">
+                    <span>⭐</span><span>675</span>
+                </button>
+            </div>
+            <div class="flex items-center justify-between rounded-2xl p-4" style="background:rgba(15,8,29,.6);border:1px solid rgba(88,28,135,.5)">
+                <div class="flex items-center space-x-3">
+                    <span class="text-2xl">✨</span>
+                    <div>
+                        <h4 class="font-bold text-xs text-white">+750 Энергии (Премиум)</h4>
+                        <p style="font-size:10px;color:rgba(196,181,253,.5)">На 1 глубокий индивидуальный разбор</p>
+                    </div>
+                </div>
+                <button onclick="buyPack('1_ai')" class="flex items-center space-x-1.5 font-bold px-4 py-2 rounded-xl text-xs active:scale-95 text-black shadow" style="background:linear-gradient(to right,#eab308,#D4AF37)">
+                    <span>⭐</span><span>750</span>
+                </button>
+            </div>
+        </div>
+        <p class="text-center leading-relaxed px-4" style="font-size:9px;color:rgba(196,181,253,.4)">
+            Платеж обрабатывается через шлюз Telegram Stars. Энергия зачисляется моментально после оплаты.
+        </p>
+    </div>
+</div>
+
+
+<!-- ══════════════════ СКРИПТ ══════════════════ -->
+<script>
+const BACKEND = "https://tarot-backend-136l.onrender.com";
+
+const tg = window.Telegram.WebApp;
+tg.ready(); tg.expand();
+const initData = tg.initData || "";
+let userProfile = null;
+
+// Стили кнопок вопросов
+const qStyles = {
+    active: { bg:"rgba(212,175,55,.1)", border:"#D4AF37", color:"#D4AF37", bl:"#D4AF37" },
+    idle:   { bg:"rgba(15,8,29,.8)",    border:"rgba(88,28,135,.6)", color:"rgba(196,181,253,.85)", bl:"#7c3aed" }
+};
+function applyQStyle(btn, active) {
+    const s = active ? qStyles.active : qStyles.idle;
+    btn.style.background = s.bg;
+    btn.style.border = `1px solid ${s.border}`;
+    btn.style.borderLeft = `4px solid ${s.bl}`;
+    btn.style.color = s.color;
+}
+document.querySelectorAll(".q-btn").forEach((b,i) => applyQStyle(b, i === 0));
+
+function pickQ(el, q) {
+    document.querySelectorAll(".q-btn").forEach(b => applyQStyle(b, false));
+    applyQStyle(el, true);
+    document.getElementById("sel-q").value = q;
+    if (tg.HapticFeedback) tg.HapticFeedback.impactOccurred("light");
+}
+
+// ── Форматирование Markdown → HTML (только inline-стили, без Tailwind) ──
+function md(text) {
+    if (!text) return "";
+    return text
+        .replace(/\*\*(.*?)\*\*/g, '<strong style="color:#D4AF37;font-weight:700">$1</strong>')
+        .replace(/^### (.+)$/gm, '<span class="sec">$1</span>')
+        .replace(/^## (.+)$/gm,  '<span class="sec">$1</span>')
+        .replace(/^# (.+)$/gm,   '<span class="sec">$1</span>')
+        .replace(/\n\n/g, '</p><p style="margin-bottom:.6rem">')
+        .replace(/\n/g, '<br>');
+}
+
+// ── Дизайн рубашки / лицевой стороны карты ──
+function backFace() {
+    return `<div style="width:100%;height:100%;border-radius:12px;background:linear-gradient(160deg,#1A0B2E,#0F081D,#1A0B2E);border:2px dashed rgba(212,175,55,.3);display:flex;align-items:center;justify-content:center">
+        <div style="inset:8px;position:absolute;border:1px solid rgba(212,175,55,.1);border-radius:8px;display:flex;flex-direction:column;align-items:center;justify-content:center">
+            <span style="font-size:22px" class="animate-float">🔮</span>
+            <div style="font-size:6px;color:rgba(212,175,55,.35);text-transform:uppercase;letter-spacing:.1em;margin-top:6px">нажмите</div>
+        </div>
+    </div>`;
+}
+function frontFace(name) {
+    const n = name.replace("Старший Аркан: ","");
+    return `<div style="width:100%;height:100%;border-radius:12px;background:linear-gradient(160deg,#11041F,#1a0b2e,#25093A);border:2px solid rgba(212,175,55,.6);display:flex;flex-direction:column;justify-content:space-between;padding:10px;text-align:center;box-shadow:0 0 20px rgba(212,175,55,.15)">
+        <div style="font-size:7px;color:rgba(212,175,55,.5);text-transform:uppercase;letter-spacing:.1em">Оракул Таро</div>
+        <div style="flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:6px 0">
+            <span style="font-size:26px;margin-bottom:6px;filter:drop-shadow(0 0 8px rgba(212,175,55,.4))">✨</span>
+            <div style="font-family:'Playfair Display',serif;font-size:11px;font-weight:700;color:#fff;line-height:1.3">${n}</div>
+        </div>
+        <div style="font-size:7px;color:rgba(212,175,55,.4);text-transform:uppercase;letter-spacing:.12em">Судьба</div>
+    </div>`;
+}
+
+// ── Текст тасования ──
+const shufTexts = ["Оракул тасует колоду...","Карты выбирают вас...","Энергии сходятся воедино...","Вселенная читает ваш запрос...","Архетипы пробуждаются..."];
+let shufTimer = null, shufIdx = 0;
+function startShuf() {
+    shufIdx = 0;
+    const el = document.getElementById("shuf-txt");
+    if (el) el.textContent = shufTexts[0];
+    shufTimer = setInterval(() => { shufIdx=(shufIdx+1)%shufTexts.length; if(el) el.textContent=shufTexts[shufIdx]; }, 1800);
+}
+function stopShuf() { if (shufTimer) clearInterval(shufTimer); }
+
+// ── UI helpers ──
+function openModal(t)  { document.getElementById(`modal-${t}`).classList.remove("hidden"); if(tg.HapticFeedback) tg.HapticFeedback.impactOccurred("light"); }
+function closeModal(t) { document.getElementById(`modal-${t}`).classList.add("hidden"); }
+function openStore()  { document.getElementById("modal-store").classList.remove("hidden"); }
+function closeStore() { document.getElementById("modal-store").classList.add("hidden"); }
+function showErr(msg) {
+    document.getElementById("s-loading").classList.remove("hidden");
+    document.getElementById("loading-text").innerHTML = `<span style="color:#f87171;font-weight:600">${msg}</span>`;
+}
+function goBack() {
+    stopShuf();
+    document.getElementById("s-reading").classList.add("hidden");
+    document.getElementById("s-dashboard").classList.remove("hidden");
+}
+function toReadingScreen(title) {
+    document.getElementById("s-dashboard").classList.add("hidden");
+    document.getElementById("s-reading").classList.remove("hidden");
+    document.getElementById("r-title").textContent = title;
+    document.getElementById("r-shuffle").classList.remove("hidden");
+    document.getElementById("r-cards").classList.add("hidden");
+    document.getElementById("r-result").classList.add("hidden");
+    document.getElementById("btn-back").classList.add("hidden");
+    startShuf();
+}
+
+function updateUI() {
+    if (!userProfile) return;
+    document.getElementById("disp-name").textContent = userProfile.name || "Искатель";
+    document.getElementById("disp-bal").textContent   = userProfile.balance;
+}
+
+// ── Инициализация ──
+window.onload = async () => {
+    try {
+        const r = await fetch(`${BACKEND}/api/user/profile`, { headers:{ Authorization: initData } });
+        if (!r.ok) throw new Error("profile");
+        userProfile = await r.json();
+        updateUI();
+        document.getElementById("s-loading").classList.add("hidden");
+        document.getElementById("s-dashboard").classList.remove("hidden");
+    } catch(e) {
+        showErr("Не удалось связаться с Оракулом. Проверьте интернет.");
+    }
+};
+
+// ── Покупки ──
+async function buyPack(packId) {
+    closeStore();
+    document.getElementById("s-loading").classList.remove("hidden");
+    document.getElementById("loading-text").textContent = "Подготовка счёта...";
+    try {
+        const r = await fetch(`${BACKEND}/api/payment/stars-invoice`, {
+            method:"POST", headers:{"Content-Type":"application/json","Authorization":initData},
+            body: JSON.stringify({ pack: packId })
+        });
+        document.getElementById("s-loading").classList.add("hidden");
+        if (r.ok) {
+            const d = await r.json();
+            if (d.invoice_link) {
+                tg.openInvoice(d.invoice_link, async st => {
+                    if (st === "paid") {
+                        tg.showPopup({ title:"Успешно!", message:"Энергия зачислена. Оракул готов к работе.", buttons:[{type:"ok"}] });
+                        document.getElementById("s-loading").classList.remove("hidden");
+                        const pr = await fetch(`${BACKEND}/api/user/profile`, { headers:{ Authorization: initData } });
+                        if (pr.ok) { userProfile = await pr.json(); updateUI(); }
+                        document.getElementById("s-loading").classList.add("hidden");
+                    } else { tg.showAlert("Оплата отменена. Энергия не списана."); }
+                });
+            }
+        } else { const e = await r.json(); tg.showAlert(e.detail || "Ошибка биллинга."); }
+    } catch { document.getElementById("s-loading").classList.add("hidden"); tg.showAlert("Ошибка соединения."); }
+}
+
+// ── Рендер карт ──
+function renderCards(cards, text) {
+    stopShuf();
+    document.getElementById("r-shuffle").classList.add("hidden");
+    const ctr = document.getElementById("r-cards");
+    ctr.innerHTML = "";
+    ctr.classList.remove("hidden");
+
+    const big = cards.length === 1;
+    cards.forEach((card, i) => {
+        const w = big ? "150px" : "108px";
+        const h = big ? "240px" : "170px";
+        const el = document.createElement("div");
+        el.className = "card-wrap card-in";
+        el.style.cssText = `width:${w};height:${h};cursor:pointer;opacity:0;animation-delay:${i*.1}s`;
+        el.onclick = () => {
+            el.querySelector(".card-inner").classList.toggle("card-flipped");
+            if (tg.HapticFeedback) tg.HapticFeedback.impactOccurred("light");
+        };
+        el.innerHTML = `<div class="card-inner">
+            <div class="card-face">${backFace()}</div>
+            <div class="card-face-back">${frontFace(card.name)}</div>
+        </div>`;
+        ctr.appendChild(el);
+        setTimeout(() => el.querySelector(".card-inner").classList.add("card-flipped"), 500 + i*600);
+    });
+
+    if (tg.HapticFeedback) tg.HapticFeedback.impactOccurred("light");
+
+    setTimeout(() => {
+        document.getElementById("r-text").innerHTML = md(text);
+        document.getElementById("r-result").classList.remove("hidden");
+        document.getElementById("btn-back").classList.remove("hidden");
+    }, 500 + cards.length*600 + 400);
+}
+
+// ── Расклад 1: Карта Дня ──
+function triggerDaily() { closeModal("daily"); startDaily(); }
+async function startDaily() {
+    if (userProfile.balance < 75) { openStore(); tg.showAlert("Нужно 75 Энергии."); return; }
+    toReadingScreen("Карта Дня");
+    try {
+        const r = await fetch(`${BACKEND}/api/user/use-daily-ai-reading`, {
+            method:"POST", headers:{ Authorization: initData }
+        });
+        if (r.ok) {
+            const d = await r.json();
+            userProfile.balance = d.new_balance; updateUI();
+            renderCards(d.cards, d.text);
+        } else { const e = await r.json(); tg.showAlert(e.detail || "Ошибка"); goBack(); }
+    } catch { tg.showAlert("Ошибка соединения."); goBack(); }
+}
+
+// ── Расклад 2: Готовые вопросы ──
+function triggerPreset() { closeModal("preset"); startPreset(); }
+async function startPreset() {
+    const q = document.getElementById("sel-q").value;
+    if (userProfile.balance < 150) { openStore(); tg.showAlert("Нужно 150 Энергии."); return; }
+    toReadingScreen("Ответ Оракула");
+    try {
+        const r = await fetch(`${BACKEND}/api/user/use-preset-ai-reading`, {
+            method:"POST", headers:{"Content-Type":"application/json","Authorization":initData},
+            body: JSON.stringify({ question: q })
+        });
+        if (r.ok) {
+            const d = await r.json();
+            userProfile.balance = d.new_balance; updateUI();
+            renderCards(d.cards, d.text);
+        } else { const e = await r.json(); tg.showAlert(e.detail || "Ошибка"); goBack(); }
+    } catch { tg.showAlert("Ошибка соединения."); goBack(); }
+}
+
+// ── Расклад 3: Свой вопрос ──
+function triggerAi() { closeModal("ai"); startAi(); }
+async function startAi() {
+    const q = document.getElementById("ai-q").value.trim();
+    if (!q) { tg.showAlert("Введите ваш вопрос."); return; }
+    if (userProfile.balance < 750) { openStore(); tg.showAlert("Нужно 750 Энергии."); return; }
+    document.activeElement.blur();
+    toReadingScreen("Индивидуальный разбор");
+    try {
+        const r = await fetch(`${BACKEND}/api/user/use-ai-reading`, {
+            method:"POST", headers:{"Content-Type":"application/json","Authorization":initData},
+            body: JSON.stringify({ question: q })
+        });
+        if (r.ok) {
+            const d = await r.json();
+            userProfile.balance = d.new_balance; updateUI();
+            document.getElementById("ai-q").value = "";
+            renderCards(d.cards, d.text);
+        } else { const e = await r.json(); tg.showAlert(e.detail || "Ошибка"); goBack(); }
+    } catch { tg.showAlert("Ошибка соединения."); goBack(); }
+}
+</script>
+</body>
+</html>
