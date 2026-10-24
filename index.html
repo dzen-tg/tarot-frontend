@@ -436,9 +436,17 @@
         <div class="flex justify-between items-center">
             <div>
                 <h3 class="serif text-xl font-bold" style="color:#D4AF37">Пополнение Энергии</h3>
-                <p class="uppercase tracking-widest mt-0.5" style="font-size:9px;color:rgba(196,181,253,.5)">Оплата через Telegram Stars</p>
+                <p id="store-sub" class="uppercase tracking-widest mt-0.5" style="font-size:9px;color:rgba(196,181,253,.5)">Оплата через Telegram Stars</p>
             </div>
             <button onclick="closeStore()" class="w-8 h-8 rounded-full flex items-center justify-center text-purple-200" style="background:rgba(49,10,77,.5);border:1px solid rgba(88,28,135,.4)">✕</button>
+        </div>
+
+        <!-- Способ оплаты -->
+        <div id="pay-switch" class="hidden p-1 rounded-2xl" style="background:rgba(15,8,29,.7);border:1px solid rgba(88,28,135,.5)">
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:4px">
+                <button id="pm-stars" onclick="setPayMethod('stars')" class="py-2 rounded-xl text-xs font-bold transition-all">⭐ Звёздами</button>
+                <button id="pm-card" onclick="setPayMethod('card')" class="py-2 rounded-xl text-xs font-bold transition-all">💳 Картой</button>
+            </div>
         </div>
 
         <div class="space-y-3">
@@ -453,7 +461,7 @@
                     </div>
                 </div>
                 <button onclick="buyPack('pack_150')" class="flex items-center space-x-1.5 font-bold px-4 py-2 rounded-xl text-xs active:scale-95 text-black shadow" style="background:linear-gradient(to right,#eab308,#D4AF37)">
-                    <span>⭐</span><span id="price-pack_150">150</span>
+                    <span class="pm-icon">⭐</span><span class="flex flex-col items-center leading-tight"><span id="price-pack_150">150</span><span id="alt-pack_150" class="hidden font-semibold" style="font-size:8px;opacity:.75"></span></span>
                 </button>
             </div>
 
@@ -470,7 +478,7 @@
                     </div>
                 </div>
                 <button onclick="buyPack('pack_450')" class="flex items-center space-x-1.5 font-bold px-4 py-2 rounded-xl text-xs active:scale-95 text-black shadow" style="background:linear-gradient(to right,#eab308,#D4AF37)">
-                    <span>⭐</span><span>383</span>
+                    <span class="pm-icon">⭐</span><span class="flex flex-col items-center leading-tight"><span id="price-pack_450">383</span><span id="alt-pack_450" class="hidden font-semibold" style="font-size:8px;opacity:.75"></span></span>
                 </button>
             </div>
 
@@ -484,12 +492,12 @@
                     </div>
                 </div>
                 <button onclick="buyPack('pack_750')" class="flex items-center space-x-1.5 font-bold px-4 py-2 rounded-xl text-xs active:scale-95 text-white shadow" style="background:linear-gradient(to right,#7c3aed,#D4AF37)">
-                    <span>⭐</span><span>750</span>
+                    <span class="pm-icon">⭐</span><span class="flex flex-col items-center leading-tight"><span id="price-pack_750">750</span><span id="alt-pack_750" class="hidden font-semibold" style="font-size:8px;opacity:.75"></span></span>
                 </button>
             </div>
         </div>
 
-        <p class="text-center leading-relaxed px-4" style="font-size:9px;color:rgba(196,181,253,.4)">
+        <p id="store-note" class="text-center leading-relaxed px-4" style="font-size:9px;color:rgba(196,181,253,.4)">
             Платеж проходит через официальный шлюз Telegram Stars. Энергия зачисляется моментально.
         </p>
     </div>
@@ -605,8 +613,39 @@ function updateUI() {
     db.style.opacity = p.daily_available === false ? ".55" : "1";
     document.getElementById("ref-count").textContent = p.ref_count || 0;
     document.getElementById("ref-bonus").textContent = p.ref_bonus || 150;
-    if (p.prices) document.getElementById("price-pack_150").textContent = p.prices.pack_150;
-    document.getElementById("first-buy-label").classList.toggle("hidden", !(p.first_purchase && p.prices && p.prices.pack_150 < 150));
+    renderStorePrices();
+}
+
+// ── Способ оплаты: Stars / карта (Tribute) ──
+let payMethod = "stars";
+function setPayMethod(m) {
+    payMethod = (m === "card" && userProfile && userProfile.card_enabled) ? "card" : "stars";
+    renderStorePrices();
+}
+function renderStorePrices() {
+    const p = userProfile || {};
+    document.getElementById("pay-switch").classList.toggle("hidden", !p.card_enabled);
+    const card = payMethod === "card";
+    const on = "width:100%;background:linear-gradient(to right,#7c3aed,#D4AF37);color:#fff";
+    const off = "width:100%;background:transparent;color:rgba(196,181,253,.6)";
+    document.getElementById("pm-stars").style.cssText = card ? off : on;
+    document.getElementById("pm-card").style.cssText = card ? on : off;
+    const prices = card ? (p.card_prices || {}) : (p.prices || {});
+    const sign = p.card_currency || "₽";
+    ["pack_150","pack_450","pack_750"].forEach(k => {
+        const el = document.getElementById("price-" + k);
+        if (el && prices[k] != null) el.textContent = card ? `${prices[k]} ${sign}` : prices[k];
+        const alt = document.getElementById("alt-" + k);
+        const altText = card ? ((p.card_prices_alt || {})[k] || "") : "";
+        if (alt) { alt.textContent = altText; alt.classList.toggle("hidden", !altText); }
+    });
+    document.querySelectorAll(".pm-icon").forEach(el => el.classList.toggle("hidden", card));
+    document.getElementById("store-sub").textContent = card ? "Оплата банковской картой" : "Оплата через Telegram Stars";
+    document.getElementById("store-note").textContent = card
+        ? "Оплата картой проходит через сервис Tribute. Энергия зачислится сразу после оплаты — бот пришлёт подтверждение."
+        : "Платеж проходит через официальный шлюз Telegram Stars. Энергия зачисляется моментально.";
+    const firstStars = p.first_purchase && p.prices && p.prices.pack_150 < 150;
+    document.getElementById("first-buy-label").classList.toggle("hidden", !(card ? p.first_purchase : firstStars));
 }
 
 // ── Поделиться / пригласить ──
@@ -658,8 +697,51 @@ async function initApp() {
 initApp();
 
 // ── Покупки ──
+async function refreshProfile() {
+    const pr = await fetch(`${BACKEND}/api/user/profile`, { headers:{ Authorization: initData } });
+    if (pr.ok) { userProfile = await pr.json(); updateUI(); }
+}
+
+let cardPoll = null;
+function watchCardPayment(orderId) {
+    if (cardPoll) clearInterval(cardPoll);
+    const started = Date.now();
+    cardPoll = setInterval(async () => {
+        if (Date.now() - started > 15 * 60 * 1000) { clearInterval(cardPoll); cardPoll = null; return; }
+        try {
+            const r = await fetch(`${BACKEND}/api/user/payment-status?order_id=${encodeURIComponent(orderId)}`, { headers:{ Authorization: initData } });
+            if (!r.ok) return;
+            const d = await r.json();
+            if (d.status === "paid") {
+                clearInterval(cardPoll); cardPoll = null;
+                await refreshProfile();
+                tg.showPopup({ title:"Готово!", message:"Оплата прошла, энергия зачислена на баланс ✨", buttons:[{type:"ok"}] });
+            }
+        } catch {}
+    }, 4000);
+}
+
+async function buyPackCard(packId) {
+    document.getElementById("s-loading").classList.remove("hidden");
+    document.getElementById("loading-text").textContent = "Подготовка оплаты...";
+    try {
+        const r = await fetch(`${BACKEND}/api/payment/tribute-order`, {
+            method:"POST", headers:{"Content-Type":"application/json","Authorization":initData},
+            body: JSON.stringify({ pack: packId })
+        });
+        document.getElementById("s-loading").classList.add("hidden");
+        const d = await r.json().catch(() => ({}));
+        if (!r.ok) { tg.showAlert(d.detail || "Ошибка оплаты."); return; }
+        if (d.payment_url) tg.openLink(d.payment_url);
+        else if (d.webapp_url) tg.openTelegramLink(d.webapp_url);
+        else { tg.showAlert("Не удалось открыть оплату."); return; }
+        watchCardPayment(d.order_id);
+    } catch { document.getElementById("s-loading").classList.add("hidden"); tg.showAlert("Ошибка соединения."); }
+}
+
 async function buyPack(packId) {
     closeStore();
+    if (payMethod === "card") return buyPackCard(packId);
     document.getElementById("s-loading").classList.remove("hidden");
     document.getElementById("loading-text").textContent = "Подготовка счёта...";
     try {
