@@ -1,511 +1,496 @@
 <!DOCTYPE html>
 <html lang="ru">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Таро Оракул</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link rel="preconnect" href="https://tarot-backend-136l.onrender.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:ital,wght@0,500;0,700;1,400&display=swap" rel="stylesheet">
-    <script src="https://telegram.org/js/telegram-web-app.js"></script>
-    <style>
-        /* Мини-набор утилит вместо Tailwind CDN (тот компилировал стили прямо в браузере и тормозил запуск) */
-        *,::before,::after{box-sizing:border-box;border:0 solid}
-        html{line-height:1.5;-webkit-text-size-adjust:100%}
-        body,h1,h2,h3,h4,p{margin:0}
-        h1,h2,h3,h4{font-size:inherit;font-weight:inherit}
-        button,input,textarea{font:inherit;color:inherit;margin:0;padding:0;background:transparent;line-height:inherit}
-        button{cursor:pointer;-webkit-appearance:button}
-        textarea{resize:vertical}
-        .hidden{display:none!important}
-        .flex{display:flex}.flex-1{flex:1 1 0%}.flex-col{flex-direction:column}.flex-wrap{flex-wrap:wrap}
-        .items-center{align-items:center}.items-end{align-items:flex-end}
-        .justify-between{justify-content:space-between}.justify-center{justify-content:center}
-        .gap-3{gap:.75rem}
-        .absolute{position:absolute}.relative{position:relative}.fixed{position:fixed}
-        .inset-0{inset:0}.inset-2{inset:.5rem}
-        .z-0{z-index:0}.z-10{z-index:10}.z-40{z-index:40}.z-50{z-index:50}
-        .min-h-screen{min-height:100vh}
-        .overflow-hidden{overflow:hidden}.overflow-x-hidden{overflow-x:hidden}.overflow-y-auto{overflow-y:auto}
-        .pointer-events-none{pointer-events:none}.resize-none{resize:none}
-        .w-full{width:100%}.w-1\.5{width:.375rem}.w-8{width:2rem}.w-10{width:2.5rem}.w-24{width:6rem}
-        .h-1\.5{height:.375rem}.h-8{height:2rem}.h-10{height:2.5rem}.h-24{height:6rem}
-        .mx-auto{margin-left:auto;margin-right:auto}
-        .my-2{margin-top:.5rem;margin-bottom:.5rem}.my-4{margin-top:1rem;margin-bottom:1rem}
-        .mb-2{margin-bottom:.5rem}.mb-3{margin-bottom:.75rem}.mb-4{margin-bottom:1rem}.mb-8{margin-bottom:2rem}
-        .mt-0\.5{margin-top:.125rem}.mt-1{margin-top:.25rem}.mt-2{margin-top:.5rem}.mt-3{margin-top:.75rem}
-        .p-2\.5{padding:.625rem}.p-3{padding:.75rem}.p-4{padding:1rem}.p-6{padding:1.5rem}.pr-1{padding-right:.25rem}
-        .px-1\.5{padding-left:.375rem;padding-right:.375rem}.px-2{padding-left:.5rem;padding-right:.5rem}
-        .px-2\.5{padding-left:.625rem;padding-right:.625rem}.px-4{padding-left:1rem;padding-right:1rem}
-        .px-6{padding-left:1.5rem;padding-right:1.5rem}
-        .py-0\.5{padding-top:.125rem;padding-bottom:.125rem}.py-1{padding-top:.25rem;padding-bottom:.25rem}
-        .py-2{padding-top:.5rem;padding-bottom:.5rem}.py-3{padding-top:.75rem;padding-bottom:.75rem}
-        .py-3\.5{padding-top:.875rem;padding-bottom:.875rem}
-        .space-x-1>*+*{margin-left:.25rem}.space-x-1\.5>*+*{margin-left:.375rem}.space-x-2>*+*{margin-left:.5rem}.space-x-3>*+*{margin-left:.75rem}
-        .space-y-1>*+*{margin-top:.25rem}.space-y-1\.5>*+*{margin-top:.375rem}.space-y-2>*+*{margin-top:.5rem}
-        .space-y-3>*+*{margin-top:.75rem}.space-y-3\.5>*+*{margin-top:.875rem}.space-y-4>*+*{margin-top:1rem}.space-y-5>*+*{margin-top:1.25rem}
-        .rounded-lg{border-radius:.5rem}.rounded-xl{border-radius:.75rem}.rounded-2xl{border-radius:1rem}
-        .rounded-full{border-radius:9999px}.rounded-t-3xl{border-top-left-radius:1.5rem;border-top-right-radius:1.5rem}
-        .shadow{box-shadow:0 1px 3px rgba(0,0,0,.1),0 1px 2px -1px rgba(0,0,0,.1)}
-        .shadow-md{box-shadow:0 4px 6px -1px rgba(0,0,0,.1),0 2px 4px -2px rgba(0,0,0,.1)}
-        .shadow-2xl{box-shadow:0 25px 50px -12px rgba(0,0,0,.25)}
-        .text-xs{font-size:.75rem;line-height:1rem}.text-sm{font-size:.875rem;line-height:1.25rem}
-        .text-base{font-size:1rem;line-height:1.5rem}.text-lg{font-size:1.125rem;line-height:1.75rem}
-        .text-xl{font-size:1.25rem;line-height:1.75rem}.text-2xl{font-size:1.5rem;line-height:2rem}
-        .text-3xl{font-size:1.875rem;line-height:2.25rem}
-        .font-medium{font-weight:500}.font-semibold{font-weight:600}.font-bold{font-weight:700}
-        .italic{font-style:italic}.uppercase{text-transform:uppercase}
-        .leading-relaxed{line-height:1.625}
-        .tracking-wide{letter-spacing:.025em}.tracking-wider{letter-spacing:.05em}.tracking-widest{letter-spacing:.1em}
-        .text-center{text-align:center}.text-left{text-align:left}
-        .text-white{color:#fff}.text-black{color:#000}.text-gray-100{color:#f3f4f6}.text-purple-200{color:#e9d5ff}
-        .transition-all{transition:all .15s cubic-bezier(.4,0,.2,1)}
-        .active\:scale-95:active{transform:scale(.95)}.active\:scale-\[0\.98\]:active{transform:scale(.98)}
-        .focus\:outline-none:focus{outline:2px solid transparent;outline-offset:2px}
-        @keyframes spin{to{transform:rotate(360deg)}}.animate-spin{animation:spin 1s linear infinite}
-        @keyframes pulse{50%{opacity:.5}}.animate-pulse{animation:pulse 2s cubic-bezier(.4,0,.6,1) infinite}
-
-        body { font-family: 'Inter', sans-serif; -webkit-tap-highlight-color: transparent; }
-        .serif { font-family: 'Playfair Display', serif; }
-
-        @keyframes float-slow {
-            0%,100% { transform: translateY(0) rotate(0deg); }
-            50% { transform: translateY(-10px) rotate(3deg); }
-        }
-        .animate-float { animation: float-slow 6s ease-in-out infinite; }
-
-        /* Анимация тасования колоды */
-        .shuffle-deck { position: relative; width: 90px; height: 130px; margin: 0 auto; }
-        .shuffle-card {
-            position: absolute; width: 72px; height: 110px; left: 9px;
-            border-radius: 10px; border: 1.5px solid rgba(212,175,55,.5);
-            background: linear-gradient(135deg,#1A0B2E,#0F081D,#25093A);
-            display: flex; align-items: center; justify-content: center;
-            font-size: 22px; box-shadow: 0 4px 15px rgba(0,0,0,.5);
-            transform-origin: center bottom;
-        }
-        .shuffle-card:nth-child(1) { top:9px;  animation: sh1 2.6s ease-in-out infinite; }
-        .shuffle-card:nth-child(2) { top:6px;  animation: sh2 2.6s ease-in-out infinite .15s; }
-        .shuffle-card:nth-child(3) { top:3px;  animation: sh3 2.6s ease-in-out infinite .3s; }
-        .shuffle-card:nth-child(4) { top:0;    animation: sh4 2.6s ease-in-out infinite .45s; }
-        @keyframes sh1{0%,40%,100%{transform:translate(0,0) rotate(0)} 20%{transform:translate(-26px,-16px) rotate(-18deg);opacity:.6}}
-        @keyframes sh2{0%,40%,100%{transform:translate(0,0) rotate(0)} 20%{transform:translate(28px,-11px) rotate(15deg);opacity:.6}}
-        @keyframes sh3{0%,40%,100%{transform:translate(0,0) rotate(0)} 20%{transform:translate(-20px,-26px) rotate(-10deg);opacity:.6}}
-        @keyframes sh4{0%,40%,100%{transform:translate(0,0) rotate(0)} 20%{transform:translate(23px,-21px) rotate(12deg);opacity:.6}}
-
-        @keyframes bncDot{0%,80%,100%{transform:translateY(0)} 40%{transform:translateY(-6px)}}
-        .dot1{animation:bncDot 1.2s .0s infinite}
-        .dot2{animation:bncDot 1.2s .2s infinite}
-        .dot3{animation:bncDot 1.2s .4s infinite}
-
-        /* Карты — переворот */
-        .card-wrap { perspective: 1000px; }
-        .card-inner {
-            transition: transform .8s cubic-bezier(.175,.885,.32,1.275);
-            transform-style: preserve-3d; position: relative; width: 100%; height: 100%;
-        }
-        .card-flipped { transform: rotateY(180deg); }
-        .card-face,.card-face-back {
-            backface-visibility: hidden; position: absolute; inset: 0; border-radius: 12px; overflow: hidden;
-        }
-        .card-face-back { transform: rotateY(180deg); }
-        @keyframes cardIn{from{opacity:0;transform:translateY(18px) scale(.9)} to{opacity:1;transform:none}}
-        .card-in { animation: cardIn .5s ease-out forwards; }
-
-        /* Текст расклада */
-        .reading-body strong { color: #D4AF37; font-weight: 700; }
-        .reading-body .sec {
-            font-family: 'Playfair Display', serif;
-            color: #D4AF37; font-weight: 700; font-size: .88rem;
-            display: block; margin: 1rem 0 .35rem;
-        }
-        .reading-body p { margin-bottom: .6rem; }
-
-        ::-webkit-scrollbar { width: 4px; }
-        ::-webkit-scrollbar-thumb { background: rgba(212,175,55,.3); border-radius: 10px; }
-    </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>Послание Таро</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="preconnect" href="https://tarot-backend-136l.onrender.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:ital,wght@0,500;0,700;1,400&display=swap" rel="stylesheet">
+<script src="https://telegram.org/js/telegram-web-app.js"></script>
+<style>
+/* Мини-набор утилит вместо Tailwind CDN (тот компилировал стили прямо в браузере и тормозил запуск) */
+*,::before,::after{box-sizing:border-box;border:0 solid}
+html{line-height:1.5;-webkit-text-size-adjust:100%}
+body,h1,h2,h3,h4,p{margin:0}
+h1,h2,h3,h4{font-size:inherit;font-weight:inherit}
+button,input,textarea{font:inherit;color:inherit;margin:0;padding:0;background:transparent;line-height:inherit}
+button{cursor:pointer;-webkit-appearance:button}
+textarea{resize:vertical}
+.hidden{display:none!important}
+.flex{display:flex}.flex-1{flex:1 1 0%}.flex-col{flex-direction:column}.flex-wrap{flex-wrap:wrap}
+.items-center{align-items:center}.items-end{align-items:flex-end}
+.justify-between{justify-content:space-between}.justify-center{justify-content:center}
+.gap-3{gap:.75rem}
+.absolute{position:absolute}.relative{position:relative}.fixed{position:fixed}
+.inset-0{inset:0}.inset-2{inset:.5rem}
+.z-0{z-index:0}.z-10{z-index:10}.z-40{z-index:40}.z-50{z-index:50}
+.min-h-screen{min-height:100vh}
+.overflow-hidden{overflow:hidden}.overflow-x-hidden{overflow-x:hidden}.overflow-y-auto{overflow-y:auto}
+.pointer-events-none{pointer-events:none}.resize-none{resize:none}
+.w-full{width:100%}.w-1\.5{width:.375rem}.w-8{width:2rem}.w-10{width:2.5rem}.w-24{width:6rem}
+.h-1\.5{height:.375rem}.h-8{height:2rem}.h-10{height:2.5rem}.h-24{height:6rem}
+.mx-auto{margin-left:auto;margin-right:auto}
+.my-2{margin-top:.5rem;margin-bottom:.5rem}.my-4{margin-top:1rem;margin-bottom:1rem}
+.mb-2{margin-bottom:.5rem}.mb-3{margin-bottom:.75rem}.mb-4{margin-bottom:1rem}.mb-8{margin-bottom:2rem}
+.mt-0\.5{margin-top:.125rem}.mt-1{margin-top:.25rem}.mt-2{margin-top:.5rem}.mt-3{margin-top:.75rem}
+.p-2\.5{padding:.625rem}.p-3{padding:.75rem}.p-4{padding:1rem}.p-6{padding:1.5rem}.pr-1{padding-right:.25rem}
+.px-1\.5{padding-left:.375rem;padding-right:.375rem}.px-2{padding-left:.5rem;padding-right:.5rem}
+.px-2\.5{padding-left:.625rem;padding-right:.625rem}.px-4{padding-left:1rem;padding-right:1rem}
+.px-6{padding-left:1.5rem;padding-right:1.5rem}
+.py-0\.5{padding-top:.125rem;padding-bottom:.125rem}.py-1{padding-top:.25rem;padding-bottom:.25rem}
+.py-2{padding-top:.5rem;padding-bottom:.5rem}.py-3{padding-top:.75rem;padding-bottom:.75rem}
+.py-3\.5{padding-top:.875rem;padding-bottom:.875rem}
+.space-x-1>*+*{margin-left:.25rem}.space-x-1\.5>*+*{margin-left:.375rem}.space-x-2>*+*{margin-left:.5rem}.space-x-3>*+*{margin-left:.75rem}
+.space-y-1>*+*{margin-top:.25rem}.space-y-1\.5>*+*{margin-top:.375rem}.space-y-2>*+*{margin-top:.5rem}
+.space-y-3>*+*{margin-top:.75rem}.space-y-3\.5>*+*{margin-top:.875rem}.space-y-4>*+*{margin-top:1rem}.space-y-5>*+*{margin-top:1.25rem}
+.rounded-lg{border-radius:.5rem}.rounded-xl{border-radius:.75rem}.rounded-2xl{border-radius:1rem}
+.rounded-full{border-radius:9999px}.rounded-t-3xl{border-top-left-radius:1.5rem;border-top-right-radius:1.5rem}
+.shadow{box-shadow:0 1px 3px rgba(0,0,0,.1),0 1px 2px -1px rgba(0,0,0,.1)}
+.shadow-md{box-shadow:0 4px 6px -1px rgba(0,0,0,.1),0 2px 4px -2px rgba(0,0,0,.1)}
+.shadow-2xl{box-shadow:0 25px 50px -12px rgba(0,0,0,.25)}
+.text-xs{font-size:.75rem;line-height:1rem}.text-sm{font-size:.875rem;line-height:1.25rem}
+.text-base{font-size:1rem;line-height:1.5rem}.text-lg{font-size:1.125rem;line-height:1.75rem}
+.text-xl{font-size:1.25rem;line-height:1.75rem}.text-2xl{font-size:1.5rem;line-height:2rem}
+.text-3xl{font-size:1.875rem;line-height:2.25rem}
+.font-medium{font-weight:500}.font-semibold{font-weight:600}.font-bold{font-weight:700}
+.italic{font-style:italic}.uppercase{text-transform:uppercase}
+.leading-relaxed{line-height:1.625}
+.tracking-wide{letter-spacing:.025em}.tracking-wider{letter-spacing:.05em}.tracking-widest{letter-spacing:.1em}
+.text-center{text-align:center}.text-left{text-align:left}
+.text-white{color:#fff}.text-black{color:#000}.text-gray-100{color:#f3f4f6}.text-purple-200{color:#e9d5ff}
+.transition-all{transition:all .15s cubic-bezier(.4,0,.2,1)}
+.active\:scale-95:active{transform:scale(.95)}.active\:scale-\[0\.98\]:active{transform:scale(.98)}
+.focus\:outline-none:focus{outline:2px solid transparent;outline-offset:2px}
+@keyframes spin{to{transform:rotate(360deg)}}.animate-spin{animation:spin 1s linear infinite}
+@keyframes pulse{50%{opacity:.5}}.animate-pulse{animation:pulse 2s cubic-bezier(.4,0,.6,1) infinite}
+body { font-family: 'Inter', sans-serif; -webkit-tap-highlight-color: transparent; }
+.serif { font-family: 'Playfair Display', serif; }
+@keyframes float-slow {
+0%,100% { transform: translateY(0) rotate(0deg); }
+50% { transform: translateY(-10px) rotate(3deg); }
+}
+.animate-float { animation: float-slow 6s ease-in-out infinite; }
+/* Анимация тасования колоды */
+.shuffle-deck { position: relative; width: 90px; height: 130px; margin: 0 auto; }
+.shuffle-card {
+position: absolute; width: 72px; height: 110px; left: 9px;
+border-radius: 10px; border: 1.5px solid rgba(212,175,55,.5);
+background: linear-gradient(135deg,#1A0B2E,#0F081D,#25093A);
+display: flex; align-items: center; justify-content: center;
+font-size: 22px; box-shadow: 0 4px 15px rgba(0,0,0,.5);
+transform-origin: center bottom;
+}
+.shuffle-card:nth-child(1) { top:9px; animation: sh1 2.6s ease-in-out infinite; }
+.shuffle-card:nth-child(2) { top:6px; animation: sh2 2.6s ease-in-out infinite .15s; }
+.shuffle-card:nth-child(3) { top:3px; animation: sh3 2.6s ease-in-out infinite .3s; }
+.shuffle-card:nth-child(4) { top:0; animation: sh4 2.6s ease-in-out infinite .45s; }
+@keyframes sh1{0%,40%,100%{transform:translate(0,0) rotate(0)} 20%{transform:translate(-26px,-16px) rotate(-18deg);opacity:.6}}
+@keyframes sh2{0%,40%,100%{transform:translate(0,0) rotate(0)} 20%{transform:translate(28px,-11px) rotate(15deg);opacity:.6}}
+@keyframes sh3{0%,40%,100%{transform:translate(0,0) rotate(0)} 20%{transform:translate(-20px,-26px) rotate(-10deg);opacity:.6}}
+@keyframes sh4{0%,40%,100%{transform:translate(0,0) rotate(0)} 20%{transform:translate(23px,-21px) rotate(12deg);opacity:.6}}
+@keyframes bncDot{0%,80%,100%{transform:translateY(0)} 40%{transform:translateY(-6px)}}
+.dot1{animation:bncDot 1.2s .0s infinite}
+.dot2{animation:bncDot 1.2s .2s infinite}
+.dot3{animation:bncDot 1.2s .4s infinite}
+/* Карты — переворот */
+.card-wrap { perspective: 1000px; }
+.card-inner {
+transition: transform .8s cubic-bezier(.175,.885,.32,1.275);
+transform-style: preserve-3d; position: relative; width: 100%; height: 100%;
+}
+.card-flipped { transform: rotateY(180deg); }
+.card-face,.card-face-back {
+backface-visibility: hidden; position: absolute; inset: 0; border-radius: 12px; overflow: hidden;
+}
+.card-face-back { transform: rotateY(180deg); }
+@keyframes cardIn{from{opacity:0;transform:translateY(18px) scale(.9)} to{opacity:1;transform:none}}
+.card-in { animation: cardIn .5s ease-out forwards; }
+/* Текст расклада */
+.reading-body strong { color: #D4AF37; font-weight: 700; }
+.reading-body .sec {
+font-family: 'Playfair Display', serif;
+color: #D4AF37; font-weight: 700; font-size: .88rem;
+display: block; margin: 1rem 0 .35rem;
+}
+.reading-body p { margin-bottom: .6rem; }
+::-webkit-scrollbar { width: 4px; }
+::-webkit-scrollbar-thumb { background: rgba(212,175,55,.3); border-radius: 10px; }
+</style>
 </head>
 <body class="min-h-screen flex flex-col overflow-x-hidden text-gray-100"
-      style="background:linear-gradient(160deg,#0F081D 0%,#1A0B2E 50%,#0A0514 100%)">
+style="background:linear-gradient(160deg,#0F081D 0%,#1A0B2E 50%,#0A0514 100%)">
 
 <!-- Фоновые свечения -->
 <div class="fixed inset-0 pointer-events-none z-0 overflow-hidden">
-    <div class="absolute rounded-full" style="top:-10%;left:-10%;width:50%;height:50%;background:rgba(88,28,135,.08);filter:blur(120px)"></div>
-    <div class="absolute rounded-full" style="bottom:-10%;right:-10%;width:50%;height:50%;background:rgba(55,48,163,.08);filter:blur(120px)"></div>
-    <div class="absolute rounded-full animate-pulse" style="top:30%;left:40%;width:140px;height:140px;background:rgba(212,175,55,.04);filter:blur(80px)"></div>
+<div class="absolute rounded-full" style="top:-10%;left:-10%;width:50%;height:50%;background:rgba(88,28,135,.08);filter:blur(120px)"></div>
+<div class="absolute rounded-full" style="bottom:-10%;right:-10%;width:50%;height:50%;background:rgba(55,48,163,.08);filter:blur(120px)"></div>
+<div class="absolute rounded-full animate-pulse" style="top:30%;left:40%;width:140px;height:140px;background:rgba(212,175,55,.04);filter:blur(80px)"></div>
 </div>
 
 <!-- ══ ЗАГРУЗКА ══ -->
 <div id="s-loading" class="fixed inset-0 z-50 flex flex-col items-center justify-center px-6 text-center" style="background:#0F081D">
-    <div class="relative mb-8">
-        <div class="w-24 h-24 rounded-full animate-spin" style="border:2px solid transparent;border-top-color:#D4AF37;border-bottom-color:rgba(212,175,55,.15)"></div>
-        <div class="absolute inset-2 rounded-full flex items-center justify-center" style="border:1px dashed rgba(212,175,55,.3)">
-            <span class="text-2xl animate-pulse">🔮</span>
-        </div>
-    </div>
-    <h2 class="serif text-2xl font-bold mb-3 tracking-wide" style="color:#D4AF37">Настройка небесных сфер</h2>
-    <p id="loading-text" class="text-sm leading-relaxed animate-pulse" style="color:rgba(196,181,253,.7);max-width:280px">
-        Колода тасуется, космические энергии приходят в движение...
-    </p>
-    <button id="btn-retry" onclick="initApp()" class="hidden mt-3 font-bold rounded-xl px-6 py-3 text-xs tracking-wider uppercase active:scale-95" style="background:#1F103A;border:1px solid rgba(212,175,55,.4);color:#D4AF37">Попробовать снова</button>
+<div class="relative mb-8">
+<div class="w-24 h-24 rounded-full animate-spin" style="border:2px solid transparent;border-top-color:#D4AF37;border-bottom-color:rgba(212,175,55,.15)"></div>
+<div class="absolute inset-2 rounded-full flex items-center justify-center" style="border:1px dashed rgba(212,175,55,.3)">
+<span class="text-2xl animate-pulse">🔮</span>
+</div>
+</div>
+<h2 class="serif text-2xl font-bold mb-3 tracking-wide" style="color:#D4AF37">Настройка небесных сфер</h2>
+<p id="loading-text" class="text-sm leading-relaxed animate-pulse" style="color:rgba(196,181,253,.7);max-width:280px">
+Колода тасуется, космические энергии приходят в движение...
+</p>
+<button id="btn-retry" onclick="initApp()" class="hidden mt-3 font-bold rounded-xl px-6 py-3 text-xs tracking-wider uppercase active:scale-95" style="background:#1F103A;border:1px solid rgba(212,175,55,.4);color:#D4AF37">Попробовать снова</button>
 </div>
 
 <!-- ══ ДАШБОРД ══ -->
 <div id="s-dashboard" class="hidden relative z-10 flex-1 flex flex-col justify-between p-4 mx-auto w-full" style="max-width:420px">
 
-    <!-- Шапка -->
-    <div class="flex items-center justify-between rounded-2xl p-4 mb-4" style="background:rgba(26,11,46,.45);border:1px solid rgba(88,28,135,.3);backdrop-filter:blur(12px)">
-        <div class="flex items-center space-x-3">
-            <div class="w-10 h-10 rounded-xl flex items-center justify-center text-lg shadow" style="background:linear-gradient(135deg,#7c3aed,#D4AF37)">🔮</div>
-            <div>
-                <h3 id="disp-name" class="font-bold text-sm text-white">Искатель</h3>
-                <p class="text-purple-200 uppercase tracking-widest" style="font-size:9px;opacity:.5">Таро Оракул</p>
-            </div>
-        </div>
-        <div class="flex flex-col items-end space-y-1">
-            <!-- Текущий баланс -->
-            <div class="flex items-center space-x-1.5 px-2 py-1 rounded-lg" style="background:rgba(212,175,55,.06);border:1px solid rgba(212,175,55,.2)">
-                <span style="font-size:12px">✨</span>
-                <span class="font-medium" style="font-size:10px;color:rgba(196,181,253,.7)">Энергия:</span>
-                <span id="disp-bal" class="font-bold" style="font-size:12px;color:#D4AF37">0</span>
-            </div>
-            <!-- Кнопка пополнения -->
-            <button onclick="openStore()" class="flex items-center space-x-1 rounded-lg px-2.5 py-1 transition-all active:scale-95" style="background:linear-gradient(to right,rgba(212,175,55,.25),rgba(212,175,55,.15));border:1px solid rgba(212,175,55,.5)">
-                <span style="font-size:10px;color:#D4AF37;font-weight:700">+</span>
-                <span style="font-size:10px;color:#D4AF37;font-weight:700">Пополнить</span>
-            </button>
-        </div>
-    </div>
-
-    <!-- Услуги -->
-    <div class="flex-1 flex flex-col justify-center space-y-3.5 my-2">
-
-        <!-- 1. Карта Дня — БЕСПЛАТНО -->
-        <div class="flex items-center justify-between rounded-2xl p-4 shadow-md" style="background:linear-gradient(to right,#1F103A,#0F081D);border:1px solid rgba(88,28,135,.4)">
-            <div class="flex items-center space-x-3">
-                <span class="text-3xl">🃏</span>
-                <div>
-                    <div class="flex items-center space-x-2">
-                        <h2 class="serif text-base font-bold text-white">Карта Дня</h2>
-                        <span class="font-bold uppercase px-1.5 py-0.5 rounded-full" style="background:rgba(34,197,94,.15);border:1px solid rgba(34,197,94,.4);color:#4ade80;font-size:9px">Бесплатно</span>
-                    </div>
-                    <p class="text-purple-200" style="font-size:11px;opacity:.5">Послание Оракула на сегодня · 1 раз в день</p>
-                </div>
-            </div>
-            <button id="btn-daily" onclick="openModal('daily')" class="font-bold rounded-xl px-4 py-2 text-xs tracking-wider uppercase transition-all active:scale-95 text-white" style="background:#1F103A;border:1px solid rgba(212,175,55,.3)">
-                Получить
-            </button>
-        </div>
-
-        <!-- 2. Стандартный разбор -->
-        <div class="flex items-center justify-between rounded-2xl p-4 shadow-md" style="background:linear-gradient(to right,#1F103A,#0F081D);border:1px solid rgba(88,28,135,.4)">
-            <div class="flex items-center space-x-3">
-                <span class="text-3xl">🎴</span>
-                <div>
-                    <div class="flex items-center space-x-2">
-                        <h2 class="serif text-base font-bold text-white">Стандартный разбор</h2>
-                        <span id="preset-price-badge" class="font-bold uppercase px-1.5 py-0.5 rounded-full" style="background:rgba(212,175,55,.1);border:1px solid rgba(212,175,55,.3);color:#D4AF37;font-size:9px">150</span>
-                        <span id="free-badge" class="hidden font-bold uppercase px-1.5 py-0.5 rounded-full" style="background:rgba(34,197,94,.15);border:1px solid rgba(34,197,94,.4);color:#4ade80;font-size:9px">Бесплатно</span>
-                    </div>
-                    <p class="text-purple-200" style="font-size:11px;opacity:.5">Расклад на 3 карты по вашему вопросу</p>
-                </div>
-            </div>
-            <button onclick="openModal('preset')" class="font-bold rounded-xl px-4 py-2 text-xs tracking-wider uppercase transition-all active:scale-95 text-white" style="background:#1F103A;border:1px solid rgba(212,175,55,.3)">
-                Выбрать
-            </button>
-        </div>
-
-        <!-- 3. Индивидуальный разбор -->
-        <div class="flex items-center justify-between rounded-2xl p-4 shadow-md" style="background:linear-gradient(to right,#1A0B2E,#0F081D);border:1px solid rgba(212,175,55,.2);box-shadow:0 0 15px rgba(212,175,55,.1)">
-            <div class="flex items-center space-x-3">
-                <span class="text-3xl">🔮</span>
-                <div>
-                    <div class="flex items-center space-x-2">
-                        <h2 class="serif text-base font-bold" style="color:#D4AF37">Индивидуальный разбор</h2>
-                        <span class="font-bold uppercase px-1.5 py-0.5 rounded-full" style="background:rgba(124,58,237,.25);border:1px solid rgba(124,58,237,.5);color:rgba(196,181,253,.9);font-size:9px">750</span>
-                    </div>
-                    <p class="text-purple-200" style="font-size:11px;opacity:.5">Глубокий разбор · от 6 до 10 карт</p>
-                </div>
-            </div>
-            <button onclick="openModal('ai')" class="font-bold rounded-xl px-4 py-2 text-xs tracking-wider uppercase transition-all active:scale-95 text-white" style="background:linear-gradient(to right,#7c3aed,#D4AF37)">
-                Открыть
-            </button>
-        </div>
-
-    </div>
-
-    <!-- Кнопка пополнения под услугами -->
-    <button onclick="openStore()" class="w-full flex items-center justify-center space-x-2 rounded-2xl py-3 mt-1 transition-all active:scale-95" style="background:rgba(212,175,55,.08);border:1px dashed rgba(212,175,55,.35)">
-        <span style="font-size:14px">⭐</span>
-        <span class="font-bold tracking-wider uppercase" style="font-size:11px;color:#D4AF37">Пополнить Энергию</span>
-        <span style="font-size:14px">⭐</span>
-    </button>
-
-    <!-- Пригласи друга -->
-    <button onclick="inviteFriend()" class="w-full flex items-center justify-between rounded-2xl p-3 mt-2 transition-all active:scale-95 text-left" style="background:linear-gradient(to right,rgba(124,58,237,.18),rgba(212,175,55,.08));border:1px solid rgba(124,58,237,.4)">
-        <span class="flex items-center space-x-3">
-            <span class="text-2xl">🎁</span>
-            <span>
-                <span class="block font-bold text-xs text-white" style="display:block">Пригласи друга — +<span id="ref-bonus">150</span> ✨ обоим</span>
-                <span style="display:block;font-size:10px;color:rgba(196,181,253,.6)">Уже пришло по твоей ссылке: <b id="ref-count" style="color:#D4AF37">0</b></span>
-            </span>
-        </span>
-        <span class="font-bold text-xs" style="color:#D4AF37">→</span>
-    </button>
-
-    <p class="text-center px-4 mt-2 leading-relaxed" style="font-size:9px;color:rgba(196,181,253,.3)">
-        Все предсказания носят ознакомительно-развлекательный характер. Нажимая кнопки, вы соглашаетесь с условиями сервиса.
-    </p>
+<!-- Шапка -->
+<div class="flex items-center justify-between rounded-2xl p-4 mb-4" style="background:rgba(26,11,46,.45);border:1px solid rgba(88,28,135,.3);backdrop-filter:blur(12px)">
+<div class="flex items-center space-x-3">
+<div class="w-10 h-10 rounded-xl flex items-center justify-center text-lg shadow" style="background:linear-gradient(135deg,#7c3aed,#D4AF37)">🔮</div>
+<div>
+<h3 id="disp-name" class="font-bold text-sm text-white">Искатель</h3>
+<p class="text-purple-200 uppercase tracking-widest" style="font-size:9px;opacity:.5">Послание Таро</p>
+</div>
+</div>
+<div class="flex flex-col items-end space-y-1">
+<!-- Текущий баланс -->
+<div class="flex items-center space-x-1.5 px-2 py-1 rounded-lg" style="background:rgba(212,175,55,.06);border:1px solid rgba(212,175,55,.2)">
+<span style="font-size:12px">✨</span>
+<span class="font-medium" style="font-size:10px;color:rgba(196,181,253,.7)">Энергия:</span>
+<span id="disp-bal" class="font-bold" style="font-size:12px;color:#D4AF37">0</span>
+</div>
+<!-- Кнопка пополнения -->
+<button onclick="openStore()" class="flex items-center space-x-1 rounded-lg px-2.5 py-1 transition-all active:scale-95" style="background:linear-gradient(to right,rgba(212,175,55,.25),rgba(212,175,55,.15));border:1px solid rgba(212,175,55,.5)">
+<span style="font-size:10px;color:#D4AF37;font-weight:700">+</span>
+<span style="font-size:10px;color:#D4AF37;font-weight:700">Пополнить</span>
+</button>
+</div>
 </div>
 
+<!-- Услуги -->
+<div class="flex-1 flex flex-col justify-center space-y-3.5 my-2">
+
+<!-- 1. Карта Дня — БЕСПЛАТНО -->
+<div class="flex items-center justify-between rounded-2xl p-4 shadow-md" style="background:linear-gradient(to right,#1F103A,#0F081D);border:1px solid rgba(88,28,135,.4)">
+<div class="flex items-center space-x-3">
+<span class="text-3xl">🃏</span>
+<div>
+<div class="flex items-center space-x-2">
+<h2 class="serif text-base font-bold text-white">Карта Дня</h2>
+<span class="font-bold uppercase px-1.5 py-0.5 rounded-full" style="background:rgba(34,197,94,.15);border:1px solid rgba(34,197,94,.4);color:#4ade80;font-size:9px">Бесплатно</span>
+</div>
+<p class="text-purple-200" style="font-size:11px;opacity:.5">Послание карт на сегодня · 1 раз в день</p>
+</div>
+</div>
+<button id="btn-daily" onclick="openModal('daily')" class="font-bold rounded-xl px-4 py-2 text-xs tracking-wider uppercase transition-all active:scale-95 text-white" style="background:#1F103A;border:1px solid rgba(212,175,55,.3)">
+Получить
+</button>
+</div>
+
+<!-- 2. Стандартный разбор -->
+<div class="flex items-center justify-between rounded-2xl p-4 shadow-md" style="background:linear-gradient(to right,#1F103A,#0F081D);border:1px solid rgba(88,28,135,.4)">
+<div class="flex items-center space-x-3">
+<span class="text-3xl">🎴</span>
+<div>
+<div class="flex items-center space-x-2">
+<h2 class="serif text-base font-bold text-white">Стандартный разбор</h2>
+<span id="preset-price-badge" class="font-bold uppercase px-1.5 py-0.5 rounded-full" style="background:rgba(212,175,55,.1);border:1px solid rgba(212,175,55,.3);color:#D4AF37;font-size:9px">150</span>
+<span id="free-badge" class="hidden font-bold uppercase px-1.5 py-0.5 rounded-full" style="background:rgba(34,197,94,.15);border:1px solid rgba(34,197,94,.4);color:#4ade80;font-size:9px">Бесплатно</span>
+</div>
+<p class="text-purple-200" style="font-size:11px;opacity:.5">Расклад на 3 карты по вашему вопросу</p>
+</div>
+</div>
+<button onclick="openModal('preset')" class="font-bold rounded-xl px-4 py-2 text-xs tracking-wider uppercase transition-all active:scale-95 text-white" style="background:#1F103A;border:1px solid rgba(212,175,55,.3)">
+Выбрать
+</button>
+</div>
+
+<!-- 3. Индивидуальный разбор -->
+<div class="flex items-center justify-between rounded-2xl p-4 shadow-md" style="background:linear-gradient(to right,#1A0B2E,#0F081D);border:1px solid rgba(212,175,55,.2);box-shadow:0 0 15px rgba(212,175,55,.1)">
+<div class="flex items-center space-x-3">
+<span class="text-3xl">🔮</span>
+<div>
+<div class="flex items-center space-x-2">
+<h2 class="serif text-base font-bold" style="color:#D4AF37">Индивидуальный разбор</h2>
+<span class="font-bold uppercase px-1.5 py-0.5 rounded-full" style="background:rgba(124,58,237,.25);border:1px solid rgba(124,58,237,.5);color:rgba(196,181,253,.9);font-size:9px">750</span>
+</div>
+<p class="text-purple-200" style="font-size:11px;opacity:.5">Глубокий разбор · от 6 до 10 карт</p>
+</div>
+</div>
+<button onclick="openModal('ai')" class="font-bold rounded-xl px-4 py-2 text-xs tracking-wider uppercase transition-all active:scale-95 text-white" style="background:linear-gradient(to right,#7c3aed,#D4AF37)">
+Открыть
+</button>
+</div>
+
+</div>
+
+<!-- Кнопка пополнения под услугами -->
+<button onclick="openStore()" class="w-full flex items-center justify-center space-x-2 rounded-2xl py-3 mt-1 transition-all active:scale-95" style="background:rgba(212,175,55,.08);border:1px dashed rgba(212,175,55,.35)">
+<span style="font-size:14px">⭐</span>
+<span class="font-bold tracking-wider uppercase" style="font-size:11px;color:#D4AF37">Пополнить Энергию</span>
+<span style="font-size:14px">⭐</span>
+</button>
+
+<!-- Пригласи друга -->
+<button onclick="inviteFriend()" class="w-full flex items-center justify-between rounded-2xl p-3 mt-2 transition-all active:scale-95 text-left" style="background:linear-gradient(to right,rgba(124,58,237,.18),rgba(212,175,55,.08));border:1px solid rgba(124,58,237,.4)">
+<span class="flex items-center space-x-3">
+<span class="text-2xl">🎁</span>
+<span>
+<span class="block font-bold text-xs text-white" style="display:block">Пригласи друга — +<span id="ref-bonus">150</span> ✨ обоим</span>
+<span style="display:block;font-size:10px;color:rgba(196,181,253,.6)">Уже пришло по твоей ссылке: <b id="ref-count" style="color:#D4AF37">0</b></span>
+</span>
+</span>
+<span class="font-bold text-xs" style="color:#D4AF37">→</span>
+</button>
+
+<p class="text-center px-4 mt-2 leading-relaxed" style="font-size:9px;color:rgba(196,181,253,.3)">
+Все предсказания носят ознакомительно-развлекательный характер. Нажимая кнопки, вы соглашаетесь с условиями сервиса.
+</p>
+</div>
 
 <!-- ══ МОДАЛКА: КАРТА ДНЯ ══ -->
 <div id="modal-daily" class="hidden fixed inset-0 z-40 flex items-end justify-center" style="background:rgba(0,0,0,.8);backdrop-filter:blur(10px)">
-    <div class="absolute inset-0" onclick="closeModal('daily')"></div>
-    <div class="relative z-10 w-full rounded-t-3xl p-6 space-y-4 shadow-2xl overflow-y-auto" style="max-width:420px;max-height:85vh;background:linear-gradient(to top,#0A0514,#1A0B2E);border-top:1px solid rgba(212,175,55,.3)">
-        <div class="flex justify-between items-center">
-            <div class="flex items-center space-x-2">
-                <span class="text-2xl">🃏</span>
-                <h3 class="serif text-xl font-bold" style="color:#D4AF37">Карта Дня</h3>
-                <span class="font-bold uppercase px-2 py-0.5 rounded-full text-xs" style="background:rgba(34,197,94,.15);border:1px solid rgba(34,197,94,.4);color:#4ade80">Бесплатно</span>
-            </div>
-            <button onclick="closeModal('daily')" class="w-8 h-8 rounded-full flex items-center justify-center text-purple-200" style="background:rgba(49,10,77,.5);border:1px solid rgba(88,28,135,.4)">✕</button>
-        </div>
-        <div class="space-y-3 text-xs leading-relaxed" style="color:rgba(196,181,253,.8)">
-            <p class="font-semibold text-white">Послание на каждый день</p>
-            <p>Оракул вытягивает одну карту, которая станет вашим ориентиром на ближайшие 24 часа. Карта подсвечивает скрытые течения дня, указывает на возможности и даёт конкретный совет.</p>
-            <p class="italic" style="color:rgba(212,175,55,.9)">Рекомендуется получать каждое утро — в тишине и с намерением.</p>
-        </div>
-        <div class="flex justify-between items-center rounded-xl p-3" style="background:rgba(15,8,29,.6);border:1px solid rgba(34,197,94,.25)">
-            <span class="text-xs" style="color:rgba(196,181,253,.7)">Стоимость:</span>
-            <span class="text-sm font-bold" style="color:#4ade80">Бесплатно · 1 раз в сутки</span>
-        </div>
-        <button onclick="triggerDaily()" class="w-full font-bold py-3.5 rounded-xl text-xs tracking-wider uppercase active:scale-95" style="background:linear-gradient(to right,#16a34a,#4ade80);color:#000">
-            Получить Карту Дня
-        </button>
-    </div>
+<div class="absolute inset-0" onclick="closeModal('daily')"></div>
+<div class="relative z-10 w-full rounded-t-3xl p-6 space-y-4 shadow-2xl overflow-y-auto" style="max-width:420px;max-height:85vh;background:linear-gradient(to top,#0A0514,#1A0B2E);border-top:1px solid rgba(212,175,55,.3)">
+<div class="flex justify-between items-center">
+<div class="flex items-center space-x-2">
+<span class="text-2xl">🃏</span>
+<h3 class="serif text-xl font-bold" style="color:#D4AF37">Карта Дня</h3>
+<span class="font-bold uppercase px-2 py-0.5 rounded-full text-xs" style="background:rgba(34,197,94,.15);border:1px solid rgba(34,197,94,.4);color:#4ade80">Бесплатно</span>
+</div>
+<button onclick="closeModal('daily')" class="w-8 h-8 rounded-full flex items-center justify-center text-purple-200" style="background:rgba(49,10,77,.5);border:1px solid rgba(88,28,135,.4)">✕</button>
+</div>
+<div class="space-y-3 text-xs leading-relaxed" style="color:rgba(196,181,253,.8)">
+<p class="font-semibold text-white">Послание на каждый день</p>
+<p>Каждый день вы получаете одну карту, которая станет вашим ориентиром на ближайшие 24 часа. Карта подсвечивает скрытые течения дня, указывает на возможности и даёт конкретный совет.</p>
+<p class="italic" style="color:rgba(212,175,55,.9)">Рекомендуется получать каждое утро — в тишине и с намерением.</p>
+</div>
+<div class="flex justify-between items-center rounded-xl p-3" style="background:rgba(15,8,29,.6);border:1px solid rgba(34,197,94,.25)">
+<span class="text-xs" style="color:rgba(196,181,253,.7)">Стоимость:</span>
+<span class="text-sm font-bold" style="color:#4ade80">Бесплатно · 1 раз в сутки</span>
+</div>
+<button onclick="triggerDaily()" class="w-full font-bold py-3.5 rounded-xl text-xs tracking-wider uppercase active:scale-95" style="background:linear-gradient(to right,#16a34a,#4ade80);color:#000">
+Получить Карту Дня
+</button>
+</div>
 </div>
 
 <!-- ══ МОДАЛКА: СТАНДАРТНЫЙ РАЗБОР ══ -->
 <div id="modal-preset" class="hidden fixed inset-0 z-40 flex items-end justify-center" style="background:rgba(0,0,0,.8);backdrop-filter:blur(10px)">
-    <div class="absolute inset-0" onclick="closeModal('preset')"></div>
-    <div class="relative z-10 w-full rounded-t-3xl p-6 space-y-4 shadow-2xl overflow-y-auto" style="max-width:420px;max-height:92vh;background:linear-gradient(to top,#0A0514,#1A0B2E);border-top:1px solid rgba(212,175,55,.3)">
-        <div class="flex justify-between items-center">
-            <div class="flex items-center space-x-2">
-                <span class="text-2xl">🎴</span>
-                <h3 class="serif text-xl font-bold" style="color:#D4AF37">Стандартный разбор</h3>
-            </div>
-            <button onclick="closeModal('preset')" class="w-8 h-8 rounded-full flex items-center justify-center text-purple-200" style="background:rgba(49,10,77,.5);border:1px solid rgba(88,28,135,.4)">✕</button>
-        </div>
-        <div class="space-y-2 text-xs leading-relaxed" style="color:rgba(196,181,253,.85)">
-            <p class="font-semibold text-white">Расклад на 3 карты</p>
-            <p>Три карты раскрывают три пласта вашей ситуации — прошлое, настоящее и будущее. Оракул даёт развёрнутый, детальный разбор применительно именно к вашему вопросу.</p>
-        </div>
-
-        <!-- Вопросы -->
-        <div class="space-y-1.5 overflow-y-auto pr-1" style="max-height:44vh">
-            <button onclick="pickQ(this,'Что меня ждет сегодня?')" class="q-btn q-active w-full text-left rounded-xl p-2.5 text-xs transition-all flex items-center justify-between active:scale-[0.98]">
-                <span>1. Что меня ждет сегодня?</span><span style="font-size:10px">✨</span>
-            </button>
-            <button onclick="pickQ(this,'Любит ли меня загаданный человек?')" class="q-btn w-full text-left rounded-xl p-2.5 text-xs transition-all flex items-center justify-between active:scale-[0.98]">
-                <span>2. Любит ли меня загаданный человек?</span><span style="font-size:10px">🔮</span>
-            </button>
-            <button onclick="pickQ(this,'Позвонит/напишет ли он в ближайшее время?')" class="q-btn w-full text-left rounded-xl p-2.5 text-xs transition-all flex items-center justify-between active:scale-[0.98]">
-                <span>3. Позвонит/напишет ли он в ближайшее время?</span><span style="font-size:10px">💬</span>
-            </button>
-            <button onclick="pickQ(this,'Что он чувствует ко мне сейчас?')" class="q-btn w-full text-left rounded-xl p-2.5 text-xs transition-all flex items-center justify-between active:scale-[0.98]">
-                <span>4. Что он чувствует ко мне сейчас?</span><span style="font-size:10px">❤️</span>
-            </button>
-            <button onclick="pickQ(this,'Стоит ли делать первый шаг?')" class="q-btn w-full text-left rounded-xl p-2.5 text-xs transition-all flex items-center justify-between active:scale-[0.98]">
-                <span>5. Стоит ли делать первый шаг?</span><span style="font-size:10px">🚶</span>
-            </button>
-            <button onclick="pickQ(this,'Какие перспективы на этой работе?')" class="q-btn w-full text-left rounded-xl p-2.5 text-xs transition-all flex items-center justify-between active:scale-[0.98]">
-                <span>6. Какие перспективы на этой работе?</span><span style="font-size:10px">💼</span>
-            </button>
-            <button onclick="pickQ(this,'Будет ли финансовый рост в этом месяце?')" class="q-btn w-full text-left rounded-xl p-2.5 text-xs transition-all flex items-center justify-between active:scale-[0.98]">
-                <span>7. Будет ли финансовый рост в этом месяце?</span><span style="font-size:10px">💰</span>
-            </button>
-            <button onclick="pickQ(this,'Какое решение мне лучше принять?')" class="q-btn w-full text-left rounded-xl p-2.5 text-xs transition-all flex items-center justify-between active:scale-[0.98]">
-                <span>8. Какое решение мне лучше принять?</span><span style="font-size:10px">⚖️</span>
-            </button>
-            <button onclick="pickQ(this,'Что мешает мне двигаться дальше?')" class="q-btn w-full text-left rounded-xl p-2.5 text-xs transition-all flex items-center justify-between active:scale-[0.98]">
-                <span>9. Что мешает мне двигаться дальше?</span><span style="font-size:10px">🛑</span>
-            </button>
-            <button onclick="pickQ(this,'Какой главный совет от карт на будущее?')" class="q-btn w-full text-left rounded-xl p-2.5 text-xs transition-all flex items-center justify-between active:scale-[0.98]">
-                <span>10. Какой главный совет от карт на будущее?</span><span style="font-size:10px">🌟</span>
-            </button>
-        </div>
-        <input type="hidden" id="sel-q" value="Что меня ждет сегодня?">
-
-        <div class="flex justify-between items-center rounded-xl p-3 text-xs" style="background:rgba(15,8,29,.6);border:1px solid rgba(88,28,135,.4)">
-            <span style="color:rgba(196,181,253,.7)">Стоимость:</span>
-            <span id="preset-cost" class="font-bold" style="color:#D4AF37">150 энергии</span>
-        </div>
-        <button onclick="triggerPreset()" class="w-full font-bold py-3.5 rounded-xl text-xs tracking-wider uppercase active:scale-95 text-black" style="background:linear-gradient(to right,#eab308,#D4AF37)">
-            Запустить расклад
-        </button>
-    </div>
+<div class="absolute inset-0" onclick="closeModal('preset')"></div>
+<div class="relative z-10 w-full rounded-t-3xl p-6 space-y-4 shadow-2xl overflow-y-auto" style="max-width:420px;max-height:92vh;background:linear-gradient(to top,#0A0514,#1A0B2E);border-top:1px solid rgba(212,175,55,.3)">
+<div class="flex justify-between items-center">
+<div class="flex items-center space-x-2">
+<span class="text-2xl">🎴</span>
+<h3 class="serif text-xl font-bold" style="color:#D4AF37">Стандартный разбор</h3>
+</div>
+<button onclick="closeModal('preset')" class="w-8 h-8 rounded-full flex items-center justify-center text-purple-200" style="background:rgba(49,10,77,.5);border:1px solid rgba(88,28,135,.4)">✕</button>
+</div>
+<div class="space-y-2 text-xs leading-relaxed" style="color:rgba(196,181,253,.85)">
+<p class="font-semibold text-white">Расклад на 3 карты</p>
+<p>Три карты раскрывают три пласта вашей ситуации — прошлое, настоящее и будущее. Вы получите развёрнутый, детальный разбор применительно именно к вашему вопросу.</p>
+</div>
+<!-- Вопросы -->
+<div class="space-y-1.5 overflow-y-auto pr-1" style="max-height:44vh">
+<button onclick="pickQ(this,'Что меня ждет сегодня?')" class="q-btn q-active w-full text-left rounded-xl p-2.5 text-xs transition-all flex items-center justify-between active:scale-[0.98]">
+<span>1. Что меня ждет сегодня?</span><span style="font-size:10px">✨</span>
+</button>
+<button onclick="pickQ(this,'Любит ли меня загаданный человек?')" class="q-btn w-full text-left rounded-xl p-2.5 text-xs transition-all flex items-center justify-between active:scale-[0.98]">
+<span>2. Любит ли меня загаданный человек?</span><span style="font-size:10px">🔮</span>
+</button>
+<button onclick="pickQ(this,'Позвонит/напишет ли он в ближайшее время?')" class="q-btn w-full text-left rounded-xl p-2.5 text-xs transition-all flex items-center justify-between active:scale-[0.98]">
+<span>3. Позвонит/напишет ли он в ближайшее время?</span><span style="font-size:10px">💬</span>
+</button>
+<button onclick="pickQ(this,'Что он чувствует ко мне сейчас?')" class="q-btn w-full text-left rounded-xl p-2.5 text-xs transition-all flex items-center justify-between active:scale-[0.98]">
+<span>4. Что он чувствует ко мне сейчас?</span><span style="font-size:10px">❤️</span>
+</button>
+<button onclick="pickQ(this,'Стоит ли делать первый шаг?')" class="q-btn w-full text-left rounded-xl p-2.5 text-xs transition-all flex items-center justify-between active:scale-[0.98]">
+<span>5. Стоит ли делать первый шаг?</span><span style="font-size:10px">🚶</span>
+</button>
+<button onclick="pickQ(this,'Какие перспективы на этой работе?')" class="q-btn w-full text-left rounded-xl p-2.5 text-xs transition-all flex items-center justify-between active:scale-[0.98]">
+<span>6. Какие перспективы на этой работе?</span><span style="font-size:10px">💼</span>
+</button>
+<button onclick="pickQ(this,'Будет ли финансовый рост в этом месяце?')" class="q-btn w-full text-left rounded-xl p-2.5 text-xs transition-all flex items-center justify-between active:scale-[0.98]">
+<span>7. Будет ли финансовый рост в этом месяце?</span><span style="font-size:10px">💰</span>
+</button>
+<button onclick="pickQ(this,'Какое решение мне лучше принять?')" class="q-btn w-full text-left rounded-xl p-2.5 text-xs transition-all flex items-center justify-between active:scale-[0.98]">
+<span>8. Какое решение мне лучше принять?</span><span style="font-size:10px">⚖️</span>
+</button>
+<button onclick="pickQ(this,'Что мешает мне двигаться дальше?')" class="q-btn w-full text-left rounded-xl p-2.5 text-xs transition-all flex items-center justify-between active:scale-[0.98]">
+<span>9. Что мешает мне двигаться дальше?</span><span style="font-size:10px">🛑</span>
+</button>
+<button onclick="pickQ(this,'Какой главный совет от карт на будущее?')" class="q-btn w-full text-left rounded-xl p-2.5 text-xs transition-all flex items-center justify-between active:scale-[0.98]">
+<span>10. Какой главный совет от карт на будущее?</span><span style="font-size:10px">🌟</span>
+</button>
+</div>
+<input type="hidden" id="sel-q" value="Что меня ждет сегодня?">
+<div class="flex justify-between items-center rounded-xl p-3 text-xs" style="background:rgba(15,8,29,.6);border:1px solid rgba(88,28,135,.4)">
+<span style="color:rgba(196,181,253,.7)">Стоимость:</span>
+<span id="preset-cost" class="font-bold" style="color:#D4AF37">150 энергии</span>
+</div>
+<button onclick="triggerPreset()" class="w-full font-bold py-3.5 rounded-xl text-xs tracking-wider uppercase active:scale-95 text-black" style="background:linear-gradient(to right,#eab308,#D4AF37)">
+Запустить расклад
+</button>
+</div>
 </div>
 
 <!-- ══ МОДАЛКА: ИНДИВИДУАЛЬНЫЙ РАЗБОР ══ -->
 <div id="modal-ai" class="hidden fixed inset-0 z-40 flex items-end justify-center" style="background:rgba(0,0,0,.8);backdrop-filter:blur(10px)">
-    <div class="absolute inset-0" onclick="closeModal('ai')"></div>
-    <div class="relative z-10 w-full rounded-t-3xl p-6 space-y-4 shadow-2xl overflow-y-auto" style="max-width:420px;max-height:85vh;background:linear-gradient(to top,#0A0514,#1A0B2E);border-top:1px solid rgba(212,175,55,.3)">
-        <div class="flex justify-between items-center">
-            <div class="flex items-center space-x-2">
-                <span class="text-2xl">🔮</span>
-                <h3 class="serif text-xl font-bold" style="color:#D4AF37">Индивидуальный разбор</h3>
-            </div>
-            <button onclick="closeModal('ai')" class="w-8 h-8 rounded-full flex items-center justify-center text-purple-200" style="background:rgba(49,10,77,.5);border:1px solid rgba(88,28,135,.4)">✕</button>
-        </div>
-        <div class="space-y-3 text-xs leading-relaxed" style="color:rgba(196,181,253,.8)">
-            <p class="font-semibold text-white">Глубокий персональный расклад</p>
-            <p>Оракул подбирает от 6 до 10 карт в зависимости от глубины вашего вопроса. Каждая карта занимает свою позицию в раскладе и разбирается детально — с учётом классических традиций и вашей конкретной ситуации.</p>
-            <p>Задайте любой вопрос — об отношениях, предназначении, карьере, выборе пути.</p>
-        </div>
-        <div class="space-y-1.5">
-            <label class="uppercase tracking-widest font-semibold" style="font-size:10px;color:rgba(196,181,253,.7)">Ваш вопрос Оракулу:</label>
-            <textarea id="ai-q" rows="3"
-                placeholder="Например: «Стоит ли мне уходить с работы и запускать собственное дело? Что меня останавливает?»"
-                class="w-full rounded-xl p-3 text-xs text-white resize-none focus:outline-none transition-all"
-                style="background:rgba(15,8,29,.8);border:1px solid rgba(88,28,135,.6)"></textarea>
-        </div>
-        <div class="flex justify-between items-center rounded-xl p-3" style="background:rgba(15,8,29,.6);border:1px solid rgba(88,28,135,.4)">
-            <span class="text-xs" style="color:rgba(196,181,253,.7)">Стоимость:</span>
-            <span class="text-sm font-bold" style="color:#D4AF37">750 энергии</span>
-        </div>
-        <button onclick="triggerAi()" class="w-full font-bold py-3.5 rounded-xl text-xs tracking-wider uppercase active:scale-95 text-white" style="background:linear-gradient(to right,#7c3aed,#D4AF37)">
-            Запустить разбор
-        </button>
-    </div>
+<div class="absolute inset-0" onclick="closeModal('ai')"></div>
+<div class="relative z-10 w-full rounded-t-3xl p-6 space-y-4 shadow-2xl overflow-y-auto" style="max-width:420px;max-height:85vh;background:linear-gradient(to top,#0A0514,#1A0B2E);border-top:1px solid rgba(212,175,55,.3)">
+<div class="flex justify-between items-center">
+<div class="flex items-center space-x-2">
+<span class="text-2xl">🔮</span>
+<h3 class="serif text-xl font-bold" style="color:#D4AF37">Индивидуальный разбор</h3>
 </div>
-
+<button onclick="closeModal('ai')" class="w-8 h-8 rounded-full flex items-center justify-center text-purple-200" style="background:rgba(49,10,77,.5);border:1px solid rgba(88,28,135,.4)">✕</button>
+</div>
+<div class="space-y-3 text-xs leading-relaxed" style="color:rgba(196,181,253,.8)">
+<p class="font-semibold text-white">Глубокий персональный расклад</p>
+<p>В расклад выпадает от 6 до 10 карт в зависимости от глубины вашего вопроса. Каждая карта занимает свою позицию в раскладе и разбирается детально — с учётом классических традиций и вашей конкретной ситуации.</p>
+<p>Задайте любой вопрос — об отношениях, предназначении, карьере, выборе пути.</p>
+</div>
+<div class="flex justify-between items-center rounded-xl p-3" style="background:rgba(15,8,29,.6);border:1px solid rgba(88,28,135,.4)">
+<span class="text-xs" style="color:rgba(196,181,253,.7)">Стоимость:</span>
+<span class="text-sm font-bold" style="color:#D4AF37">750 энергии</span>
+</div>
+<div class="space-y-1.5">
+<label class="uppercase tracking-widest font-semibold" style="font-size:10px;color:rgba(196,181,253,.7)">Ваш вопрос картам:</label>
+<textarea id="ai-q" rows="3" enterkeyhint="send"
+placeholder="Например: «Стоит ли мне уходить с работы и запускать собственное дело? Что меня останавливает?»"
+class="w-full rounded-xl p-3 text-xs text-white resize-none focus:outline-none transition-all"
+style="background:rgba(15,8,29,.8);border:1px solid rgba(88,28,135,.6)"></textarea>
+</div>
+<button id="btn-ai-run" onclick="triggerAi()" class="w-full font-bold py-3.5 rounded-xl text-xs tracking-wider uppercase active:scale-95 text-white" style="background:linear-gradient(to right,#7c3aed,#D4AF37)">
+Запустить разбор
+</button>
+</div>
+</div>
 
 <!-- ══ ЭКРАН РАСКЛАДА ══ -->
 <div id="s-reading" class="hidden relative z-10 flex-1 flex flex-col justify-between p-4 mx-auto w-full" style="max-width:420px">
-
-    <div class="text-center py-2">
-        <h2 id="r-title" class="serif text-xl font-bold" style="color:#D4AF37">Таинство началось</h2>
-        <p id="r-sub" class="uppercase tracking-widest mt-0.5" style="font-size:10px;color:rgba(196,181,253,.5)">Внимайте знакам судьбы</p>
-    </div>
-
-    <div class="flex-1 flex flex-col items-center justify-center my-4">
-        <!-- Анимация тасования -->
-        <div id="r-shuffle" class="flex flex-col items-center space-y-5 text-center">
-            <div class="shuffle-deck">
-                <div class="shuffle-card">🔮</div>
-                <div class="shuffle-card">✨</div>
-                <div class="shuffle-card">⭐</div>
-                <div class="shuffle-card">🌙</div>
-            </div>
-            <div>
-                <p id="shuf-txt" class="text-xs italic leading-relaxed" style="color:rgba(196,181,253,.7);max-width:240px">Оракул тасует колоду...</p>
-                <div class="flex justify-center space-x-1 mt-2">
-                    <span class="w-1.5 h-1.5 rounded-full dot1" style="background:rgba(212,175,55,.65)"></span>
-                    <span class="w-1.5 h-1.5 rounded-full dot2" style="background:rgba(212,175,55,.65)"></span>
-                    <span class="w-1.5 h-1.5 rounded-full dot3" style="background:rgba(212,175,55,.65)"></span>
-                </div>
-            </div>
-        </div>
-        <!-- Карты -->
-        <div id="r-cards" class="hidden flex flex-wrap justify-center gap-3 w-full px-2"></div>
-    </div>
-
-    <!-- Текст расклада -->
-    <div id="r-result" class="hidden rounded-2xl p-4 mb-4 overflow-y-auto" style="background:rgba(26,11,46,.8);border:1px solid rgba(212,175,55,.2);backdrop-filter:blur(8px)">
-        <h3 class="serif text-sm font-bold mb-3 flex items-center space-x-2" style="color:#D4AF37">
-            <span>🔮</span><span>Расклад Оракула:</span>
-        </h3>
-        <div id="r-text" class="text-xs leading-relaxed reading-body" style="color:rgba(220,214,255,.9)">...</div>
-    </div>
-
-    <button id="btn-share" onclick="shareReading()" class="hidden w-full font-bold py-3.5 rounded-xl text-xs tracking-wider uppercase active:scale-95 mb-2 transition-all text-black" style="background:linear-gradient(to right,#eab308,#D4AF37)">
-        📤 Поделиться раскладом
-    </button>
-    <button id="btn-back" onclick="goBack()" class="hidden w-full font-bold py-3.5 rounded-xl text-xs tracking-wider uppercase active:scale-95 mb-2 transition-all" style="background:#1F103A;border:1px solid rgba(212,175,55,.3);color:#D4AF37">
-        Вернуться в храм
-    </button>
+<div class="text-center py-2">
+<h2 id="r-title" class="serif text-xl font-bold" style="color:#D4AF37">Таинство началось</h2>
+<p id="r-sub" class="uppercase tracking-widest mt-0.5" style="font-size:10px;color:rgba(196,181,253,.5)">Внимайте знакам судьбы</p>
 </div>
 
+<div class="flex-1 flex flex-col items-center justify-center my-4">
+<!-- Анимация тасования -->
+<div id="r-shuffle" class="flex flex-col items-center space-y-5 text-center">
+<div class="shuffle-deck">
+<div class="shuffle-card">🔮</div>
+<div class="shuffle-card">✨</div>
+<div class="shuffle-card">⭐</div>
+<div class="shuffle-card">🌙</div>
+</div>
+<div>
+<p id="shuf-txt" class="text-xs italic leading-relaxed" style="color:rgba(196,181,253,.7);max-width:240px">Колода тасуется...</p>
+<div class="flex justify-center space-x-1 mt-2">
+<span class="w-1.5 h-1.5 rounded-full dot1" style="background:rgba(212,175,55,.65)"></span>
+<span class="w-1.5 h-1.5 rounded-full dot2" style="background:rgba(212,175,55,.65)"></span>
+<span class="w-1.5 h-1.5 rounded-full dot3" style="background:rgba(212,175,55,.65)"></span>
+</div>
+</div>
+</div>
+<!-- Карты -->
+<div id="r-cards" class="hidden flex flex-wrap justify-center gap-3 w-full px-2"></div>
+</div>
+
+<!-- Текст расклада -->
+<div id="r-result" class="hidden rounded-2xl p-4 mb-4 overflow-y-auto" style="background:rgba(26,11,46,.8);border:1px solid rgba(212,175,55,.2);backdrop-filter:blur(8px)">
+<h3 class="serif text-sm font-bold mb-3 flex items-center space-x-2" style="color:#D4AF37">
+<span>🔮</span><span>Ваш расклад:</span>
+</h3>
+<div id="r-text" class="text-xs leading-relaxed reading-body" style="color:rgba(220,214,255,.9)">...</div>
+</div>
+
+<button id="btn-share" onclick="shareReading()" class="hidden w-full font-bold py-3.5 rounded-xl text-xs tracking-wider uppercase active:scale-95 mb-2 transition-all text-black" style="background:linear-gradient(to right,#eab308,#D4AF37)">
+📤 Поделиться раскладом
+</button>
+<button id="btn-back" onclick="goBack()" class="hidden w-full font-bold py-3.5 rounded-xl text-xs tracking-wider uppercase active:scale-95 mb-2 transition-all" style="background:#1F103A;border:1px solid rgba(212,175,55,.3);color:#D4AF37">
+На главный экран
+</button>
+</div>
 
 <!-- ══ МАГАЗИН ══ -->
 <div id="modal-store" class="hidden fixed inset-0 z-40 flex items-end justify-center" style="background:rgba(0,0,0,.8);backdrop-filter:blur(8px)">
-    <div class="absolute inset-0" onclick="closeStore()"></div>
-    <div class="relative z-10 w-full rounded-t-3xl p-6 space-y-4 shadow-2xl" style="max-width:420px;background:linear-gradient(to top,#0A0514,#1A0B2E);border-top:1px solid rgba(212,175,55,.3)">
-        <div class="flex justify-between items-center">
-            <div>
-                <h3 class="serif text-xl font-bold" style="color:#D4AF37">Пополнение Энергии</h3>
-                <p id="store-sub" class="uppercase tracking-widest mt-0.5" style="font-size:9px;color:rgba(196,181,253,.5)">Оплата через Telegram Stars</p>
-            </div>
-            <button onclick="closeStore()" class="w-8 h-8 rounded-full flex items-center justify-center text-purple-200" style="background:rgba(49,10,77,.5);border:1px solid rgba(88,28,135,.4)">✕</button>
-        </div>
-
-        <!-- Способ оплаты -->
-        <div id="pay-switch" class="hidden p-1 rounded-2xl" style="background:rgba(15,8,29,.7);border:1px solid rgba(88,28,135,.5)">
-            <div style="display:grid;grid-template-columns:1fr 1fr;gap:4px">
-                <button id="pm-stars" onclick="setPayMethod('stars')" class="py-2 rounded-xl text-xs font-bold transition-all">⭐ Звёздами</button>
-                <button id="pm-card" onclick="setPayMethod('card')" class="py-2 rounded-xl text-xs font-bold transition-all">💳 Картой</button>
-            </div>
-        </div>
-
-        <div class="space-y-3">
-            <!-- Пакет 150 -->
-            <div class="flex items-center justify-between rounded-2xl p-4" style="background:rgba(15,8,29,.6);border:1px solid rgba(88,28,135,.5)">
-                <div class="flex items-center space-x-3">
-                    <span class="text-2xl">🎴</span>
-                    <div>
-                        <h4 class="font-bold text-xs text-white">+150 Энергии</h4>
-                        <p style="font-size:10px;color:rgba(196,181,253,.5)">1 Стандартный разбор</p>
-                        <p id="first-buy-label" class="hidden font-semibold" style="font-size:10px;color:#4ade80">🔥 Цена первой покупки</p>
-                    </div>
-                </div>
-                <button onclick="buyPack('pack_150')" class="flex items-center space-x-1.5 font-bold px-4 py-2 rounded-xl text-xs active:scale-95 text-black shadow" style="background:linear-gradient(to right,#eab308,#D4AF37)">
-                    <span class="pm-icon">⭐</span><span class="flex flex-col items-center leading-tight"><span id="price-pack_150">150</span><span id="alt-pack_150" class="hidden font-semibold" style="font-size:8px;opacity:.75"></span></span>
-                </button>
-            </div>
-
-            <!-- Пакет 450 — со скидкой -->
-            <div class="flex items-center justify-between rounded-2xl p-4" style="background:rgba(15,8,29,.6);border:1px solid rgba(212,175,55,.3);box-shadow:0 0 14px rgba(212,175,55,.1)">
-                <div class="flex items-center space-x-3">
-                    <span class="text-2xl">✨</span>
-                    <div>
-                        <div class="flex items-center space-x-2">
-                            <h4 class="font-bold text-xs text-white">+450 Энергии</h4>
-                            <span class="font-bold uppercase px-1.5 py-0.5 rounded-full" style="background:rgba(212,175,55,.15);border:1px solid rgba(212,175,55,.4);color:#D4AF37;font-size:8px">−15%</span>
-                        </div>
-                        <p class="font-semibold" style="font-size:10px;color:rgba(212,175,55,.8)">3 Стандартных разбора · выгодно</p>
-                    </div>
-                </div>
-                <button onclick="buyPack('pack_450')" class="flex items-center space-x-1.5 font-bold px-4 py-2 rounded-xl text-xs active:scale-95 text-black shadow" style="background:linear-gradient(to right,#eab308,#D4AF37)">
-                    <span class="pm-icon">⭐</span><span class="flex flex-col items-center leading-tight"><span id="price-pack_450">383</span><span id="alt-pack_450" class="hidden font-semibold" style="font-size:8px;opacity:.75"></span></span>
-                </button>
-            </div>
-
-            <!-- Пакет 750 -->
-            <div class="flex items-center justify-between rounded-2xl p-4" style="background:rgba(15,8,29,.6);border:1px solid rgba(124,58,237,.4)">
-                <div class="flex items-center space-x-3">
-                    <span class="text-2xl">🔮</span>
-                    <div>
-                        <h4 class="font-bold text-xs text-white">+750 Энергии</h4>
-                        <p style="font-size:10px;color:rgba(196,181,253,.5)">1 Индивидуальный разбор (6–10 карт)</p>
-                    </div>
-                </div>
-                <button onclick="buyPack('pack_750')" class="flex items-center space-x-1.5 font-bold px-4 py-2 rounded-xl text-xs active:scale-95 text-white shadow" style="background:linear-gradient(to right,#7c3aed,#D4AF37)">
-                    <span class="pm-icon">⭐</span><span class="flex flex-col items-center leading-tight"><span id="price-pack_750">750</span><span id="alt-pack_750" class="hidden font-semibold" style="font-size:8px;opacity:.75"></span></span>
-                </button>
-            </div>
-        </div>
-
-        <p id="store-note" class="text-center leading-relaxed px-4" style="font-size:9px;color:rgba(196,181,253,.4)">
-            Платеж проходит через официальный шлюз Telegram Stars. Энергия зачисляется моментально.
-        </p>
-    </div>
+<div class="absolute inset-0" onclick="closeStore()"></div>
+<div class="relative z-10 w-full rounded-t-3xl p-6 space-y-4 shadow-2xl" style="max-width:420px;background:linear-gradient(to top,#0A0514,#1A0B2E);border-top:1px solid rgba(212,175,55,.3)">
+<div class="flex justify-between items-center">
+<div>
+<h3 class="serif text-xl font-bold" style="color:#D4AF37">Пополнение Энергии</h3>
+<p id="store-sub" class="uppercase tracking-widest mt-0.5" style="font-size:9px;color:rgba(196,181,253,.5)">Оплата через Telegram Stars</p>
+</div>
+<button onclick="closeStore()" class="w-8 h-8 rounded-full flex items-center justify-center text-purple-200" style="background:rgba(49,10,77,.5);border:1px solid rgba(88,28,135,.4)">✕</button>
 </div>
 
+<!-- Способ оплаты -->
+<div id="pay-switch" class="hidden p-1 rounded-2xl" style="background:rgba(15,8,29,.7);border:1px solid rgba(88,28,135,.5)">
+<div style="display:grid;grid-template-columns:1fr 1fr;gap:4px">
+<button id="pm-stars" onclick="setPayMethod('stars')" class="py-2 rounded-xl text-xs font-bold transition-all">⭐ Звёздами</button>
+<button id="pm-card" onclick="setPayMethod('card')" class="py-2 rounded-xl text-xs font-bold transition-all">💳 Картой</button>
+</div>
+</div>
+
+<div class="space-y-3">
+<!-- Пакет 150 -->
+<div class="flex items-center justify-between rounded-2xl p-4" style="background:rgba(15,8,29,.6);border:1px solid rgba(88,28,135,.5)">
+<div class="flex items-center space-x-3">
+<span class="text-2xl">🎴</span>
+<div>
+<h4 class="font-bold text-xs text-white">+150 Энергии</h4>
+<p style="font-size:10px;color:rgba(196,181,253,.5)">1 Стандартный разбор</p>
+<p id="first-buy-label" class="hidden font-semibold" style="font-size:10px;color:#4ade80">🔥 Цена первой покупки</p>
+</div>
+</div>
+<button onclick="buyPack('pack_150')" class="flex items-center space-x-1.5 font-bold px-4 py-2 rounded-xl text-xs active:scale-95 text-black shadow" style="background:linear-gradient(to right,#eab308,#D4AF37)">
+<span class="pm-icon">⭐</span><span class="flex flex-col items-center leading-tight"><span id="price-pack_150">150</span><span id="alt-pack_150" class="hidden font-semibold" style="font-size:8px;opacity:.75"></span></span>
+</button>
+</div>
+<!-- Пакет 450 — со скидкой -->
+<div class="flex items-center justify-between rounded-2xl p-4" style="background:rgba(15,8,29,.6);border:1px solid rgba(212,175,55,.3);box-shadow:0 0 14px rgba(212,175,55,.1)">
+<div class="flex items-center space-x-3">
+<span class="text-2xl">✨</span>
+<div>
+<div class="flex items-center space-x-2">
+<h4 class="font-bold text-xs text-white">+450 Энергии</h4>
+<span class="font-bold uppercase px-1.5 py-0.5 rounded-full" style="background:rgba(212,175,55,.15);border:1px solid rgba(212,175,55,.4);color:#D4AF37;font-size:8px">−15%</span>
+</div>
+<p class="font-semibold" style="font-size:10px;color:rgba(212,175,55,.8)">3 Стандартных разбора · выгодно</p>
+</div>
+</div>
+<button onclick="buyPack('pack_450')" class="flex items-center space-x-1.5 font-bold px-4 py-2 rounded-xl text-xs active:scale-95 text-black shadow" style="background:linear-gradient(to right,#eab308,#D4AF37)">
+<span class="pm-icon">⭐</span><span class="flex flex-col items-center leading-tight"><span id="price-pack_450">383</span><span id="alt-pack_450" class="hidden font-semibold" style="font-size:8px;opacity:.75"></span></span>
+</button>
+</div>
+<!-- Пакет 750 -->
+<div class="flex items-center justify-between rounded-2xl p-4" style="background:rgba(15,8,29,.6);border:1px solid rgba(124,58,237,.4)">
+<div class="flex items-center space-x-3">
+<span class="text-2xl">🔮</span>
+<div>
+<h4 class="font-bold text-xs text-white">+750 Энергии</h4>
+<p style="font-size:10px;color:rgba(196,181,253,.5)">1 Индивидуальный разбор (6–10 карт)</p>
+</div>
+</div>
+<button onclick="buyPack('pack_750')" class="flex items-center space-x-1.5 font-bold px-4 py-2 rounded-xl text-xs active:scale-95 text-white shadow" style="background:linear-gradient(to right,#7c3aed,#D4AF37)">
+<span class="pm-icon">⭐</span><span class="flex flex-col items-center leading-tight"><span id="price-pack_750">750</span><span id="alt-pack_750" class="hidden font-semibold" style="font-size:8px;opacity:.75"></span></span>
+</button>
+</div>
+</div>
+
+<p id="store-note" class="text-center leading-relaxed px-4" style="font-size:9px;color:rgba(196,181,253,.4)">
+Платеж проходит через официальный шлюз Telegram Stars. Энергия зачисляется моментально.
+</p>
+</div>
+</div>
 
 <script>
 const BACKEND = "https://tarot-backend-136l.onrender.com";
+const BOT_USERNAME = "Poslanie_tarobot";
 const tg = window.Telegram.WebApp;
 tg.ready(); tg.expand();
 const initData = tg.initData || "";
@@ -513,355 +498,373 @@ let userProfile = null;
 
 // ── Стили кнопок вопросов ──
 document.querySelectorAll(".q-btn").forEach((b,i) => setQStyle(b, i===0));
+
 function setQStyle(btn, active) {
-    if (active) {
-        btn.style.cssText = "background:rgba(212,175,55,.1);border:1px solid #D4AF37;border-left:4px solid #D4AF37;color:#D4AF37;width:100%;text-align:left;border-radius:12px;padding:10px;font-size:12px;display:flex;align-items:center;justify-content:space-between";
-    } else {
-        btn.style.cssText = "background:rgba(15,8,29,.8);border:1px solid rgba(88,28,135,.6);border-left:4px solid #7c3aed;color:rgba(196,181,253,.85);width:100%;text-align:left;border-radius:12px;padding:10px;font-size:12px;display:flex;align-items:center;justify-content:space-between";
-    }
+if (active) {
+btn.style.cssText = "background:rgba(212,175,55,.1);border:1px solid #D4AF37;border-left:4px solid #D4AF37;color:#D4AF37;width:100%;text-align:left;border-radius:12px;padding:10px;font-size:12px;display:flex;align-items:center;justify-content:space-between";
+} else {
+btn.style.cssText = "background:rgba(15,8,29,.8);border:1px solid rgba(88,28,135,.6);border-left:4px solid #7c3aed;color:rgba(196,181,253,.85);width:100%;text-align:left;border-radius:12px;padding:10px;font-size:12px;display:flex;align-items:center;justify-content:space-between";
 }
+}
+
 function pickQ(el, q) {
-    document.querySelectorAll(".q-btn").forEach(b => setQStyle(b, false));
-    setQStyle(el, true);
-    document.getElementById("sel-q").value = q;
-    if (tg.HapticFeedback) tg.HapticFeedback.impactOccurred("light");
+document.querySelectorAll(".q-btn").forEach(b => setQStyle(b, false));
+setQStyle(el, true);
+document.getElementById("sel-q").value = q;
+if (tg.HapticFeedback) tg.HapticFeedback.impactOccurred("light");
 }
 
 // ── Markdown → HTML (с экранированием — текст от AI не может внедрить HTML) ──
 function esc(t) { return String(t).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;"); }
 function md(text) {
-    if (!text) return "";
-    text = String(text).replace(/\\r\\n|\\n/g, "\n").replace(/\\t/g, " ").replace(/\\"/g, '"');
-    return esc(text)
-        .replace(/\*\*(.*?)\*\*/g, '<strong style="color:#D4AF37;font-weight:700">$1</strong>')
-        .replace(/^### (.+)$/gm, '<span class="sec">$1</span>')
-        .replace(/^## (.+)$/gm,  '<span class="sec">$1</span>')
-        .replace(/^# (.+)$/gm,   '<span class="sec">$1</span>')
-        .replace(/\n\n/g, '</p><p style="margin-bottom:.6rem">')
-        .replace(/\n/g, '<br>');
+if (!text) return "";
+text = String(text).replace(/\\r\\n|\\n/g, "\n").replace(/\\t/g, " ").replace(/\\"/g, '"');
+return esc(text)
+.replace(/\*\*(.*?)\*\*/g, '<strong style="color:#D4AF37;font-weight:700">$1</strong>')
+.replace(/^### (.+)$/gm, '<span class="sec">$1</span>')
+.replace(/^## (.+)$/gm, '<span class="sec">$1</span>')
+.replace(/^# (.+)$/gm, '<span class="sec">$1</span>')
+.replace(/\n\n/g, '</p><p style="margin-bottom:.6rem">')
+.replace(/\n/g, '<br>');
 }
 
 // ── Дизайн карт ──
 function backFace() {
-    return `<div style="width:100%;height:100%;border-radius:12px;background:linear-gradient(160deg,#1A0B2E,#0F081D,#1A0B2E);border:2px dashed rgba(212,175,55,.3);display:flex;align-items:center;justify-content:center">
-        <div style="position:absolute;inset:8px;border:1px solid rgba(212,175,55,.1);border-radius:8px;display:flex;flex-direction:column;align-items:center;justify-content:center">
-            <span style="font-size:20px;animation:float-slow 6s ease-in-out infinite">🔮</span>
-            <div style="font-size:6px;color:rgba(212,175,55,.35);text-transform:uppercase;letter-spacing:.1em;margin-top:5px">нажмите</div>
-        </div>
-    </div>`;
+return `<div style="width:100%;height:100%;border-radius:12px;background:linear-gradient(160deg,#1A0B2E,#0F081D,#1A0B2E);border:2px dashed rgba(212,175,55,.3);display:flex;align-items:center;justify-content:center">
+<div style="position:absolute;inset:8px;border:1px solid rgba(212,175,55,.1);border-radius:8px;display:flex;flex-direction:column;align-items:center;justify-content:center">
+<span style="font-size:20px;animation:float-slow 6s ease-in-out infinite">🔮</span>
+<div style="font-size:6px;color:rgba(212,175,55,.35);text-transform:uppercase;letter-spacing:.1em;margin-top:5px">нажмите</div>
+</div>
+</div>`;
 }
 function frontFace(name) {
-    const n = esc(name.replace("Старший Аркан: ",""));
-    return `<div style="width:100%;height:100%;border-radius:12px;background:linear-gradient(160deg,#11041F,#1a0b2e,#25093A);border:2px solid rgba(212,175,55,.6);display:flex;flex-direction:column;justify-content:space-between;padding:8px;text-align:center;box-shadow:0 0 18px rgba(212,175,55,.13)">
-        <div style="font-size:7px;color:rgba(212,175,55,.5);text-transform:uppercase;letter-spacing:.1em">Таро</div>
-        <div style="flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:4px 0">
-            <span style="font-size:22px;margin-bottom:4px;filter:drop-shadow(0 0 7px rgba(212,175,55,.4))">✨</span>
-            <div style="font-family:'Playfair Display',serif;font-size:10px;font-weight:700;color:#fff;line-height:1.3">${n}</div>
-        </div>
-        <div style="font-size:6px;color:rgba(212,175,55,.4);text-transform:uppercase;letter-spacing:.12em">Судьба</div>
-    </div>`;
+const n = esc(name.replace("Старший Аркан: ",""));
+return `<div style="width:100%;height:100%;border-radius:12px;background:linear-gradient(160deg,#11041F,#1a0b2e,#25093A);border:2px solid rgba(212,175,55,.6);display:flex;flex-direction:column;justify-content:space-between;padding:8px;text-align:center;box-shadow:0 0 18px rgba(212,175,55,.13)">
+<div style="font-size:7px;color:rgba(212,175,55,.5);text-transform:uppercase;letter-spacing:.1em">Таро</div>
+<div style="flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:4px 0">
+<span style="font-size:22px;margin-bottom:4px;filter:drop-shadow(0 0 7px rgba(212,175,55,.4))">✨</span>
+<div style="font-family:'Playfair Display',serif;font-size:10px;font-weight:700;color:#fff;line-height:1.3">${n}</div>
+</div>
+<div style="font-size:6px;color:rgba(212,175,55,.4);text-transform:uppercase;letter-spacing:.12em">Судьба</div>
+</div>`;
 }
 
 // ── Текст тасования ──
 const shufTexts = [
-    "Оракул тасует колоду...","Карты выбирают вас...","Энергии сходятся...","Символы пробуждаются...","Послание формируется..."
+"Колода тасуется...","Карты выбирают вас...","Энергии сходятся...","Символы пробуждаются...","Послание формируется..."
 ];
 let shufTimer=null, shufIdx=0;
 function startShuf() {
-    shufIdx=0;
-    const el=document.getElementById("shuf-txt");
-    if(el) el.textContent=shufTexts[0];
-    shufTimer=setInterval(()=>{ shufIdx=(shufIdx+1)%shufTexts.length; if(el) el.textContent=shufTexts[shufIdx]; },1800);
+shufIdx=0;
+const el=document.getElementById("shuf-txt");
+if(el) el.textContent=shufTexts[0];
+shufTimer=setInterval(()=>{ shufIdx=(shufIdx+1)%shufTexts.length; if(el) el.textContent=shufTexts[shufIdx]; },1800);
 }
 function stopShuf(){ if(shufTimer) clearInterval(shufTimer); }
 
 // ── Helpers ──
-function openModal(t)  { document.getElementById(`modal-${t}`).classList.remove("hidden"); if(tg.HapticFeedback) tg.HapticFeedback.impactOccurred("light"); }
+function openModal(t) { document.getElementById(`modal-${t}`).classList.remove("hidden"); if(tg.HapticFeedback) tg.HapticFeedback.impactOccurred("light"); }
 function closeModal(t) { document.getElementById(`modal-${t}`).classList.add("hidden"); }
-function openStore()   { document.getElementById("modal-store").classList.remove("hidden"); }
-function closeStore()  { document.getElementById("modal-store").classList.add("hidden"); }
-function showErr(msg)  { document.getElementById("s-loading").classList.remove("hidden"); document.getElementById("loading-text").innerHTML=`<span style="color:#f87171;font-weight:600">${msg}</span>`; }
+function openStore() { document.getElementById("modal-store").classList.remove("hidden"); }
+function closeStore() { document.getElementById("modal-store").classList.add("hidden"); }
+function showErr(msg) { document.getElementById("s-loading").classList.remove("hidden"); document.getElementById("loading-text").innerHTML=`<span style="color:#f87171;font-weight:600">${msg}</span>`; }
+
 function goBack() {
-    stopShuf();
-    document.getElementById("s-reading").classList.add("hidden");
-    document.getElementById("s-dashboard").classList.remove("hidden");
+stopShuf();
+document.getElementById("s-reading").classList.add("hidden");
+document.getElementById("s-dashboard").classList.remove("hidden");
 }
+
 function toReadingScreen(title) {
-    document.getElementById("s-dashboard").classList.add("hidden");
-    document.getElementById("s-reading").classList.remove("hidden");
-    document.getElementById("r-title").textContent = title;
-    document.getElementById("r-sub").textContent = "Внимайте знакам судьбы";
-    document.getElementById("r-shuffle").classList.remove("hidden");
-    document.getElementById("r-cards").classList.add("hidden");
-    document.getElementById("r-result").classList.add("hidden");
-    document.getElementById("btn-back").classList.add("hidden");
-    document.getElementById("btn-share").classList.add("hidden");
-    startShuf();
+document.getElementById("s-dashboard").classList.add("hidden");
+document.getElementById("s-reading").classList.remove("hidden");
+document.getElementById("r-title").textContent = title;
+document.getElementById("r-sub").textContent = "Внимайте знакам судьбы";
+document.getElementById("r-shuffle").classList.remove("hidden");
+document.getElementById("r-cards").classList.add("hidden");
+document.getElementById("r-result").classList.add("hidden");
+document.getElementById("btn-back").classList.add("hidden");
+document.getElementById("btn-share").classList.add("hidden");
+startShuf();
 }
+
 function updateUI() {
-    if (!userProfile) return;
-    const p = userProfile;
-    document.getElementById("disp-name").textContent = p.name || "Искатель";
-    document.getElementById("disp-bal").textContent  = p.balance;
-    const free = (p.free_readings || 0) > 0;
-    document.getElementById("free-badge").classList.toggle("hidden", !free);
-    document.getElementById("preset-price-badge").classList.toggle("hidden", free);
-    document.getElementById("preset-cost").textContent = free ? "🎁 Бесплатно (подарок)" : "150 энергии";
-    document.getElementById("preset-cost").style.color = free ? "#4ade80" : "#D4AF37";
-    const db = document.getElementById("btn-daily");
-    db.textContent = p.daily_available === false ? "✓ Получена" : "Получить";
-    db.style.opacity = p.daily_available === false ? ".55" : "1";
-    document.getElementById("ref-count").textContent = p.ref_count || 0;
-    document.getElementById("ref-bonus").textContent = p.ref_bonus || 150;
-    renderStorePrices();
+if (!userProfile) return;
+const p = userProfile;
+document.getElementById("disp-name").textContent = p.name || "Искатель";
+document.getElementById("disp-bal").textContent = p.balance;
+const free = (p.free_readings || 0) > 0;
+document.getElementById("free-badge").classList.toggle("hidden", !free);
+document.getElementById("preset-price-badge").classList.toggle("hidden", free);
+document.getElementById("preset-cost").textContent = free ? "🎁 Бесплатно (подарок)" : "150 энергии";
+document.getElementById("preset-cost").style.color = free ? "#4ade80" : "#D4AF37";
+const db = document.getElementById("btn-daily");
+db.textContent = p.daily_available === false ? "✓ Получена" : "Получить";
+db.style.opacity = p.daily_available === false ? ".55" : "1";
+document.getElementById("ref-count").textContent = p.ref_count || 0;
+document.getElementById("ref-bonus").textContent = p.ref_bonus || 150;
+renderStorePrices();
 }
 
 // ── Способ оплаты: Stars / карта (Tribute) ──
 let payMethod = "stars";
 function setPayMethod(m) {
-    payMethod = (m === "card" && userProfile && userProfile.card_enabled) ? "card" : "stars";
-    renderStorePrices();
+payMethod = (m === "card" && userProfile && userProfile.card_enabled) ? "card" : "stars";
+renderStorePrices();
 }
 function renderStorePrices() {
-    const p = userProfile || {};
-    document.getElementById("pay-switch").classList.toggle("hidden", !p.card_enabled);
-    const card = payMethod === "card";
-    const on = "width:100%;background:linear-gradient(to right,#7c3aed,#D4AF37);color:#fff";
-    const off = "width:100%;background:transparent;color:rgba(196,181,253,.6)";
-    document.getElementById("pm-stars").style.cssText = card ? off : on;
-    document.getElementById("pm-card").style.cssText = card ? on : off;
-    const prices = card ? (p.card_prices || {}) : (p.prices || {});
-    const sign = p.card_currency || "₽";
-    ["pack_150","pack_450","pack_750"].forEach(k => {
-        const el = document.getElementById("price-" + k);
-        if (el && prices[k] != null) el.textContent = card ? `${prices[k]} ${sign}` : prices[k];
-        const alt = document.getElementById("alt-" + k);
-        const altText = card ? ((p.card_prices_alt || {})[k] || "") : "";
-        if (alt) { alt.textContent = altText; alt.classList.toggle("hidden", !altText); }
-    });
-    document.querySelectorAll(".pm-icon").forEach(el => el.classList.toggle("hidden", card));
-    document.getElementById("store-sub").textContent = card ? "Оплата банковской картой" : "Оплата через Telegram Stars";
-    document.getElementById("store-note").textContent = card
-        ? "Оплата картой проходит через сервис Tribute. Энергия зачислится сразу после оплаты — бот пришлёт подтверждение."
-        : "Платеж проходит через официальный шлюз Telegram Stars. Энергия зачисляется моментально.";
-    const firstStars = p.first_purchase && p.prices && p.prices.pack_150 < 150;
-    document.getElementById("first-buy-label").classList.toggle("hidden", !(card ? p.first_purchase : firstStars));
+const p = userProfile || {};
+document.getElementById("pay-switch").classList.toggle("hidden", !p.card_enabled);
+const card = payMethod === "card";
+const on = "width:100%;background:linear-gradient(to right,#7c3aed,#D4AF37);color:#fff";
+const off = "width:100%;background:transparent;color:rgba(196,181,253,.6)";
+document.getElementById("pm-stars").style.cssText = card ? off : on;
+document.getElementById("pm-card").style.cssText = card ? on : off;
+const prices = card ? (p.card_prices || {}) : (p.prices || {});
+const sign = p.card_currency || "₽";
+["pack_150","pack_450","pack_750"].forEach(k => {
+const el = document.getElementById("price-" + k);
+if (el && prices[k] != null) el.textContent = card ? `${prices[k]} ${sign}` : prices[k];
+const alt = document.getElementById("alt-" + k);
+const altText = card ? ((p.card_prices_alt || {})[k] || "") : "";
+if (alt) { alt.textContent = altText; alt.classList.toggle("hidden", !altText); }
+});
+document.querySelectorAll(".pm-icon").forEach(el => el.classList.toggle("hidden", card));
+document.getElementById("store-sub").textContent = card ? "Оплата банковской картой" : "Оплата через Telegram Stars";
+document.getElementById("store-note").textContent = card
+? "Оплата картой проходит через сервис Tribute. Энергия зачислится сразу после оплаты — бот пришлёт подтверждение."
+: "Платеж проходит через официальный шлюз Telegram Stars. Энергия зачисляется моментально.";
+const firstStars = p.first_purchase && p.prices && p.prices.pack_150 < 150;
+document.getElementById("first-buy-label").classList.toggle("hidden", !(card ? p.first_purchase : firstStars));
 }
 
 // ── Поделиться / пригласить ──
 let lastReading = null;
 function shareUrl(text) {
-    const link = (userProfile && userProfile.ref_link) || "https://t.me/Tarot_answer_question_bot";
-    return "https://t.me/share/url?url=" + encodeURIComponent(link) + "&text=" + encodeURIComponent(text);
+const link = (userProfile && userProfile.ref_link) || `https://t.me/${BOT_USERNAME}`;
+return "https://t.me/share/url?url=" + encodeURIComponent(link) + "&text=" + encodeURIComponent(text);
 }
 function inviteFriend() {
-    if (tg.HapticFeedback) tg.HapticFeedback.impactOccurred("light");
-    tg.openTelegramLink(shareUrl("🔮 Оракул Таро в Telegram: первый расклад бесплатно, Карта Дня — каждый день. Попробуй!"));
+if (tg.HapticFeedback) tg.HapticFeedback.impactOccurred("light");
+tg.openTelegramLink(shareUrl("🔮 Послание Таро в Telegram: первый расклад бесплатно, Карта Дня — каждый день. Попробуй!"));
 }
 function shareReading() {
-    let t = "🔮 Мне выпал расклад Таро";
-    if (lastReading && lastReading.cards && lastReading.cards.length) {
-        t += ": " + lastReading.cards.slice(0, 3).map(c => c.name.replace("Старший Аркан: ", "")).join(", ");
-    }
-    t += ". Сделай свой — первый расклад бесплатно 👇";
-    tg.openTelegramLink(shareUrl(t));
+let t = "🔮 Мне выпал расклад Таро";
+if (lastReading && lastReading.cards && lastReading.cards.length) {
+t += ": " + lastReading.cards.slice(0, 3).map(c => c.name.replace("Старший Аркан: ", "")).join(", ");
+}
+t += ". Сделай свой — первый расклад бесплатно 👇";
+tg.openTelegramLink(shareUrl(t));
 }
 
 // ── Init: сервер на Render может просыпаться до минуты — ждём и показываем это ──
 async function fetchWithTimeout(url, opts, ms) {
-    const c = new AbortController(); const t = setTimeout(() => c.abort(), ms);
-    try { return await fetch(url, { ...opts, signal: c.signal }); } finally { clearTimeout(t); }
+const c = new AbortController(); const t = setTimeout(() => c.abort(), ms);
+try { return await fetch(url, { ...opts, signal: c.signal }); } finally { clearTimeout(t); }
 }
 async function initApp() {
-    document.getElementById("btn-retry").classList.add("hidden");
-    const lt = document.getElementById("loading-text");
-    lt.textContent = "Колода тасуется, космические энергии приходят в движение...";
-    const slow = setTimeout(() => { lt.textContent = "Оракул пробуждается ото сна… ещё несколько секунд 🌙"; }, 4000);
-    for (let attempt = 0; attempt < 4; attempt++) {
-        try {
-            const r = await fetchWithTimeout(`${BACKEND}/api/user/profile`, { headers:{ Authorization: initData } }, 25000);
-            if (r.status === 401) { clearTimeout(slow); showErr("Откройте Оракула через Telegram-бота @Tarot_answer_question_bot"); return; }
-            if (!r.ok) throw new Error(r.status);
-            userProfile = await r.json();
-            clearTimeout(slow);
-            updateUI();
-            document.getElementById("s-loading").classList.add("hidden");
-            document.getElementById("s-dashboard").classList.remove("hidden");
-            return;
-        } catch (e) { await new Promise(res => setTimeout(res, 1500)); }
-    }
-    clearTimeout(slow);
-    showErr("Не удалось связаться с Оракулом. Проверьте интернет.");
-    document.getElementById("btn-retry").classList.remove("hidden");
+document.getElementById("btn-retry").classList.add("hidden");
+const lt = document.getElementById("loading-text");
+lt.textContent = "Колода тасуется, космические энергии приходят в движение...";
+const slow = setTimeout(() => { lt.textContent = "Карты пробуждаются… ещё несколько секунд 🌙"; }, 4000);
+for (let attempt = 0; attempt < 4; attempt++) {
+try {
+const r = await fetchWithTimeout(`${BACKEND}/api/user/profile`, { headers:{ Authorization: initData } }, 25000);
+if (r.status === 401) { clearTimeout(slow); showErr(`Откройте Послание Таро через Telegram-бота @${BOT_USERNAME}`); return; }
+if (!r.ok) throw new Error(r.status);
+userProfile = await r.json();
+clearTimeout(slow);
+updateUI();
+document.getElementById("s-loading").classList.add("hidden");
+document.getElementById("s-dashboard").classList.remove("hidden");
+return;
+} catch (e) { await new Promise(res => setTimeout(res, 1500)); }
+}
+clearTimeout(slow);
+showErr("Не удалось связаться с сервером. Проверьте интернет.");
+document.getElementById("btn-retry").classList.remove("hidden");
 }
 initApp();
 
 // ── Покупки ──
 async function refreshProfile() {
-    const pr = await fetch(`${BACKEND}/api/user/profile`, { headers:{ Authorization: initData } });
-    if (pr.ok) { userProfile = await pr.json(); updateUI(); }
+const pr = await fetch(`${BACKEND}/api/user/profile`, { headers:{ Authorization: initData } });
+if (pr.ok) { userProfile = await pr.json(); updateUI(); }
 }
 
 let cardPoll = null;
 function watchCardPayment(orderId) {
-    if (cardPoll) clearInterval(cardPoll);
-    const started = Date.now();
-    cardPoll = setInterval(async () => {
-        if (Date.now() - started > 15 * 60 * 1000) { clearInterval(cardPoll); cardPoll = null; return; }
-        try {
-            const r = await fetch(`${BACKEND}/api/user/payment-status?order_id=${encodeURIComponent(orderId)}`, { headers:{ Authorization: initData } });
-            if (!r.ok) return;
-            const d = await r.json();
-            if (d.status === "paid") {
-                clearInterval(cardPoll); cardPoll = null;
-                await refreshProfile();
-                tg.showPopup({ title:"Готово!", message:"Оплата прошла, энергия зачислена на баланс ✨", buttons:[{type:"ok"}] });
-            }
-        } catch {}
-    }, 4000);
+if (cardPoll) clearInterval(cardPoll);
+const started = Date.now();
+cardPoll = setInterval(async () => {
+if (Date.now() - started > 15 * 60 * 1000) { clearInterval(cardPoll); cardPoll = null; return; }
+try {
+const r = await fetch(`${BACKEND}/api/user/payment-status?order_id=${encodeURIComponent(orderId)}`, { headers:{ Authorization: initData } });
+if (!r.ok) return;
+const d = await r.json();
+if (d.status === "paid") {
+clearInterval(cardPoll); cardPoll = null;
+await refreshProfile();
+tg.showPopup({ title:"Готово!", message:"Оплата прошла, энергия зачислена на баланс ✨", buttons:[{type:"ok"}] });
+}
+} catch {}
+}, 4000);
 }
 
 async function buyPackCard(packId) {
-    document.getElementById("s-loading").classList.remove("hidden");
-    document.getElementById("loading-text").textContent = "Подготовка оплаты...";
-    try {
-        const r = await fetch(`${BACKEND}/api/payment/tribute-order`, {
-            method:"POST", headers:{"Content-Type":"application/json","Authorization":initData},
-            body: JSON.stringify({ pack: packId })
-        });
-        document.getElementById("s-loading").classList.add("hidden");
-        const d = await r.json().catch(() => ({}));
-        if (!r.ok) { tg.showAlert(d.detail || "Ошибка оплаты."); return; }
-        if (d.payment_url) tg.openLink(d.payment_url);
-        else if (d.webapp_url) tg.openTelegramLink(d.webapp_url);
-        else { tg.showAlert("Не удалось открыть оплату."); return; }
-        watchCardPayment(d.order_id);
-    } catch { document.getElementById("s-loading").classList.add("hidden"); tg.showAlert("Ошибка соединения."); }
+document.getElementById("s-loading").classList.remove("hidden");
+document.getElementById("loading-text").textContent = "Подготовка оплаты...";
+try {
+const r = await fetch(`${BACKEND}/api/payment/tribute-order`, {
+method:"POST", headers:{"Content-Type":"application/json","Authorization":initData},
+body: JSON.stringify({ pack: packId })
+});
+document.getElementById("s-loading").classList.add("hidden");
+const d = await r.json().catch(() => ({}));
+if (!r.ok) { tg.showAlert(d.detail || "Ошибка оплаты."); return; }
+if (d.payment_url) tg.openLink(d.payment_url);
+else if (d.webapp_url) tg.openTelegramLink(d.webapp_url);
+else { tg.showAlert("Не удалось открыть оплату."); return; }
+watchCardPayment(d.order_id);
+} catch { document.getElementById("s-loading").classList.add("hidden"); tg.showAlert("Ошибка соединения."); }
 }
 
 async function buyPack(packId) {
-    closeStore();
-    if (payMethod === "card") return buyPackCard(packId);
-    document.getElementById("s-loading").classList.remove("hidden");
-    document.getElementById("loading-text").textContent = "Подготовка счёта...";
-    try {
-        const r = await fetch(`${BACKEND}/api/payment/stars-invoice`, {
-            method:"POST", headers:{"Content-Type":"application/json","Authorization":initData},
-            body: JSON.stringify({ pack: packId })
-        });
-        document.getElementById("s-loading").classList.add("hidden");
-        if (r.ok) {
-            const d = await r.json();
-            if (d.invoice_link) {
-                tg.openInvoice(d.invoice_link, async st => {
-                    if (st === "paid") {
-                        tg.showPopup({ title:"Готово!", message:"Энергия зачислена на ваш баланс.", buttons:[{type:"ok"}] });
-                        document.getElementById("s-loading").classList.remove("hidden");
-                        await new Promise(res => setTimeout(res, 1200)); // даём боту зачислить платёж
-                        const pr = await fetch(`${BACKEND}/api/user/profile`, { headers:{ Authorization: initData } });
-                        if (pr.ok) { userProfile = await pr.json(); updateUI(); }
-                        document.getElementById("s-loading").classList.add("hidden");
-                    } else if (st === "cancelled") { tg.showAlert("Оплата отменена. Энергия не списана."); }
-                });
-            }
-        } else { const e=await r.json(); tg.showAlert(e.detail || "Ошибка биллинга."); }
-    } catch { document.getElementById("s-loading").classList.add("hidden"); tg.showAlert("Ошибка соединения."); }
+closeStore();
+if (payMethod === "card") return buyPackCard(packId);
+document.getElementById("s-loading").classList.remove("hidden");
+document.getElementById("loading-text").textContent = "Подготовка счёта...";
+try {
+const r = await fetch(`${BACKEND}/api/payment/stars-invoice`, {
+method:"POST", headers:{"Content-Type":"application/json","Authorization":initData},
+body: JSON.stringify({ pack: packId })
+});
+document.getElementById("s-loading").classList.add("hidden");
+if (r.ok) {
+const d = await r.json();
+if (d.invoice_link) {
+tg.openInvoice(d.invoice_link, async st => {
+if (st === "paid") {
+tg.showPopup({ title:"Готово!", message:"Энергия зачислена на ваш баланс.", buttons:[{type:"ok"}] });
+document.getElementById("s-loading").classList.remove("hidden");
+await new Promise(res => setTimeout(res, 1200)); // даём боту зачислить платёж
+const pr = await fetch(`${BACKEND}/api/user/profile`, { headers:{ Authorization: initData } });
+if (pr.ok) { userProfile = await pr.json(); updateUI(); }
+document.getElementById("s-loading").classList.add("hidden");
+} else if (st === "cancelled") { tg.showAlert("Оплата отменена. Энергия не списана."); }
+});
+}
+} else { const e=await r.json(); tg.showAlert(e.detail || "Ошибка биллинга."); }
+} catch { document.getElementById("s-loading").classList.add("hidden"); tg.showAlert("Ошибка соединения."); }
 }
 
 // ── Рендер карт ──
 function renderCards(cards, text) {
-    lastReading = { cards, text };
-    stopShuf();
-    document.getElementById("r-shuffle").classList.add("hidden");
-    const ctr = document.getElementById("r-cards");
-    ctr.innerHTML = ""; ctr.classList.remove("hidden");
-
-    // Размер карты зависит от количества
-    const cnt = cards.length;
-    const w = cnt === 1 ? "150px" : cnt <= 3 ? "110px" : cnt <= 6 ? "90px" : "76px";
-    const h = cnt === 1 ? "240px" : cnt <= 3 ? "174px" : cnt <= 6 ? "142px" : "120px";
-
-    cards.forEach((card, i) => {
-        const el = document.createElement("div");
-        el.className = "card-wrap card-in";
-        el.style.cssText = `width:${w};height:${h};cursor:pointer;opacity:0;animation-delay:${i*.08}s`;
-        el.onclick = () => { el.querySelector(".card-inner").classList.toggle("card-flipped"); if(tg.HapticFeedback) tg.HapticFeedback.impactOccurred("light"); };
-        el.innerHTML = `<div class="card-inner"><div class="card-face">${backFace()}</div><div class="card-face-back">${frontFace(card.name)}</div></div>`;
-        ctr.appendChild(el);
-        setTimeout(() => { el.querySelector(".card-inner").classList.add("card-flipped"); if(tg.HapticFeedback) tg.HapticFeedback.impactOccurred("light"); }, 400 + i*450);
-    });
-
-    setTimeout(() => {
-        document.getElementById("r-text").innerHTML = md(text);
-        document.getElementById("r-result").classList.remove("hidden");
-        document.getElementById("btn-back").classList.remove("hidden");
-        document.getElementById("btn-share").classList.remove("hidden");
-    }, 400 + cards.length*450 + 400);
+lastReading = { cards, text };
+stopShuf();
+document.getElementById("r-shuffle").classList.add("hidden");
+const ctr = document.getElementById("r-cards");
+ctr.innerHTML = ""; ctr.classList.remove("hidden");
+// Размер карты зависит от количества
+const cnt = cards.length;
+const w = cnt === 1 ? "150px" : cnt <= 3 ? "110px" : cnt <= 6 ? "90px" : "76px";
+const h = cnt === 1 ? "240px" : cnt <= 3 ? "174px" : cnt <= 6 ? "142px" : "120px";
+cards.forEach((card, i) => {
+const el = document.createElement("div");
+el.className = "card-wrap card-in";
+el.style.cssText = `width:${w};height:${h};cursor:pointer;opacity:0;animation-delay:${i*.08}s`;
+el.onclick = () => { el.querySelector(".card-inner").classList.toggle("card-flipped"); if(tg.HapticFeedback) tg.HapticFeedback.impactOccurred("light"); };
+el.innerHTML = `<div class="card-inner"><div class="card-face">${backFace()}</div><div class="card-face-back">${frontFace(card.name)}</div></div>`;
+ctr.appendChild(el);
+setTimeout(() => { el.querySelector(".card-inner").classList.add("card-flipped"); if(tg.HapticFeedback) tg.HapticFeedback.impactOccurred("light"); }, 400 + i*450);
+});
+setTimeout(() => {
+document.getElementById("r-text").innerHTML = md(text);
+document.getElementById("r-result").classList.remove("hidden");
+document.getElementById("btn-back").classList.remove("hidden");
+document.getElementById("btn-share").classList.remove("hidden");
+}, 400 + cards.length*450 + 400);
 }
 
 // ── Расклад 1: Карта Дня — бесплатно ──
 function triggerDaily() { closeModal("daily"); startDaily(); }
 async function startDaily() {
-    toReadingScreen("Карта Дня");
-    try {
-        const r = await fetch(`${BACKEND}/api/user/use-daily-ai-reading`, {
-            method:"POST", headers:{ Authorization: initData }
-        });
-        if (r.ok) {
-            const d = await r.json();
-            userProfile.balance = d.new_balance; userProfile.daily_available = false; updateUI();
-            renderCards(d.cards, d.text);
-        } else {
-            const e = await r.json().catch(() => ({}));
-            if (r.status === 429) { userProfile.daily_available = false; updateUI(); }
-            // 429 — уже использовал сегодня
-            tg.showAlert(e.detail || "Ошибка");
-            goBack();
-        }
-    } catch { tg.showAlert("Ошибка соединения."); goBack(); }
+toReadingScreen("Карта Дня");
+try {
+const r = await fetch(`${BACKEND}/api/user/use-daily-ai-reading`, {
+method:"POST", headers:{ Authorization: initData }
+});
+if (r.ok) {
+const d = await r.json();
+userProfile.balance = d.new_balance; userProfile.daily_available = false; updateUI();
+renderCards(d.cards, d.text);
+} else {
+const e = await r.json().catch(() => ({}));
+if (r.status === 429) { userProfile.daily_available = false; updateUI(); }
+// 429 — уже использовал сегодня
+tg.showAlert(e.detail || "Ошибка");
+goBack();
+}
+} catch { tg.showAlert("Ошибка соединения."); goBack(); }
 }
 
 // ── Расклад 2: Стандартный разбор ──
 function triggerPreset() { closeModal("preset"); startPreset(); }
 async function startPreset() {
-    const q = document.getElementById("sel-q").value;
-    if (!(userProfile.free_readings > 0) && userProfile.balance < 150) { openStore(); tg.showAlert("Нужно 150 Энергии."); return; }
-    toReadingScreen("Стандартный разбор");
-    try {
-        const r = await fetch(`${BACKEND}/api/user/use-preset-ai-reading`, {
-            method:"POST", headers:{"Content-Type":"application/json","Authorization":initData},
-            body: JSON.stringify({ question: q })
-        });
-        if (r.ok) {
-            const d = await r.json();
-            userProfile.balance = d.new_balance;
-            if (typeof d.free_readings === "number") userProfile.free_readings = d.free_readings;
-            updateUI();
-            renderCards(d.cards, d.text);
-        } else { const e=await r.json().catch(() => ({})); tg.showAlert(e.detail||"Ошибка"); goBack(); }
-    } catch { tg.showAlert("Ошибка соединения."); goBack(); }
+const q = document.getElementById("sel-q").value;
+if (!(userProfile.free_readings > 0) && userProfile.balance < 150) { openStore(); tg.showAlert("Нужно 150 Энергии."); return; }
+toReadingScreen("Стандартный разбор");
+try {
+const r = await fetch(`${BACKEND}/api/user/use-preset-ai-reading`, {
+method:"POST", headers:{"Content-Type":"application/json","Authorization":initData},
+body: JSON.stringify({ question: q })
+});
+if (r.ok) {
+const d = await r.json();
+userProfile.balance = d.new_balance;
+if (typeof d.free_readings === "number") userProfile.free_readings = d.free_readings;
+updateUI();
+renderCards(d.cards, d.text);
+} else { const e=await r.json().catch(() => ({})); tg.showAlert(e.detail||"Ошибка"); goBack(); }
+} catch { tg.showAlert("Ошибка соединения."); goBack(); }
 }
 
 // ── Расклад 3: Индивидуальный разбор ──
+(function setupAiInput() {
+const ta = document.getElementById("ai-q");
+const runBtn = document.getElementById("btn-ai-run");
+if (!ta) return;
+// Enter = запустить разбор (Shift+Enter — новая строка)
+ta.addEventListener("keydown", e => {
+if (e.key === "Enter" && !e.shiftKey && !e.isComposing) {
+e.preventDefault();
+triggerAi();
+}
+});
+// Когда открывается клавиатура — подтягиваем кнопку «Запустить разбор» в видимую область
+const showBtn = () => setTimeout(() => { if (runBtn) runBtn.scrollIntoView({ block: "end", behavior: "smooth" }); }, 350);
+ta.addEventListener("focus", showBtn);
+if (tg.onEvent) tg.onEvent("viewportChanged", () => { if (document.activeElement === ta) showBtn(); });
+})();
 function triggerAi() { closeModal("ai"); startAi(); }
 async function startAi() {
-    const q = document.getElementById("ai-q").value.trim();
-    if (!q) { tg.showAlert("Введите ваш вопрос."); return; }
-    if (userProfile.balance < 750) { openStore(); tg.showAlert("Нужно 750 Энергии."); return; }
-    document.activeElement.blur();
-    toReadingScreen("Индивидуальный разбор");
-    try {
-        const r = await fetch(`${BACKEND}/api/user/use-ai-reading`, {
-            method:"POST", headers:{"Content-Type":"application/json","Authorization":initData},
-            body: JSON.stringify({ question: q })
-        });
-        if (r.ok) {
-            const d = await r.json();
-            userProfile.balance = d.new_balance; updateUI();
-            document.getElementById("ai-q").value = "";
-            renderCards(d.cards, d.text);
-        } else { const e=await r.json().catch(() => ({})); tg.showAlert(e.detail||"Ошибка"); goBack(); }
-    } catch { tg.showAlert("Ошибка соединения."); goBack(); }
+const q = document.getElementById("ai-q").value.trim();
+if (!q) { tg.showAlert("Введите ваш вопрос."); return; }
+if (userProfile.balance < 750) { openStore(); tg.showAlert("Нужно 750 Энергии."); return; }
+document.activeElement.blur();
+toReadingScreen("Индивидуальный разбор");
+try {
+const r = await fetch(`${BACKEND}/api/user/use-ai-reading`, {
+method:"POST", headers:{"Content-Type":"application/json","Authorization":initData},
+body: JSON.stringify({ question: q })
+});
+if (r.ok) {
+const d = await r.json();
+userProfile.balance = d.new_balance; updateUI();
+document.getElementById("ai-q").value = "";
+renderCards(d.cards, d.text);
+} else { const e=await r.json().catch(() => ({})); tg.showAlert(e.detail||"Ошибка"); goBack(); }
+} catch { tg.showAlert("Ошибка соединения."); goBack(); }
 }
 </script>
 </body>
