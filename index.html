@@ -199,6 +199,7 @@ style="background:linear-gradient(160deg,#0F081D 0%,#1A0B2E 50%,#0A0514 100%)">
 <div class="flex items-center space-x-2">
 <h2 class="serif text-base font-bold text-white">Быстрый ответ</h2>
 <span id="quick-price-badge" class="font-bold uppercase px-1.5 py-0.5 rounded-full" style="background:rgba(212,175,55,.1);border:1px solid rgba(212,175,55,.3);color:#D4AF37;font-size:9px">75</span>
+<span id="free-badge" class="hidden font-bold uppercase px-1.5 py-0.5 rounded-full" style="background:rgba(34,197,94,.15);border:1px solid rgba(34,197,94,.4);color:#4ade80;font-size:9px">Бесплатно</span>
 </div>
 <p class="text-purple-200" style="font-size:11px;opacity:.5">Свой вопрос · ответ по 1 карте</p>
 </div>
@@ -216,7 +217,6 @@ style="background:linear-gradient(160deg,#0F081D 0%,#1A0B2E 50%,#0A0514 100%)">
 <div class="flex items-center space-x-2">
 <h2 class="serif text-base font-bold text-white">Стандартный разбор</h2>
 <span id="preset-price-badge" class="font-bold uppercase px-1.5 py-0.5 rounded-full" style="background:rgba(212,175,55,.1);border:1px solid rgba(212,175,55,.3);color:#D4AF37;font-size:9px">150</span>
-<span id="free-badge" class="hidden font-bold uppercase px-1.5 py-0.5 rounded-full" style="background:rgba(34,197,94,.15);border:1px solid rgba(34,197,94,.4);color:#4ade80;font-size:9px">Бесплатно</span>
 </div>
 <p class="text-purple-200" style="font-size:11px;opacity:.5">Расклад на 3 карты по вашему вопросу</p>
 </div>
@@ -309,7 +309,7 @@ style="background:linear-gradient(160deg,#0F081D 0%,#1A0B2E 50%,#0A0514 100%)">
 </div>
 <div class="space-y-2 text-xs leading-relaxed" style="color:rgba(196,181,253,.85)">
 <p class="font-semibold text-white">Один вопрос — одна карта</p>
-<p>Короткий и ясный ответ на ваш вопрос. Если карта окажется неоднозначной, выпадут ещё одна-две уточняющие.</p>
+<p>Короткий ответ на ваш вопрос по одной карте: что она значит в вашей ситуации и к чему всё склоняется.</p>
 <p style="color:rgba(212,175,55,.9)">Для точности укажите имя и дату рождения: «Анна, 12.05.1995. Что Сергей думает обо мне?»</p>
 </div>
 <div class="space-y-1.5">
@@ -347,10 +347,10 @@ style="background:rgba(15,8,29,.8);border:1px solid rgba(88,28,135,.6)"></textar
 </div>
 <div class="space-y-2 text-xs leading-relaxed" style="color:rgba(196,181,253,.85)">
 <p class="font-semibold text-white">Расклад на 3 карты</p>
-<p>Три карты раскрывают три пласта вашей ситуации — прошлое, настоящее и будущее. Вы получите развёрнутый, детальный разбор применительно именно к вашему вопросу.</p>
+<p>Три карты раскрывают три пласта вашей ситуации — прошлое, настоящее и будущее. Выберите вопрос из списка или впишите свой.</p>
 </div>
 <!-- Вопросы -->
-<div class="space-y-1.5 overflow-y-auto pr-1" style="max-height:44vh">
+<div id="preset-list" class="space-y-1.5 overflow-y-auto pr-1" style="max-height:34vh">
 <button onclick="pickQ(this,'Что меня ждет сегодня?')" class="q-btn q-active w-full text-left rounded-xl p-2.5 text-xs transition-all flex items-center justify-between active:scale-[0.98]">
 <span>1. Что меня ждет сегодня?</span><span style="font-size:10px">✨</span>
 </button>
@@ -383,11 +383,18 @@ style="background:rgba(15,8,29,.8);border:1px solid rgba(88,28,135,.6)"></textar
 </button>
 </div>
 <input type="hidden" id="sel-q" value="Что меня ждет сегодня?">
+<div class="space-y-1.5">
+<label class="uppercase tracking-widest font-semibold" style="font-size:10px;color:rgba(196,181,253,.7)">Или свой вопрос:</label>
+<textarea id="preset-own" rows="2" enterkeyhint="send" maxlength="300"
+placeholder="Например: «Анна, 12.05.1995. Как сложатся отношения с Сергеем?»"
+class="w-full rounded-xl p-3 text-xs text-white resize-none focus:outline-none transition-all"
+style="background:rgba(15,8,29,.8);border:1px solid rgba(88,28,135,.6)"></textarea>
+</div>
 <div class="flex justify-between items-center rounded-xl p-3 text-xs" style="background:rgba(15,8,29,.6);border:1px solid rgba(88,28,135,.4)">
 <span style="color:rgba(196,181,253,.7)">Стоимость:</span>
 <span id="preset-cost" class="font-bold" style="color:#D4AF37">150 энергии</span>
 </div>
-<button onclick="triggerPreset()" class="w-full font-bold py-3.5 rounded-xl text-xs tracking-wider uppercase active:scale-95 text-black" style="background:linear-gradient(to right,#eab308,#D4AF37)">
+<button id="btn-preset-run" onclick="triggerPreset()" class="w-full font-bold py-3.5 rounded-xl text-xs tracking-wider uppercase active:scale-95 text-black" style="background:linear-gradient(to right,#eab308,#D4AF37)">
 Запустить расклад
 </button>
 </div>
@@ -461,6 +468,19 @@ style="background:rgba(15,8,29,.8);border:1px solid rgba(88,28,135,.6)"></textar
 <span>🔮</span><span>Ваш расклад:</span>
 </h3>
 <div id="r-text" class="text-xs leading-relaxed reading-body" style="color:rgba(220,214,255,.9)">...</div>
+</div>
+
+<!-- После Быстрого ответа: предложение разобрать вопрос подробнее -->
+<div id="r-upsell" class="hidden rounded-2xl p-4 mb-4 space-y-3" style="background:linear-gradient(135deg,rgba(124,58,237,.18),rgba(212,175,55,.08));border:1px solid rgba(212,175,55,.3)">
+<p class="serif text-sm font-bold" style="color:#D4AF37">Хочешь разобрать глубже?</p>
+<p class="text-xs leading-relaxed" style="color:rgba(220,214,255,.85)">Одна карта показала главное. Стандартный разбор на 3 карты покажет, что привело к этой ситуации и куда она идёт. Если вопрос непростой и важен для тебя, Индивидуальный разбор возьмёт от 6 до 10 карт и рассмотрит его со всех сторон.</p>
+<button onclick="upsellTo('preset')" class="w-full flex items-center justify-between font-bold rounded-xl px-4 py-3 text-xs active:scale-95 text-black" style="background:linear-gradient(to right,#eab308,#D4AF37)">
+<span>🎴 Стандартный разбор · 3 карты</span><span>150 ✨</span>
+</button>
+<button onclick="upsellTo('ai')" class="w-full flex items-center justify-between font-bold rounded-xl px-4 py-3 text-xs active:scale-95 text-white" style="background:linear-gradient(to right,#7c3aed,#D4AF37)">
+<span>🔮 Индивидуальный разбор · 6–10 карт</span><span>750 ✨</span>
+</button>
+<p style="font-size:10px;color:rgba(196,181,253,.55)">Твой вопрос подставится автоматически.</p>
 </div>
 
 <button id="btn-share" onclick="shareReading()" class="hidden w-full font-bold py-3.5 rounded-xl text-xs tracking-wider uppercase active:scale-95 mb-2 transition-all text-black" style="background:linear-gradient(to right,#eab308,#D4AF37)">
@@ -579,8 +599,18 @@ function pickQ(el, q) {
 document.querySelectorAll(".q-btn").forEach(b => setQStyle(b, false));
 setQStyle(el, true);
 document.getElementById("sel-q").value = q;
+const own = document.getElementById("preset-own"); if (own) own.value = "";
 if (tg.HapticFeedback) tg.HapticFeedback.impactOccurred("light");
 }
+// Свой вопрос: пока поле заполнено, подсветка заготовки снимается
+(function setupPresetOwn() {
+const own = document.getElementById("preset-own");
+if (!own) return;
+own.addEventListener("input", () => {
+const sel = document.getElementById("sel-q").value;
+document.querySelectorAll(".q-btn").forEach(b => setQStyle(b, !own.value.trim() && (b.getAttribute("onclick") || "").includes(`'${sel}'`)));
+});
+})();
 
 // ── Markdown → HTML (с экранированием — текст от AI не может внедрить HTML) ──
 function esc(t) { return String(t).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;"); }
@@ -662,9 +692,9 @@ if (hasMainBtn) tg.MainButton.hide();
 const m = document.getElementById(`modal-${t}`); if (m) m.style.paddingBottom = "";
 }
 if (hasMainBtn) { try { tg.MainButton.onClick(askSubmit); } catch (e) {} }
-function setupAsk(taId, btnId, text, submit) {
+function setupAsk(taId, btnId, text, submit, modal) {
 const ta = document.getElementById(taId);
-const modal = taId === "ai-q" ? "ai" : "quick";
+modal = modal || (taId === "ai-q" ? "ai" : "quick");
 ASK[modal] = { text, submit, btnId };
 if (!ta) return;
 // Enter на клавиатуре телефона: в разных клавиатурах это разные события — ловим все.
@@ -712,6 +742,7 @@ document.getElementById("r-cards").classList.add("hidden");
 document.getElementById("r-result").classList.add("hidden");
 document.getElementById("btn-back").classList.add("hidden");
 document.getElementById("btn-share").classList.add("hidden");
+showUpsell(false);
 startShuf();
 }
 
@@ -720,17 +751,16 @@ if (!userProfile) return;
 const p = userProfile;
 document.getElementById("disp-name").textContent = p.name || "Искатель";
 document.getElementById("disp-bal").textContent = p.balance;
-const free = (p.free_readings || 0) > 0;
+const free = (p.free_readings || 0) > 0;   // подарок — первый Быстрый ответ
 document.getElementById("free-badge").classList.toggle("hidden", !free);
-document.getElementById("preset-price-badge").classList.toggle("hidden", free);
-document.getElementById("preset-cost").textContent = free ? "🎁 Бесплатно (подарок)" : "150 энергии";
-document.getElementById("preset-cost").style.color = free ? "#4ade80" : "#D4AF37";
 const db = document.getElementById("btn-daily");
 db.textContent = p.daily_available === false ? "✓ Получена" : "Получить";
 db.style.opacity = p.daily_available === false ? ".55" : "1";
 const qc = quickCost();
 document.getElementById("quick-price-badge").textContent = qc;
-document.getElementById("quick-cost").textContent = qc + " энергии";
+document.getElementById("quick-price-badge").classList.toggle("hidden", free);
+document.getElementById("quick-cost").textContent = free ? "🎁 Бесплатно (подарок)" : qc + " энергии";
+document.getElementById("quick-cost").style.color = free ? "#4ade80" : "#D4AF37";
 document.getElementById("ref-count").textContent = p.ref_count || 0;
 document.getElementById("ref-bonus").textContent = p.ref_bonus || 150;
 renderStorePrices();
@@ -940,6 +970,29 @@ goBack();
 } catch { tg.showAlert("Ошибка соединения."); goBack(); }
 }
 
+// ── Допродажа после Быстрого ответа ──
+let lastQuickQuestion = "";
+function showUpsell(on) {
+const el = document.getElementById("r-upsell");
+if (!el) return;
+if (!on) { el.classList.add("hidden"); return; }
+// показываем вместе с текстом расклада (renderCards раскрывает его с задержкой)
+const cards = (lastReading && lastReading.cards) ? lastReading.cards.length : 1;
+setTimeout(() => el.classList.remove("hidden"), 400 + cards * 450 + 450);
+}
+function upsellTo(kind) {
+if (tg.HapticFeedback) tg.HapticFeedback.impactOccurred("light");
+goBack();
+if (kind === "preset") {
+document.querySelectorAll(".q-btn").forEach(b => setQStyle(b, false));
+document.getElementById("preset-own").value = lastQuickQuestion;
+openModal("preset");
+} else {
+document.getElementById("ai-q").value = lastQuickQuestion;
+openModal("ai");
+}
+}
+
 // ── Расклад 1б: Быстрый ответ ──
 function quickCost() { return (userProfile && userProfile.costs && userProfile.costs.quick) || 75; }
 function fillQuick(t) { const ta = document.getElementById("quick-q"); ta.value = t; ta.focus(); }
@@ -950,7 +1003,7 @@ closeModal("quick"); startQuick(q);
 }
 async function startQuick(q) {
 const cost = quickCost();
-if (userProfile.balance < cost) { openStore(); tg.showAlert(`Нужно ${cost} Энергии.`); return; }
+if (!(userProfile.free_readings > 0) && userProfile.balance < cost) { openStore(); tg.showAlert(`Нужно ${cost} Энергии.`); return; }
 if (document.activeElement) document.activeElement.blur();
 toReadingScreen("Быстрый ответ");
 try {
@@ -960,9 +1013,13 @@ body: JSON.stringify({ question: q })
 });
 if (r.ok) {
 const d = await r.json();
-userProfile.balance = d.new_balance; updateUI();
+userProfile.balance = d.new_balance;
+if (typeof d.free_readings === "number") userProfile.free_readings = d.free_readings;
+updateUI();
 document.getElementById("quick-q").value = "";
+lastQuickQuestion = q;
 renderCards(d.cards, d.text);
+showUpsell(true);
 } else { const e=await r.json().catch(() => ({})); tg.showAlert(e.detail||"Ошибка"); goBack(); }
 } catch { tg.showAlert("Ошибка соединения."); goBack(); }
 }
@@ -970,8 +1027,10 @@ renderCards(d.cards, d.text);
 // ── Расклад 2: Стандартный разбор ──
 function triggerPreset() { closeModal("preset"); startPreset(); }
 async function startPreset() {
-const q = document.getElementById("sel-q").value;
-if (!(userProfile.free_readings > 0) && userProfile.balance < 150) { openStore(); tg.showAlert("Нужно 150 Энергии."); return; }
+const own = (document.getElementById("preset-own").value || "").trim();
+const q = own || document.getElementById("sel-q").value;
+if (userProfile.balance < 150) { openStore(); tg.showAlert("Нужно 150 Энергии."); return; }
+if (document.activeElement) document.activeElement.blur();
 toReadingScreen("Стандартный разбор");
 try {
 const r = await fetch(`${BACKEND}/api/user/use-preset-ai-reading`, {
@@ -982,6 +1041,7 @@ if (r.ok) {
 const d = await r.json();
 userProfile.balance = d.new_balance;
 if (typeof d.free_readings === "number") userProfile.free_readings = d.free_readings;
+document.getElementById("preset-own").value = "";
 updateUI();
 renderCards(d.cards, d.text);
 } else { const e=await r.json().catch(() => ({})); tg.showAlert(e.detail||"Ошибка"); goBack(); }
@@ -991,6 +1051,7 @@ renderCards(d.cards, d.text);
 // ── Расклад 3: Индивидуальный разбор ──
 setupAsk("ai-q", "btn-ai-run", "Запустить разбор", () => triggerAi());
 setupAsk("quick-q", "btn-quick-run", "Получить ответ", () => triggerQuick());
+setupAsk("preset-own", "btn-preset-run", "Запустить расклад", () => triggerPreset(), "preset");
 function triggerAi() { closeModal("ai"); startAi(); }
 async function startAi() {
 const q = document.getElementById("ai-q").value.trim();
