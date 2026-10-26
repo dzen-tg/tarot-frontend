@@ -501,8 +501,8 @@ style="background:rgba(15,8,29,.8);border:1px solid rgba(88,28,135,.6)"></textar
 <p style="font-size:10px;color:rgba(196,181,253,.5)">1 Быстрый ответ</p>
 </div>
 </div>
-<button onclick="buyPack('pack_75')" class="flex items-center space-x-1.5 font-bold px-4 py-2 rounded-xl text-xs active:scale-95 text-black shadow" style="background:linear-gradient(to right,#eab308,#D4AF37)">
-<span class="pm-icon">⭐</span><span class="flex flex-col items-center leading-tight"><span id="price-pack_75">75</span><span id="alt-pack_75" class="hidden font-semibold" style="font-size:8px;opacity:.75"></span></span>
+<button onclick="buyPack('pack_75')" class="flex items-center space-x-1.5 font-bold px-4 py-2 rounded-xl text-xs active:scale-95 text-black shadow" style="flex-shrink:0;white-space:nowrap;background:linear-gradient(to right,#eab308,#D4AF37)">
+<span class="pm-icon">⭐</span><span class="flex flex-col items-center leading-tight"><span id="price-pack_75" style="white-space:nowrap">75</span><span id="alt-pack_75" class="hidden font-semibold" style="font-size:11px;opacity:.85;white-space:nowrap;margin-top:1px"></span></span>
 </button>
 </div>
 <!-- Пакет 150 -->
@@ -515,8 +515,8 @@ style="background:rgba(15,8,29,.8);border:1px solid rgba(88,28,135,.6)"></textar
 <p id="first-buy-label" class="hidden font-semibold" style="font-size:10px;color:#4ade80">🔥 Цена первой покупки</p>
 </div>
 </div>
-<button onclick="buyPack('pack_150')" class="flex items-center space-x-1.5 font-bold px-4 py-2 rounded-xl text-xs active:scale-95 text-black shadow" style="background:linear-gradient(to right,#eab308,#D4AF37)">
-<span class="pm-icon">⭐</span><span class="flex flex-col items-center leading-tight"><span id="price-pack_150">150</span><span id="alt-pack_150" class="hidden font-semibold" style="font-size:8px;opacity:.75"></span></span>
+<button onclick="buyPack('pack_150')" class="flex items-center space-x-1.5 font-bold px-4 py-2 rounded-xl text-xs active:scale-95 text-black shadow" style="flex-shrink:0;white-space:nowrap;background:linear-gradient(to right,#eab308,#D4AF37)">
+<span class="pm-icon">⭐</span><span class="flex flex-col items-center leading-tight"><span id="price-pack_150" style="white-space:nowrap">150</span><span id="alt-pack_150" class="hidden font-semibold" style="font-size:11px;opacity:.85;white-space:nowrap;margin-top:1px"></span></span>
 </button>
 </div>
 <!-- Пакет 450 — со скидкой -->
@@ -531,8 +531,8 @@ style="background:rgba(15,8,29,.8);border:1px solid rgba(88,28,135,.6)"></textar
 <p class="font-semibold" style="font-size:10px;color:rgba(212,175,55,.8)">3 Стандартных разбора или 6 Быстрых ответов</p>
 </div>
 </div>
-<button onclick="buyPack('pack_450')" class="flex items-center space-x-1.5 font-bold px-4 py-2 rounded-xl text-xs active:scale-95 text-black shadow" style="background:linear-gradient(to right,#eab308,#D4AF37)">
-<span class="pm-icon">⭐</span><span class="flex flex-col items-center leading-tight"><span id="price-pack_450">383</span><span id="alt-pack_450" class="hidden font-semibold" style="font-size:8px;opacity:.75"></span></span>
+<button onclick="buyPack('pack_450')" class="flex items-center space-x-1.5 font-bold px-4 py-2 rounded-xl text-xs active:scale-95 text-black shadow" style="flex-shrink:0;white-space:nowrap;background:linear-gradient(to right,#eab308,#D4AF37)">
+<span class="pm-icon">⭐</span><span class="flex flex-col items-center leading-tight"><span id="price-pack_450" style="white-space:nowrap">383</span><span id="alt-pack_450" class="hidden font-semibold" style="font-size:11px;opacity:.85;white-space:nowrap;margin-top:1px"></span></span>
 </button>
 </div>
 <!-- Пакет 750 -->
@@ -544,8 +544,8 @@ style="background:rgba(15,8,29,.8);border:1px solid rgba(88,28,135,.6)"></textar
 <p style="font-size:10px;color:rgba(196,181,253,.5)">1 Индивидуальный разбор или 10 Быстрых ответов</p>
 </div>
 </div>
-<button onclick="buyPack('pack_750')" class="flex items-center space-x-1.5 font-bold px-4 py-2 rounded-xl text-xs active:scale-95 text-white shadow" style="background:linear-gradient(to right,#7c3aed,#D4AF37)">
-<span class="pm-icon">⭐</span><span class="flex flex-col items-center leading-tight"><span id="price-pack_750">750</span><span id="alt-pack_750" class="hidden font-semibold" style="font-size:8px;opacity:.75"></span></span>
+<button onclick="buyPack('pack_750')" class="flex items-center space-x-1.5 font-bold px-4 py-2 rounded-xl text-xs active:scale-95 text-white shadow" style="flex-shrink:0;white-space:nowrap;background:linear-gradient(to right,#7c3aed,#D4AF37)">
+<span class="pm-icon">⭐</span><span class="flex flex-col items-center leading-tight"><span id="price-pack_750" style="white-space:nowrap">750</span><span id="alt-pack_750" class="hidden font-semibold" style="font-size:11px;opacity:.85;white-space:nowrap;margin-top:1px"></span></span>
 </button>
 </div>
 </div>
@@ -640,7 +640,7 @@ function closeModal(t) { document.getElementById(`modal-${t}`).classList.add("hi
 const ASK = {};          // modal → { text, submit, btnId }
 let askActive = null;
 let askLock = 0;
-const hasMainBtn = !!(tg.MainButton && tg.initData);
+const hasMainBtn = !!(tg.MainButton && typeof tg.MainButton.onClick === "function" && typeof tg.MainButton.setParams === "function" && tg.initData);
 function askSubmit() {
 if (!askActive || Date.now() - askLock < 1200) return;   // защита от двойного запуска
 askLock = Date.now();
@@ -661,7 +661,7 @@ askActive = null;
 if (hasMainBtn) tg.MainButton.hide();
 const m = document.getElementById(`modal-${t}`); if (m) m.style.paddingBottom = "";
 }
-if (hasMainBtn) tg.MainButton.onClick(askSubmit);
+if (hasMainBtn) { try { tg.MainButton.onClick(askSubmit); } catch (e) {} }
 function setupAsk(taId, btnId, text, submit) {
 const ta = document.getElementById(taId);
 const modal = taId === "ai-q" ? "ai" : "quick";
