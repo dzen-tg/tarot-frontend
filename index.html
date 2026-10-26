@@ -191,6 +191,23 @@ style="background:linear-gradient(160deg,#0F081D 0%,#1A0B2E 50%,#0A0514 100%)">
 </button>
 </div>
 
+<!-- 1б. Быстрый ответ -->
+<div class="flex items-center justify-between rounded-2xl p-4 shadow-md" style="background:linear-gradient(to right,#1F103A,#0F081D);border:1px solid rgba(88,28,135,.4)">
+<div class="flex items-center space-x-3">
+<span class="text-3xl">⚡</span>
+<div>
+<div class="flex items-center space-x-2">
+<h2 class="serif text-base font-bold text-white">Быстрый ответ</h2>
+<span id="quick-price-badge" class="font-bold uppercase px-1.5 py-0.5 rounded-full" style="background:rgba(212,175,55,.1);border:1px solid rgba(212,175,55,.3);color:#D4AF37;font-size:9px">50</span>
+</div>
+<p class="text-purple-200" style="font-size:11px;opacity:.5">Свой вопрос · ответ по 1 карте</p>
+</div>
+</div>
+<button onclick="openModal('quick')" class="font-bold rounded-xl px-4 py-2 text-xs tracking-wider uppercase transition-all active:scale-95 text-white" style="background:#1F103A;border:1px solid rgba(212,175,55,.3)">
+Спросить
+</button>
+</div>
+
 <!-- 2. Стандартный разбор -->
 <div class="flex items-center justify-between rounded-2xl p-4 shadow-md" style="background:linear-gradient(to right,#1F103A,#0F081D);border:1px solid rgba(88,28,135,.4)">
 <div class="flex items-center space-x-3">
@@ -275,6 +292,44 @@ style="background:linear-gradient(160deg,#0F081D 0%,#1A0B2E 50%,#0A0514 100%)">
 </div>
 <button onclick="triggerDaily()" class="w-full font-bold py-3.5 rounded-xl text-xs tracking-wider uppercase active:scale-95" style="background:linear-gradient(to right,#16a34a,#4ade80);color:#000">
 Получить Карту Дня
+</button>
+</div>
+</div>
+
+<!-- ══ МОДАЛКА: БЫСТРЫЙ ОТВЕТ ══ -->
+<div id="modal-quick" class="hidden fixed inset-0 z-40 flex items-end justify-center" style="background:rgba(0,0,0,.8);backdrop-filter:blur(10px)">
+<div class="absolute inset-0" onclick="closeModal('quick')"></div>
+<div class="relative z-10 w-full rounded-t-3xl p-6 space-y-4 shadow-2xl overflow-y-auto" style="max-width:420px;max-height:85vh;background:linear-gradient(to top,#0A0514,#1A0B2E);border-top:1px solid rgba(212,175,55,.3)">
+<div class="flex justify-between items-center">
+<div class="flex items-center space-x-2">
+<span class="text-2xl">⚡</span>
+<h3 class="serif text-xl font-bold" style="color:#D4AF37">Быстрый ответ</h3>
+</div>
+<button onclick="closeModal('quick')" class="w-8 h-8 rounded-full flex items-center justify-center text-purple-200" style="background:rgba(49,10,77,.5);border:1px solid rgba(88,28,135,.4)">✕</button>
+</div>
+<div class="space-y-2 text-xs leading-relaxed" style="color:rgba(196,181,253,.85)">
+<p class="font-semibold text-white">Один вопрос — одна карта</p>
+<p>Короткий и ясный ответ на ваш вопрос. Если карта окажется неоднозначной, выпадут ещё одна-две уточняющие.</p>
+<p style="color:rgba(212,175,55,.9)">Можно указать имена: «Инга, что Николай думает обо мне?»</p>
+</div>
+<div class="space-y-1.5">
+<label class="uppercase tracking-widest font-semibold" style="font-size:10px;color:rgba(196,181,253,.7)">Ваш вопрос картам:</label>
+<textarea id="quick-q" rows="3" enterkeyhint="send" maxlength="300"
+placeholder="Например: «Напишет ли он мне на этой неделе?»"
+class="w-full rounded-xl p-3 text-xs text-white resize-none focus:outline-none transition-all"
+style="background:rgba(15,8,29,.8);border:1px solid rgba(88,28,135,.6)"></textarea>
+<div class="flex flex-wrap" style="gap:6px">
+<button onclick="fillQuick('Стоит ли мне это делать?')" class="rounded-full px-2.5 py-1 active:scale-95" style="font-size:10px;background:rgba(49,10,77,.5);border:1px solid rgba(88,28,135,.5);color:rgba(196,181,253,.85)">Стоит ли мне это делать?</button>
+<button onclick="fillQuick('Что он чувствует ко мне?')" class="rounded-full px-2.5 py-1 active:scale-95" style="font-size:10px;background:rgba(49,10,77,.5);border:1px solid rgba(88,28,135,.5);color:rgba(196,181,253,.85)">Что он чувствует ко мне?</button>
+<button onclick="fillQuick('Получится ли задуманное?')" class="rounded-full px-2.5 py-1 active:scale-95" style="font-size:10px;background:rgba(49,10,77,.5);border:1px solid rgba(88,28,135,.5);color:rgba(196,181,253,.85)">Получится ли задуманное?</button>
+</div>
+</div>
+<div class="flex justify-between items-center rounded-xl p-3 text-xs" style="background:rgba(15,8,29,.6);border:1px solid rgba(88,28,135,.4)">
+<span style="color:rgba(196,181,253,.7)">Стоимость:</span>
+<span id="quick-cost" class="font-bold" style="color:#D4AF37">50 энергии</span>
+</div>
+<button id="btn-quick-run" onclick="triggerQuick()" class="w-full font-bold py-3.5 rounded-xl text-xs tracking-wider uppercase active:scale-95 text-black" style="background:linear-gradient(to right,#eab308,#D4AF37)">
+Получить ответ
 </button>
 </div>
 </div>
@@ -437,13 +492,26 @@ style="background:rgba(15,8,29,.8);border:1px solid rgba(88,28,135,.6)"></textar
 </div>
 
 <div class="space-y-3">
+<!-- Пакет 50 — только звёздами -->
+<div id="row-pack_50" class="flex items-center justify-between rounded-2xl p-4" style="background:rgba(15,8,29,.6);border:1px solid rgba(88,28,135,.5)">
+<div class="flex items-center space-x-3">
+<span class="text-2xl">⚡</span>
+<div>
+<h4 class="font-bold text-xs text-white">+50 Энергии</h4>
+<p style="font-size:10px;color:rgba(196,181,253,.5)">1 Быстрый ответ</p>
+</div>
+</div>
+<button onclick="buyPack('pack_50')" class="flex items-center space-x-1.5 font-bold px-4 py-2 rounded-xl text-xs active:scale-95 text-black shadow" style="background:linear-gradient(to right,#eab308,#D4AF37)">
+<span class="pm-icon">⭐</span><span class="flex flex-col items-center leading-tight"><span id="price-pack_50">50</span><span id="alt-pack_50" class="hidden font-semibold" style="font-size:8px;opacity:.75"></span></span>
+</button>
+</div>
 <!-- Пакет 150 -->
 <div class="flex items-center justify-between rounded-2xl p-4" style="background:rgba(15,8,29,.6);border:1px solid rgba(88,28,135,.5)">
 <div class="flex items-center space-x-3">
 <span class="text-2xl">🎴</span>
 <div>
 <h4 class="font-bold text-xs text-white">+150 Энергии</h4>
-<p style="font-size:10px;color:rgba(196,181,253,.5)">1 Стандартный разбор</p>
+<p style="font-size:10px;color:rgba(196,181,253,.5)">1 Стандартный разбор или 3 Быстрых ответа</p>
 <p id="first-buy-label" class="hidden font-semibold" style="font-size:10px;color:#4ade80">🔥 Цена первой покупки</p>
 </div>
 </div>
@@ -460,7 +528,7 @@ style="background:rgba(15,8,29,.8);border:1px solid rgba(88,28,135,.6)"></textar
 <h4 class="font-bold text-xs text-white">+450 Энергии</h4>
 <span class="font-bold uppercase px-1.5 py-0.5 rounded-full" style="background:rgba(212,175,55,.15);border:1px solid rgba(212,175,55,.4);color:#D4AF37;font-size:8px">−15%</span>
 </div>
-<p class="font-semibold" style="font-size:10px;color:rgba(212,175,55,.8)">3 Стандартных разбора · выгодно</p>
+<p class="font-semibold" style="font-size:10px;color:rgba(212,175,55,.8)">3 Стандартных разбора или 9 Быстрых ответов</p>
 </div>
 </div>
 <button onclick="buyPack('pack_450')" class="flex items-center space-x-1.5 font-bold px-4 py-2 rounded-xl text-xs active:scale-95 text-black shadow" style="background:linear-gradient(to right,#eab308,#D4AF37)">
@@ -473,7 +541,7 @@ style="background:rgba(15,8,29,.8);border:1px solid rgba(88,28,135,.6)"></textar
 <span class="text-2xl">🔮</span>
 <div>
 <h4 class="font-bold text-xs text-white">+750 Энергии</h4>
-<p style="font-size:10px;color:rgba(196,181,253,.5)">1 Индивидуальный разбор (6–10 карт)</p>
+<p style="font-size:10px;color:rgba(196,181,253,.5)">1 Индивидуальный разбор или 15 Быстрых ответов</p>
 </div>
 </div>
 <button onclick="buyPack('pack_750')" class="flex items-center space-x-1.5 font-bold px-4 py-2 rounded-xl text-xs active:scale-95 text-white shadow" style="background:linear-gradient(to right,#7c3aed,#D4AF37)">
@@ -601,6 +669,9 @@ document.getElementById("preset-cost").style.color = free ? "#4ade80" : "#D4AF37
 const db = document.getElementById("btn-daily");
 db.textContent = p.daily_available === false ? "✓ Получена" : "Получить";
 db.style.opacity = p.daily_available === false ? ".55" : "1";
+const qc = quickCost();
+document.getElementById("quick-price-badge").textContent = qc;
+document.getElementById("quick-cost").textContent = qc + " энергии";
 document.getElementById("ref-count").textContent = p.ref_count || 0;
 document.getElementById("ref-bonus").textContent = p.ref_bonus || 150;
 renderStorePrices();
@@ -622,7 +693,9 @@ document.getElementById("pm-stars").style.cssText = card ? off : on;
 document.getElementById("pm-card").style.cssText = card ? on : off;
 const prices = card ? (p.card_prices || {}) : (p.prices || {});
 const sign = p.card_currency || "₽";
-["pack_150","pack_450","pack_750"].forEach(k => {
+["pack_50","pack_150","pack_450","pack_750"].forEach(k => {
+const row = document.getElementById("row-" + k);
+if (row) row.classList.toggle("hidden", prices[k] == null);  // пакета нет для этого способа оплаты
 const el = document.getElementById("price-" + k);
 if (el && prices[k] != null) el.textContent = card ? `${prices[k]} ${sign}` : prices[k];
 const alt = document.getElementById("alt-" + k);
@@ -805,6 +878,44 @@ if (r.status === 429) { userProfile.daily_available = false; updateUI(); }
 tg.showAlert(e.detail || "Ошибка");
 goBack();
 }
+} catch { tg.showAlert("Ошибка соединения."); goBack(); }
+}
+
+// ── Расклад 1б: Быстрый ответ ──
+function quickCost() { return (userProfile && userProfile.costs && userProfile.costs.quick) || 50; }
+function fillQuick(t) { const ta = document.getElementById("quick-q"); ta.value = t; ta.focus(); }
+(function setupQuickInput() {
+const ta = document.getElementById("quick-q");
+const runBtn = document.getElementById("btn-quick-run");
+if (!ta) return;
+ta.addEventListener("keydown", e => {
+if (e.key === "Enter" && !e.shiftKey && !e.isComposing) { e.preventDefault(); triggerQuick(); }
+});
+const showBtn = () => setTimeout(() => { if (runBtn) runBtn.scrollIntoView({ block: "end", behavior: "smooth" }); }, 350);
+ta.addEventListener("focus", showBtn);
+if (tg.onEvent) tg.onEvent("viewportChanged", () => { if (document.activeElement === ta) showBtn(); });
+})();
+function triggerQuick() {
+const q = document.getElementById("quick-q").value.trim();
+if (!q) { tg.showAlert("Введите ваш вопрос."); return; }
+closeModal("quick"); startQuick(q);
+}
+async function startQuick(q) {
+const cost = quickCost();
+if (userProfile.balance < cost) { openStore(); tg.showAlert(`Нужно ${cost} Энергии.`); return; }
+if (document.activeElement) document.activeElement.blur();
+toReadingScreen("Быстрый ответ");
+try {
+const r = await fetch(`${BACKEND}/api/user/use-quick-reading`, {
+method:"POST", headers:{"Content-Type":"application/json","Authorization":initData},
+body: JSON.stringify({ question: q })
+});
+if (r.ok) {
+const d = await r.json();
+userProfile.balance = d.new_balance; updateUI();
+document.getElementById("quick-q").value = "";
+renderCards(d.cards, d.text);
+} else { const e=await r.json().catch(() => ({})); tg.showAlert(e.detail||"Ошибка"); goBack(); }
 } catch { tg.showAlert("Ошибка соединения."); goBack(); }
 }
 
