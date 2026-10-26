@@ -631,8 +631,67 @@ shufTimer=setInterval(()=>{ shufIdx=(shufIdx+1)%shufTexts.length; if(el) el.text
 function stopShuf(){ if(shufTimer) clearInterval(shufTimer); }
 
 // ── Helpers ──
-function openModal(t) { document.getElementById(`modal-${t}`).classList.remove("hidden"); if(tg.HapticFeedback) tg.HapticFeedback.impactOccurred("light"); }
-function closeModal(t) { document.getElementById(`modal-${t}`).classList.add("hidden"); }
+function openModal(t) { document.getElementById(`modal-${t}`).classList.remove("hidden"); if(tg.HapticFeedback) tg.HapticFeedback.impactOccurred("light"); askOpened(t); }
+function closeModal(t) { document.getElementById(`modal-${t}`).classList.add("hidden"); askClosed(t); }
+
+// ── Окна с вопросом: кнопка над клавиатурой и отправка по Enter ──
+// Кнопка внутри окна на телефоне прячется за клавиатурой, поэтому используем нативную
+// кнопку Telegram (MainButton) — она всегда стоит прямо над клавиатурой.
+const ASK = {};          // modal → { text, submit, btnId }
+let askActive = null;
+let askLock = 0;
+const hasMainBtn = !!(tg.MainButton && tg.initData);
+function askSubmit() {
+if (!askActive || Date.now() - askLock < 1200) return;   // защита от двойного запуска
+askLock = Date.now();
+const cfg = ASK[askActive];
+if (cfg) cfg.submit();
+}
+function askOpened(t) {
+const cfg = ASK[t]; if (!cfg) return;
+askActive = t;
+if (hasMainBtn) {
+document.getElementById(cfg.btnId).classList.add("hidden");
+tg.MainButton.setParams({ text: cfg.text.toUpperCase(), color: "#D4AF37", text_color: "#000000", is_active: true, is_visible: true });
+}
+}
+function askClosed(t) {
+if (askActive !== t) return;
+askActive = null;
+if (hasMainBtn) tg.MainButton.hide();
+const m = document.getElementById(`modal-${t}`); if (m) m.style.paddingBottom = "";
+}
+if (hasMainBtn) tg.MainButton.onClick(askSubmit);
+function setupAsk(taId, btnId, text, submit) {
+const ta = document.getElementById(taId);
+const modal = taId === "ai-q" ? "ai" : "quick";
+ASK[modal] = { text, submit, btnId };
+if (!ta) return;
+// Enter на клавиатуре телефона: в разных клавиатурах это разные события — ловим все.
+ta.addEventListener("beforeinput", e => {
+if (e.inputType === "insertLineBreak" || e.inputType === "insertParagraph") { e.preventDefault(); askSubmit(); }
+});
+ta.addEventListener("keydown", e => {
+if ((e.key === "Enter" || e.keyCode === 13) && !e.shiftKey) { e.preventDefault(); askSubmit(); }
+});
+ta.addEventListener("input", e => {
+if (ta.value.includes("\n") && e.inputType !== "insertFromPaste") {
+ta.value = ta.value.replace(/\s*\n+\s*/g, " ").trim();
+askSubmit();
+}
+});
+}
+// Если клавиатура перекрывает окно — поднимаем его над клавиатурой
+if (window.visualViewport) {
+const lift = () => {
+if (!askActive) return;
+const kb = Math.max(0, window.innerHeight - window.visualViewport.height - window.visualViewport.offsetTop);
+const m = document.getElementById(`modal-${askActive}`);
+if (m) m.style.paddingBottom = kb > 80 ? kb + "px" : "";
+};
+window.visualViewport.addEventListener("resize", lift);
+window.visualViewport.addEventListener("scroll", lift);
+}
 function openStore() { document.getElementById("modal-store").classList.remove("hidden"); }
 function closeStore() { document.getElementById("modal-store").classList.add("hidden"); }
 function showErr(msg) { document.getElementById("s-loading").classList.remove("hidden"); document.getElementById("loading-text").innerHTML=`<span style="color:#f87171;font-weight:600">${msg}</span>`; }
@@ -884,17 +943,6 @@ goBack();
 // ── Расклад 1б: Быстрый ответ ──
 function quickCost() { return (userProfile && userProfile.costs && userProfile.costs.quick) || 75; }
 function fillQuick(t) { const ta = document.getElementById("quick-q"); ta.value = t; ta.focus(); }
-(function setupQuickInput() {
-const ta = document.getElementById("quick-q");
-const runBtn = document.getElementById("btn-quick-run");
-if (!ta) return;
-ta.addEventListener("keydown", e => {
-if (e.key === "Enter" && !e.shiftKey && !e.isComposing) { e.preventDefault(); triggerQuick(); }
-});
-const showBtn = () => setTimeout(() => { if (runBtn) runBtn.scrollIntoView({ block: "end", behavior: "smooth" }); }, 350);
-ta.addEventListener("focus", showBtn);
-if (tg.onEvent) tg.onEvent("viewportChanged", () => { if (document.activeElement === ta) showBtn(); });
-})();
 function triggerQuick() {
 const q = document.getElementById("quick-q").value.trim();
 if (!q) { tg.showAlert("Введите ваш вопрос."); return; }
@@ -941,22 +989,8 @@ renderCards(d.cards, d.text);
 }
 
 // ── Расклад 3: Индивидуальный разбор ──
-(function setupAiInput() {
-const ta = document.getElementById("ai-q");
-const runBtn = document.getElementById("btn-ai-run");
-if (!ta) return;
-// Enter = запустить разбор (Shift+Enter — новая строка)
-ta.addEventListener("keydown", e => {
-if (e.key === "Enter" && !e.shiftKey && !e.isComposing) {
-e.preventDefault();
-triggerAi();
-}
-});
-// Когда открывается клавиатура — подтягиваем кнопку «Запустить разбор» в видимую область
-const showBtn = () => setTimeout(() => { if (runBtn) runBtn.scrollIntoView({ block: "end", behavior: "smooth" }); }, 350);
-ta.addEventListener("focus", showBtn);
-if (tg.onEvent) tg.onEvent("viewportChanged", () => { if (document.activeElement === ta) showBtn(); });
-})();
+setupAsk("ai-q", "btn-ai-run", "Запустить разбор", () => triggerAi());
+setupAsk("quick-q", "btn-quick-run", "Получить ответ", () => triggerQuick());
 function triggerAi() { closeModal("ai"); startAi(); }
 async function startAi() {
 const q = document.getElementById("ai-q").value.trim();
