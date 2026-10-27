@@ -797,7 +797,7 @@ document.getElementById("store-note").textContent = card
 ? "Оплата картой проходит через сервис Tribute. Энергия зачислится сразу после оплаты — бот пришлёт подтверждение."
 : "Платеж проходит через официальный шлюз Telegram Stars. Энергия зачисляется моментально.";
 const firstStars = p.first_purchase && p.prices && p.prices.pack_150 < 150;
-document.getElementById("first-buy-label").classList.toggle("hidden", !(card ? p.first_purchase : firstStars));
+document.getElementById("first-buy-label").classList.toggle("hidden", card || !firstStars);
 }
 
 // ── Поделиться / пригласить ──
