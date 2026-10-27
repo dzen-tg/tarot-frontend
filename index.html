@@ -264,9 +264,40 @@ style="background:linear-gradient(160deg,#0F081D 0%,#1A0B2E 50%,#0A0514 100%)">
 <span class="font-bold text-xs" style="color:#D4AF37">→</span>
 </button>
 
+<!-- Отзыв или идея -->
+<button onclick="openFeedback()" class="w-full flex items-center justify-center space-x-2 rounded-2xl py-2.5 mt-2 transition-all active:scale-95" style="background:rgba(49,10,77,.35);border:1px solid rgba(88,28,135,.4)">
+<span style="font-size:13px">💬</span>
+<span class="font-bold tracking-wider uppercase" style="font-size:10px;color:rgba(196,181,253,.85)">Отзыв или идея</span>
+</button>
+
 <p class="text-center px-4 mt-2 leading-relaxed" style="font-size:9px;color:rgba(196,181,253,.3)">
 Все предсказания носят ознакомительно-развлекательный характер. Нажимая кнопки, вы соглашаетесь с условиями сервиса.
 </p>
+</div>
+
+<!-- ══ МОДАЛКА: ОТЗЫВ ══ -->
+<div id="modal-feedback" class="hidden fixed inset-0 z-40 flex items-end justify-center" style="background:rgba(0,0,0,.8);backdrop-filter:blur(10px)">
+<div class="absolute inset-0" onclick="closeModal('feedback')"></div>
+<div class="relative z-10 w-full rounded-t-3xl p-6 space-y-4 shadow-2xl overflow-y-auto" style="max-width:420px;max-height:85vh;background:linear-gradient(to top,#0A0514,#1A0B2E);border-top:1px solid rgba(212,175,55,.3)">
+<div class="flex justify-between items-center">
+<div class="flex items-center space-x-2">
+<span class="text-2xl">💬</span>
+<h3 class="serif text-xl font-bold" style="color:#D4AF37">Отзыв или идея</h3>
+</div>
+<button onclick="closeModal('feedback')" class="w-8 h-8 rounded-full flex items-center justify-center text-purple-200" style="background:rgba(49,10,77,.5);border:1px solid rgba(88,28,135,.4)">✕</button>
+</div>
+<p class="text-xs leading-relaxed" style="color:rgba(196,181,253,.75)">Расскажите, что понравилось, чего не хватает или что работает не так. Мы читаем каждое сообщение ✨</p>
+<div class="flex space-x-2" id="fb-kinds">
+<button data-kind="review" onclick="fbKind('review')" class="fb-kind flex-1 rounded-xl py-2 font-bold" style="font-size:11px">⭐ Отзыв</button>
+<button data-kind="idea" onclick="fbKind('idea')" class="fb-kind flex-1 rounded-xl py-2 font-bold" style="font-size:11px">💡 Идея</button>
+<button data-kind="bug" onclick="fbKind('bug')" class="fb-kind flex-1 rounded-xl py-2 font-bold" style="font-size:11px">🛠 Ошибка</button>
+</div>
+<div id="fb-stars" class="flex justify-center space-x-2 text-3xl select-none">
+<span data-v="1" onclick="fbRate(1)">☆</span><span data-v="2" onclick="fbRate(2)">☆</span><span data-v="3" onclick="fbRate(3)">☆</span><span data-v="4" onclick="fbRate(4)">☆</span><span data-v="5" onclick="fbRate(5)">☆</span>
+</div>
+<textarea id="fb-text" rows="4" maxlength="2000" placeholder="Ваше сообщение…" class="w-full rounded-xl p-3 text-sm text-white outline-none resize-none" style="background:rgba(15,8,29,.8);border:1px solid rgba(88,28,135,.5)"></textarea>
+<button id="fb-send" onclick="askSubmit()" class="w-full font-bold py-3.5 rounded-xl text-xs tracking-wider uppercase active:scale-95" style="background:linear-gradient(to right,#7c3aed,#D4AF37);color:#fff">Отправить</button>
+</div>
 </div>
 
 <!-- ══ МОДАЛКА: КАРТА ДНЯ ══ -->
@@ -470,6 +501,16 @@ style="background:rgba(15,8,29,.8);border:1px solid rgba(88,28,135,.6)"></textar
 <div id="r-text" class="text-xs leading-relaxed reading-body" style="color:rgba(220,214,255,.9)">...</div>
 </div>
 
+<!-- Оценка расклада -->
+<div id="r-rate" class="hidden rounded-2xl px-4 py-3 mb-4 text-center" style="background:rgba(26,11,46,.6);border:1px solid rgba(88,28,135,.4)">
+<div id="r-rate-ask" class="flex items-center justify-center space-x-3">
+<span class="text-xs" style="color:rgba(220,214,255,.85)">Расклад откликнулся?</span>
+<button onclick="rateReading(1)" class="w-10 h-10 rounded-full text-xl active:scale-90 transition-all" style="background:rgba(34,197,94,.12);border:1px solid rgba(34,197,94,.4)">👍</button>
+<button onclick="rateReading(-1)" class="w-10 h-10 rounded-full text-xl active:scale-90 transition-all" style="background:rgba(239,68,68,.1);border:1px solid rgba(239,68,68,.35)">👎</button>
+</div>
+<div id="r-rate-thanks" class="hidden text-xs" style="color:rgba(220,214,255,.85)"></div>
+</div>
+
 <!-- После Быстрого ответа: предложение разобрать вопрос подробнее -->
 <div id="r-upsell" class="hidden rounded-2xl p-4 mb-4 space-y-3" style="background:linear-gradient(135deg,rgba(124,58,237,.18),rgba(212,175,55,.08));border:1px solid rgba(212,175,55,.3)">
 <p class="serif text-sm font-bold" style="color:#D4AF37">Хочешь разобрать глубже?</p>
@@ -660,6 +701,82 @@ shufTimer=setInterval(()=>{ shufIdx=(shufIdx+1)%shufTexts.length; if(el) el.text
 }
 function stopShuf(){ if(shufTimer) clearInterval(shufTimer); }
 
+// ── Оценка расклада 👍 / 👎 ──
+let rateCtx = null, rateDone = false;
+function showRate() {
+if (!rateCtx) return;
+rateDone = false;
+document.getElementById("r-rate-ask").classList.remove("hidden");
+document.getElementById("r-rate-thanks").classList.add("hidden");
+document.getElementById("r-rate").classList.remove("hidden");
+}
+async function rateReading(v) {
+if (rateDone || !rateCtx) return;
+rateDone = true;
+if (tg.HapticFeedback) tg.HapticFeedback.impactOccurred("light");
+const th = document.getElementById("r-rate-thanks");
+document.getElementById("r-rate-ask").classList.add("hidden");
+th.innerHTML = v > 0
+? "Спасибо! Рады, что карты откликнулись ✨"
+: 'Спасибо за честность 🙏 <a href="#" onclick="openFeedback();fbKind(\'bug\');return false;" style="color:#D4AF37;text-decoration:underline">Расскажете, что было не так?</a>';
+th.classList.remove("hidden");
+try {
+await fetch(`${BACKEND}/api/reading-rating`, {
+method:"POST", headers:{"Content-Type":"application/json","Authorization":initData},
+body: JSON.stringify({ ...rateCtx, value: v })
+});
+} catch {}
+}
+
+// ── Отзыв или идея ──
+let fbState = { kind: "review", rating: 0 };
+function fbKind(k) {
+fbState.kind = k;
+document.querySelectorAll(".fb-kind").forEach(b => {
+const on = b.dataset.kind === k;
+b.style.background = on ? "rgba(212,175,55,.15)" : "rgba(15,8,29,.6)";
+b.style.border = on ? "1px solid rgba(212,175,55,.6)" : "1px solid rgba(88,28,135,.4)";
+b.style.color = on ? "#D4AF37" : "rgba(196,181,253,.7)";
+});
+document.getElementById("fb-stars").style.display = k === "review" ? "flex" : "none";
+const ph = { review: "Что понравилось, а что можно улучшить?", idea: "Какой функции или расклада не хватает?", bug: "Что пошло не так? Опишите, что вы нажимали." };
+document.getElementById("fb-text").placeholder = ph[k];
+}
+function fbRate(v) {
+fbState.rating = v;
+document.querySelectorAll("#fb-stars span").forEach(s => {
+const on = +s.dataset.v <= v;
+s.textContent = on ? "★" : "☆";
+s.style.color = on ? "#D4AF37" : "rgba(196,181,253,.4)";
+});
+if (tg.HapticFeedback) tg.HapticFeedback.selectionChanged();
+}
+function openFeedback() {
+fbState = { kind: "review", rating: 0 };
+document.getElementById("fb-text").value = "";
+fbKind("review"); fbRate(0);
+openModal("feedback");
+}
+async function sendFeedback() {
+const text = document.getElementById("fb-text").value.trim();
+if (text.length < 3) { tg.showAlert("Напишите хотя бы пару слов 🙂"); return; }
+if (fbState.kind === "review" && !fbState.rating) { tg.showAlert("Поставьте оценку звёздами ⭐"); return; }
+const btn = document.getElementById("fb-send");
+btn.disabled = true; btn.textContent = "Отправляем…";
+try {
+const r = await fetch(`${BACKEND}/api/feedback`, {
+method:"POST", headers:{"Content-Type":"application/json","Authorization":initData},
+body: JSON.stringify({ kind: fbState.kind, rating: fbState.rating || null, text })
+});
+const d = await r.json().catch(() => ({}));
+if (!r.ok) { tg.showAlert(d.detail || "Не удалось отправить."); return; }
+closeModal("feedback");
+tg.showPopup({ title:"Спасибо! 🙏", message:"Ваше сообщение получено. Мы обязательно его прочитаем.", buttons:[{type:"ok"}] });
+if (tg.HapticFeedback) tg.HapticFeedback.notificationOccurred("success");
+} catch { tg.showAlert("Ошибка соединения."); }
+finally { btn.disabled = false; btn.textContent = "Отправить"; }
+}
+
 // ── Helpers ──
 function openModal(t) { document.getElementById(`modal-${t}`).classList.remove("hidden"); if(tg.HapticFeedback) tg.HapticFeedback.impactOccurred("light"); askOpened(t); }
 function closeModal(t) { document.getElementById(`modal-${t}`).classList.add("hidden"); askClosed(t); }
@@ -743,6 +860,7 @@ document.getElementById("r-result").classList.add("hidden");
 document.getElementById("btn-back").classList.add("hidden");
 document.getElementById("btn-share").classList.add("hidden");
 showUpsell(false);
+document.getElementById("r-rate").classList.add("hidden");
 startShuf();
 }
 
@@ -944,6 +1062,7 @@ setTimeout(() => {
 document.getElementById("r-text").innerHTML = md(text);
 document.getElementById("r-result").classList.remove("hidden");
 document.getElementById("btn-back").classList.remove("hidden");
+showRate();
 document.getElementById("btn-share").classList.remove("hidden");
 }, 400 + cards.length*450 + 400);
 }
@@ -959,6 +1078,7 @@ method:"POST", headers:{ Authorization: initData }
 if (r.ok) {
 const d = await r.json();
 userProfile.balance = d.new_balance; userProfile.daily_available = false; updateUI();
+rateCtx = { kind:"daily", question:"", cards:(d.cards||[]).map(c => c.name || c).join(", ") };
 renderCards(d.cards, d.text);
 } else {
 const e = await r.json().catch(() => ({}));
@@ -1018,6 +1138,7 @@ if (typeof d.free_readings === "number") userProfile.free_readings = d.free_read
 updateUI();
 document.getElementById("quick-q").value = "";
 lastQuickQuestion = q;
+rateCtx = { kind:"quick", question:q, cards:(d.cards||[]).map(c => c.name || c).join(", ") };
 renderCards(d.cards, d.text);
 showUpsell(true);
 } else { const e=await r.json().catch(() => ({})); tg.showAlert(e.detail||"Ошибка"); goBack(); }
@@ -1043,6 +1164,7 @@ userProfile.balance = d.new_balance;
 if (typeof d.free_readings === "number") userProfile.free_readings = d.free_readings;
 document.getElementById("preset-own").value = "";
 updateUI();
+rateCtx = { kind:"preset", question:q, cards:(d.cards||[]).map(c => c.name || c).join(", ") };
 renderCards(d.cards, d.text);
 } else { const e=await r.json().catch(() => ({})); tg.showAlert(e.detail||"Ошибка"); goBack(); }
 } catch { tg.showAlert("Ошибка соединения."); goBack(); }
@@ -1052,6 +1174,7 @@ renderCards(d.cards, d.text);
 setupAsk("ai-q", "btn-ai-run", "Запустить разбор", () => triggerAi());
 setupAsk("quick-q", "btn-quick-run", "Получить ответ", () => triggerQuick());
 setupAsk("preset-own", "btn-preset-run", "Запустить расклад", () => triggerPreset(), "preset");
+setupAsk("fb-text", "fb-send", "Отправить", () => sendFeedback(), "feedback");
 function triggerAi() { closeModal("ai"); startAi(); }
 async function startAi() {
 const q = document.getElementById("ai-q").value.trim();
@@ -1068,6 +1191,7 @@ if (r.ok) {
 const d = await r.json();
 userProfile.balance = d.new_balance; updateUI();
 document.getElementById("ai-q").value = "";
+rateCtx = { kind:"ai", question:q, cards:(d.cards||[]).map(c => c.name || c).join(", ") };
 renderCards(d.cards, d.text);
 } else { const e=await r.json().catch(() => ({})); tg.showAlert(e.detail||"Ошибка"); goBack(); }
 } catch { tg.showAlert("Ошибка соединения."); goBack(); }
