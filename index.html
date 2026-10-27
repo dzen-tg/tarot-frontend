@@ -287,6 +287,7 @@ style="background:linear-gradient(160deg,#0F081D 0%,#1A0B2E 50%,#0A0514 100%)">
 <button onclick="closeModal('feedback')" class="w-8 h-8 rounded-full flex items-center justify-center text-purple-200" style="background:rgba(49,10,77,.5);border:1px solid rgba(88,28,135,.4)">✕</button>
 </div>
 <p class="text-xs leading-relaxed" style="color:rgba(196,181,253,.75)">Расскажите, что понравилось, чего не хватает или что работает не так. Мы читаем каждое сообщение ✨</p>
+<p id="fb-ctx" class="hidden text-xs rounded-xl px-3 py-2" style="background:rgba(212,175,55,.08);border:1px solid rgba(212,175,55,.25);color:#D4AF37"></p>
 <div class="flex space-x-2" id="fb-kinds">
 <button data-kind="review" onclick="fbKind('review')" class="fb-kind flex-1 rounded-xl py-2 font-bold" style="font-size:11px">⭐ Отзыв</button>
 <button data-kind="idea" onclick="fbKind('idea')" class="fb-kind flex-1 rounded-xl py-2 font-bold" style="font-size:11px">💡 Идея</button>
@@ -718,7 +719,7 @@ const th = document.getElementById("r-rate-thanks");
 document.getElementById("r-rate-ask").classList.add("hidden");
 th.innerHTML = v > 0
 ? "Спасибо! Рады, что карты откликнулись ✨"
-: 'Спасибо за честность 🙏 <a href="#" onclick="openFeedback();fbKind(\'bug\');return false;" style="color:#D4AF37;text-decoration:underline">Расскажете, что было не так?</a>';
+: 'Спасибо за честность 🙏 <a href="#" onclick="openFeedback(true);return false;" style="color:#D4AF37;text-decoration:underline">Расскажете, что было не так?</a>';
 th.classList.remove("hidden");
 try {
 await fetch(`${BACKEND}/api/reading-rating`, {
@@ -751,22 +752,32 @@ s.style.color = on ? "#D4AF37" : "rgba(196,181,253,.4)";
 });
 if (tg.HapticFeedback) tg.HapticFeedback.selectionChanged();
 }
-function openFeedback() {
-fbState = { kind: "review", rating: 0 };
+let fbCtx = null, fbSending = false;
+const FB_READING = { daily:"Карта дня", quick:"Быстрый ответ", preset:"Стандартный разбор", ai:"Индивидуальный разбор" };
+function openFeedback(fromReading) {
+fbCtx = fromReading && rateCtx ? rateCtx : null;
+fbState = { kind: fbCtx ? "bug" : "review", rating: 0 };
 document.getElementById("fb-text").value = "";
-fbKind("review"); fbRate(0);
+fbKind(fbState.kind); fbRate(0);
+const note = document.getElementById("fb-ctx");
+if (fbCtx) {
+note.textContent = `О раскладе: ${FB_READING[fbCtx.kind] || ""}${fbCtx.question ? " · «" + fbCtx.question.slice(0, 60) + "»" : ""}`;
+note.classList.remove("hidden");
+} else note.classList.add("hidden");
 openModal("feedback");
 }
 async function sendFeedback() {
+if (fbSending) return;
 const text = document.getElementById("fb-text").value.trim();
 if (text.length < 3) { tg.showAlert("Напишите хотя бы пару слов 🙂"); return; }
 if (fbState.kind === "review" && !fbState.rating) { tg.showAlert("Поставьте оценку звёздами ⭐"); return; }
 const btn = document.getElementById("fb-send");
+fbSending = true;
 btn.disabled = true; btn.textContent = "Отправляем…";
 try {
 const r = await fetch(`${BACKEND}/api/feedback`, {
 method:"POST", headers:{"Content-Type":"application/json","Authorization":initData},
-body: JSON.stringify({ kind: fbState.kind, rating: fbState.rating || null, text })
+body: JSON.stringify({ kind: fbState.kind, rating: fbState.rating || null, text, reading: fbCtx })
 });
 const d = await r.json().catch(() => ({}));
 if (!r.ok) { tg.showAlert(d.detail || "Не удалось отправить."); return; }
@@ -774,7 +785,7 @@ closeModal("feedback");
 tg.showPopup({ title:"Спасибо! 🙏", message:"Ваше сообщение получено. Мы обязательно его прочитаем.", buttons:[{type:"ok"}] });
 if (tg.HapticFeedback) tg.HapticFeedback.notificationOccurred("success");
 } catch { tg.showAlert("Ошибка соединения."); }
-finally { btn.disabled = false; btn.textContent = "Отправить"; }
+finally { fbSending = false; btn.disabled = false; btn.textContent = "Отправить"; }
 }
 
 // ── Helpers ──
