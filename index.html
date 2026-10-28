@@ -183,10 +183,10 @@ style="background:linear-gradient(160deg,#0F081D 0%,#1A0B2E 50%,#0A0514 100%)">
 <h2 class="serif text-base font-bold text-white">Карта Дня</h2>
 <span class="font-bold uppercase px-1.5 py-0.5 rounded-full" style="background:rgba(34,197,94,.15);border:1px solid rgba(34,197,94,.4);color:#4ade80;font-size:9px">Бесплатно</span>
 </div>
-<p class="text-purple-200" style="font-size:11px;opacity:.5">Послание карт на сегодня · 1 раз в день</p>
+<p id="daily-sub" class="text-purple-200" style="font-size:11px;opacity:.5">Послание карт на сегодня · 1 раз в день</p>
 </div>
 </div>
-<button id="btn-daily" onclick="openModal('daily')" class="font-bold rounded-xl px-4 py-2 text-xs tracking-wider uppercase transition-all active:scale-95 text-white" style="background:#1F103A;border:1px solid rgba(212,175,55,.3)">
+<button id="btn-daily" onclick="dailyClick()" class="font-bold rounded-xl px-4 py-2 text-xs tracking-wider uppercase transition-all active:scale-95 text-white" style="background:#1F103A;border:1px solid rgba(212,175,55,.3)">
 Получить
 </button>
 </div>
@@ -217,6 +217,7 @@ style="background:linear-gradient(160deg,#0F081D 0%,#1A0B2E 50%,#0A0514 100%)">
 <div class="flex items-center space-x-2">
 <h2 class="serif text-base font-bold text-white">Стандартный разбор</h2>
 <span id="preset-price-badge" class="font-bold uppercase px-1.5 py-0.5 rounded-full" style="background:rgba(212,175,55,.1);border:1px solid rgba(212,175,55,.3);color:#D4AF37;font-size:9px">150</span>
+<span id="preset-free-badge" class="hidden font-bold uppercase px-1.5 py-0.5 rounded-full" style="background:rgba(34,197,94,.15);border:1px solid rgba(34,197,94,.4);color:#4ade80;font-size:9px">Бесплатно</span>
 </div>
 <p class="text-purple-200" style="font-size:11px;opacity:.5">Расклад на 3 карты по вашему вопросу</p>
 </div>
@@ -243,7 +244,19 @@ style="background:linear-gradient(160deg,#0F081D 0%,#1A0B2E 50%,#0A0514 100%)">
 </button>
 </div>
 
+<!-- Тематические расклады (список приходит с сервера) -->
+<div id="spreads-wrap" class="hidden">
+<p class="uppercase tracking-widest font-semibold mb-2" style="font-size:10px;color:rgba(196,181,253,.6)">Тематические расклады</p>
+<div id="spreads" style="display:grid;grid-template-columns:1fr 1fr;gap:8px"></div>
 </div>
+
+</div>
+
+<!-- Мои расклады -->
+<button onclick="openHistory()" class="w-full flex items-center justify-center space-x-2 rounded-2xl py-3 mt-1 transition-all active:scale-95" style="background:rgba(49,10,77,.35);border:1px solid rgba(124,58,237,.45)">
+<span style="font-size:14px">📜</span>
+<span class="font-bold tracking-wider uppercase" style="font-size:11px;color:rgba(220,214,255,.9)">Мои расклады</span>
+</button>
 
 <!-- Кнопка пополнения под услугами -->
 <button onclick="openStore()" class="w-full flex items-center justify-center space-x-2 rounded-2xl py-3 mt-1 transition-all active:scale-95" style="background:rgba(212,175,55,.08);border:1px dashed rgba(212,175,55,.35)">
@@ -258,7 +271,7 @@ style="background:linear-gradient(160deg,#0F081D 0%,#1A0B2E 50%,#0A0514 100%)">
 <span class="text-2xl">🎁</span>
 <span>
 <span class="block font-bold text-xs text-white" style="display:block">Пригласи друга — +<span id="ref-bonus">150</span> ✨ обоим</span>
-<span style="display:block;font-size:10px;color:rgba(196,181,253,.6)">Уже пришло по твоей ссылке: <b id="ref-count" style="color:#D4AF37">0</b></span>
+<span style="display:block;font-size:10px;color:rgba(196,181,253,.6)">Уже пришло по твоей ссылке: <b id="ref-count" style="color:#D4AF37">0</b> · твой бонус придёт, когда друг вернётся</span>
 </span>
 </span>
 <span class="font-bold text-xs" style="color:#D4AF37">→</span>
@@ -465,6 +478,49 @@ style="background:rgba(15,8,29,.8);border:1px solid rgba(88,28,135,.6)"></textar
 </div>
 </div>
 
+<!-- ══ МОДАЛКА: ТЕМАТИЧЕСКИЙ РАСКЛАД ══ -->
+<div id="modal-spread" class="hidden fixed inset-0 z-40 flex items-end justify-center" style="background:rgba(0,0,0,.8);backdrop-filter:blur(10px)">
+<div class="absolute inset-0" onclick="closeModal('spread')"></div>
+<div class="relative z-10 w-full rounded-t-3xl p-6 space-y-4 shadow-2xl overflow-y-auto" style="max-width:420px;max-height:85vh;background:linear-gradient(to top,#0A0514,#1A0B2E);border-top:1px solid rgba(212,175,55,.3)">
+<div class="flex justify-between items-center">
+<div class="flex items-center space-x-2">
+<span id="sp-emoji" class="text-2xl">🔮</span>
+<h3 id="sp-title" class="serif text-xl font-bold" style="color:#D4AF37">Расклад</h3>
+</div>
+<button onclick="closeModal('spread')" class="w-8 h-8 rounded-full flex items-center justify-center text-purple-200" style="background:rgba(49,10,77,.5);border:1px solid rgba(88,28,135,.4)">✕</button>
+</div>
+<p id="sp-desc" class="text-xs leading-relaxed" style="color:rgba(196,181,253,.85)"></p>
+<div class="space-y-1.5">
+<label class="uppercase tracking-widest font-semibold" style="font-size:10px;color:rgba(196,181,253,.7)">Ваш вопрос картам:</label>
+<textarea id="sp-q" rows="3" enterkeyhint="send" maxlength="300"
+class="w-full rounded-xl p-3 text-xs text-white resize-none focus:outline-none transition-all"
+style="background:rgba(15,8,29,.8);border:1px solid rgba(88,28,135,.6)"></textarea>
+</div>
+<div class="flex justify-between items-center rounded-xl p-3 text-xs" style="background:rgba(15,8,29,.6);border:1px solid rgba(88,28,135,.4)">
+<span style="color:rgba(196,181,253,.7)">Стоимость:</span>
+<span id="sp-cost" class="font-bold" style="color:#D4AF37"></span>
+</div>
+<button id="btn-sp-run" onclick="triggerSpread()" class="w-full font-bold py-3.5 rounded-xl text-xs tracking-wider uppercase active:scale-95 text-black" style="background:linear-gradient(to right,#eab308,#D4AF37)">
+Запустить расклад
+</button>
+</div>
+</div>
+
+<!-- ══ МОДАЛКА: МОИ РАСКЛАДЫ ══ -->
+<div id="modal-history" class="hidden fixed inset-0 z-40 flex items-end justify-center" style="background:rgba(0,0,0,.8);backdrop-filter:blur(10px)">
+<div class="absolute inset-0" onclick="closeModal('history')"></div>
+<div class="relative z-10 w-full rounded-t-3xl p-6 space-y-4 shadow-2xl overflow-y-auto" style="max-width:420px;max-height:85vh;background:linear-gradient(to top,#0A0514,#1A0B2E);border-top:1px solid rgba(212,175,55,.3)">
+<div class="flex justify-between items-center">
+<div class="flex items-center space-x-2">
+<span class="text-2xl">📜</span>
+<h3 class="serif text-xl font-bold" style="color:#D4AF37">Мои расклады</h3>
+</div>
+<button onclick="closeModal('history')" class="w-8 h-8 rounded-full flex items-center justify-center text-purple-200" style="background:rgba(49,10,77,.5);border:1px solid rgba(88,28,135,.4)">✕</button>
+</div>
+<div id="history-list" class="space-y-2"></div>
+</div>
+</div>
+
 <!-- ══ ЭКРАН РАСКЛАДА ══ -->
 <div id="s-reading" class="hidden relative z-10 flex-1 flex flex-col justify-between p-4 mx-auto w-full" style="max-width:420px">
 <div class="text-center py-2">
@@ -500,6 +556,25 @@ style="background:rgba(15,8,29,.8);border:1px solid rgba(88,28,135,.6)"></textar
 <span>🔮</span><span>Ваш расклад:</span>
 </h3>
 <div id="r-text" class="text-xs leading-relaxed reading-body" style="color:rgba(220,214,255,.9)">...</div>
+<div id="r-clar" class="text-xs leading-relaxed reading-body" style="color:rgba(220,214,255,.9)"></div>
+</div>
+
+<!-- Награда за серию / подсказки -->
+<div id="r-note" class="hidden rounded-2xl px-4 py-3 mb-4 text-center text-xs font-semibold" style="background:rgba(212,175,55,.1);border:1px solid rgba(212,175,55,.35);color:#D4AF37"></div>
+
+<!-- Уточняющая карта -->
+<div id="r-clarify" class="hidden rounded-2xl p-4 mb-4 space-y-2" style="background:linear-gradient(135deg,rgba(124,58,237,.18),rgba(212,175,55,.08));border:1px solid rgba(212,175,55,.3)">
+<p class="serif text-sm font-bold" style="color:#D4AF37">Остался вопрос?</p>
+<p class="text-xs leading-relaxed" style="color:rgba(220,214,255,.85)">Вытяни уточняющую карту: она дополнит этот расклад и ответит точнее. <span id="clar-left"></span></p>
+<button id="btn-clarify" onclick="clarifyReading()" class="w-full flex items-center justify-between font-bold rounded-xl px-4 py-3 text-xs active:scale-95 text-black" style="background:linear-gradient(to right,#eab308,#D4AF37)">
+<span>🔎 Вытянуть уточняющую карту</span><span id="clar-cost">25 ✨</span>
+</button>
+</div>
+
+<!-- Карта Дня каждое утро -->
+<div id="r-dailypush" class="hidden rounded-2xl p-4 mb-4 space-y-2 text-center" style="background:rgba(26,11,46,.6);border:1px solid rgba(34,197,94,.35)">
+<p class="text-xs" style="color:rgba(220,214,255,.9)">🌅 Присылать Карту Дня каждое утро в Telegram?</p>
+<button onclick="enableDailyPush()" class="w-full font-bold rounded-xl py-2.5 text-xs active:scale-95" style="background:linear-gradient(to right,#16a34a,#4ade80);color:#000">Да, присылать</button>
 </div>
 
 <!-- Оценка расклада -->
@@ -517,7 +592,7 @@ style="background:rgba(15,8,29,.8);border:1px solid rgba(88,28,135,.6)"></textar
 <p class="serif text-sm font-bold" style="color:#D4AF37">Хочешь разобрать глубже?</p>
 <p class="text-xs leading-relaxed" style="color:rgba(220,214,255,.85)">Одна карта показала главное. Стандартный разбор на 3 карты покажет, что привело к этой ситуации и куда она идёт. Если вопрос непростой и важен для тебя, Индивидуальный разбор возьмёт от 6 до 10 карт и рассмотрит его со всех сторон.</p>
 <button onclick="upsellTo('preset')" class="w-full flex items-center justify-between font-bold rounded-xl px-4 py-3 text-xs active:scale-95 text-black" style="background:linear-gradient(to right,#eab308,#D4AF37)">
-<span>🎴 Стандартный разбор · 3 карты</span><span>150 ✨</span>
+<span>🎴 Стандартный разбор · 3 карты</span><span id="upsell-preset-price">150 ✨</span>
 </button>
 <button onclick="upsellTo('ai')" class="w-full flex items-center justify-between font-bold rounded-xl px-4 py-3 text-xs active:scale-95 text-white" style="background:linear-gradient(to right,#7c3aed,#D4AF37)">
 <span>🔮 Индивидуальный разбор · 6–10 карт</span><span>750 ✨</span>
@@ -527,6 +602,9 @@ style="background:rgba(15,8,29,.8);border:1px solid rgba(88,28,135,.6)"></textar
 
 <button id="btn-share" onclick="shareReading()" class="hidden w-full font-bold py-3.5 rounded-xl text-xs tracking-wider uppercase active:scale-95 mb-2 transition-all text-black" style="background:linear-gradient(to right,#eab308,#D4AF37)">
 📤 Поделиться раскладом
+</button>
+<button id="btn-story" onclick="shareStory()" class="hidden w-full font-bold py-3.5 rounded-xl text-xs tracking-wider uppercase active:scale-95 mb-2 transition-all text-white" style="background:linear-gradient(to right,#7c3aed,#D4AF37)">
+📸 Выложить в сторис
 </button>
 <button id="btn-back" onclick="goBack()" class="hidden w-full font-bold py-3.5 rounded-xl text-xs tracking-wider uppercase active:scale-95 mb-2 transition-all" style="background:#1F103A;border:1px solid rgba(212,175,55,.3);color:#D4AF37">
 На главный экран
@@ -553,7 +631,22 @@ style="background:rgba(15,8,29,.8);border:1px solid rgba(88,28,135,.6)"></textar
 </div>
 </div>
 
+<p id="store-pending" class="hidden text-xs rounded-xl" style="padding:8px 12px;background:rgba(212,175,55,.08);border:1px solid rgba(212,175,55,.25);color:#D4AF37">После оплаты вернём вас к раскладу, останется только вытянуть карту.</p>
+
 <div class="space-y-3">
+<!-- Подписка — только звёздами -->
+<div id="row-sub" class="hidden flex items-center justify-between rounded-2xl p-4" style="background:linear-gradient(135deg,rgba(124,58,237,.25),rgba(212,175,55,.12));border:1px solid rgba(212,175,55,.5)">
+<div class="flex items-center space-x-3">
+<span class="text-2xl">🌟</span>
+<div>
+<h4 class="font-bold text-xs text-white">Послание+ · подписка</h4>
+<p id="sub-desc" style="font-size:10px;color:rgba(212,175,55,.85)">+500 Энергии каждый месяц и бесплатные уточнения</p>
+</div>
+</div>
+<button id="btn-sub" onclick="buyPack('sub_month')" class="flex items-center space-x-1.5 font-bold px-4 py-2 rounded-xl text-xs active:scale-95 text-white shadow" style="flex-shrink:0;white-space:nowrap;background:linear-gradient(to right,#7c3aed,#D4AF37)">
+<span>⭐</span><span id="price-sub">349</span><span style="font-size:9px;opacity:.85">/мес</span>
+</button>
+</div>
 <!-- Пакет 75 — только звёздами -->
 <div id="row-pack_75" class="flex items-center justify-between rounded-2xl p-4" style="background:rgba(15,8,29,.6);border:1px solid rgba(88,28,135,.5)">
 <div class="flex items-center space-x-3">
@@ -677,7 +770,29 @@ return `<div style="width:100%;height:100%;border-radius:12px;background:linear-
 </div>
 </div>`;
 }
+// Номер карты как в колоде бота: 0–21 Старшие, затем Кубки, Мечи, Жезлы, Пентакли (Туз…Король)
+const MAJORS = ["Дурак","Маг","Верховная Жрица","Императрица","Император","Иерофант","Влюбленные","Колесница","Сила","Отшельник","Колесо Фортуны","Справедливость","Повешенный","Смерть","Умеренность","Дьявол","Башня","Звезда","Луна","Солнце","Суд","Мир"];
+const SUITS = ["Кубков","Мечей","Жезлов","Пентаклей"];
+const RANKS = ["Туз","Двойка","Тройка","Четверка","Пятерка","Шестерка","Семерка","Восьмерка","Девятка","Десятка","Паж","Рыцарь","Королева","Король"];
+function cardIndex(name) {
+const n = String(name || "").replace("Старший Аркан: ", "").trim();
+const m = MAJORS.indexOf(n);
+if (m >= 0) return m;
+const [rank, suit] = n.split(" ");
+const r = RANKS.indexOf(rank), s = SUITS.indexOf(suit);
+return r >= 0 && s >= 0 ? 22 + s * 14 + r : -1;
+}
+// Лицевая сторона — рисунок колоды Памелы Колман Смит (1909); если картинки нет — прежняя текстовая карта
 function frontFace(name) {
+const i = cardIndex(name);
+if (i < 0) return textFace(name);
+const n = esc(name.replace("Старший Аркан: ",""));
+return `<div style="position:relative;width:100%;height:100%;border-radius:12px;overflow:hidden;border:2px solid rgba(212,175,55,.6);background:#11041F;box-shadow:0 0 18px rgba(212,175,55,.13)">
+<img src="cards/${String(i).padStart(2,"0")}.webp" alt="${n}" style="width:100%;height:100%;object-fit:cover;display:block" onerror="this.parentNode.outerHTML=textFace(this.alt)">
+<div style="position:absolute;left:0;right:0;bottom:0;height:12%;display:flex;align-items:center;justify-content:center;padding:0 2px;background:rgba(15,8,29,.92);font-family:'Playfair Display',serif;font-size:9px;font-weight:700;color:#D4AF37;text-align:center;line-height:1.2">${n}</div>
+</div>`;
+}
+function textFace(name) {
 const n = esc(name.replace("Старший Аркан: ",""));
 return `<div style="width:100%;height:100%;border-radius:12px;background:linear-gradient(160deg,#11041F,#1a0b2e,#25093A);border:2px solid rgba(212,175,55,.6);display:flex;flex-direction:column;justify-content:space-between;padding:8px;text-align:center;box-shadow:0 0 18px rgba(212,175,55,.13)">
 <div style="font-size:7px;color:rgba(212,175,55,.5);text-transform:uppercase;letter-spacing:.1em">Таро</div>
@@ -753,7 +868,8 @@ s.style.color = on ? "#D4AF37" : "rgba(196,181,253,.4)";
 if (tg.HapticFeedback) tg.HapticFeedback.selectionChanged();
 }
 let fbCtx = null, fbSending = false;
-const FB_READING = { daily:"Карта дня", quick:"Быстрый ответ", preset:"Стандартный разбор", ai:"Индивидуальный разбор" };
+const FB_READING = { daily:"Карта дня", quick:"Быстрый ответ", preset:"Стандартный разбор", ai:"Индивидуальный разбор",
+yesno:"Да или нет", career:"Работа и деньги", month:"Расклад на месяц", love:"Отношения" };
 function openFeedback(fromReading) {
 fbCtx = fromReading && rateCtx ? rateCtx : null;
 fbState = { kind: fbCtx ? "bug" : "review", rating: 0 };
@@ -761,7 +877,7 @@ document.getElementById("fb-text").value = "";
 fbKind(fbState.kind); fbRate(0);
 const note = document.getElementById("fb-ctx");
 if (fbCtx) {
-note.textContent = `О раскладе: ${FB_READING[fbCtx.kind] || ""}${fbCtx.question ? " · «" + fbCtx.question.slice(0, 60) + "»" : ""}`;
+note.textContent = `О раскладе: ${FB_READING[String(fbCtx.kind).replace(/^sp_/, "")] || ""}${fbCtx.question ? " · «" + fbCtx.question.slice(0, 60) + "»" : ""}`;
 note.classList.remove("hidden");
 } else note.classList.add("hidden");
 openModal("feedback");
@@ -850,12 +966,17 @@ if (m) m.style.paddingBottom = kb > 80 ? kb + "px" : "";
 window.visualViewport.addEventListener("resize", lift);
 window.visualViewport.addEventListener("scroll", lift);
 }
-function openStore() { document.getElementById("modal-store").classList.remove("hidden"); }
+function openStore() {
+document.getElementById("store-pending").classList.toggle("hidden", !pendingStoreFor);
+document.getElementById("modal-store").classList.remove("hidden");
+track("store_open", { from_reading: !!pendingStoreFor });
+}
 function closeStore() { document.getElementById("modal-store").classList.add("hidden"); }
 function showErr(msg) { document.getElementById("s-loading").classList.remove("hidden"); document.getElementById("loading-text").innerHTML=`<span style="color:#f87171;font-weight:600">${msg}</span>`; }
 
 function goBack() {
 stopShuf();
+if (pendingStoreFor) { pendingStoreFor = null; setPending(null); }
 document.getElementById("s-reading").classList.add("hidden");
 document.getElementById("s-dashboard").classList.remove("hidden");
 }
@@ -870,9 +991,103 @@ document.getElementById("r-cards").classList.add("hidden");
 document.getElementById("r-result").classList.add("hidden");
 document.getElementById("btn-back").classList.add("hidden");
 document.getElementById("btn-share").classList.add("hidden");
+document.getElementById("btn-story").classList.add("hidden");
+["r-clarify","r-dailypush","r-note"].forEach(id => document.getElementById(id).classList.add("hidden"));
+document.getElementById("r-clar").innerHTML = "";
 showUpsell(false);
 document.getElementById("r-rate").classList.add("hidden");
+window.scrollTo(0, 0);
 startShuf();
+}
+
+// ── События воронки (сервер принимает только известные имена) ──
+function track(name, props) {
+try { fetch(`${BACKEND}/api/event`, { method:"POST", headers:{"Content-Type":"application/json","Authorization":initData}, body: JSON.stringify({ name, props: props || null }) }); } catch {}
+}
+
+// ── Текущий расклад: id в базе, уточнения ──
+let currentReading = null;   // { id, kind, clarifications:[], left, cost }
+const KIND_TITLES = { daily:"Карта Дня", quick:"Быстрый ответ", preset:"Стандартный разбор", ai:"Индивидуальный разбор" };
+function kindTitle(kind) {
+if (KIND_TITLES[kind]) return KIND_TITLES[kind];
+const sp = spreadById(String(kind || "").replace(/^sp_/, ""));
+return sp ? sp.title : "Расклад";
+}
+function setCurrent(d, kind) {
+currentReading = d.reading_id ? { id: d.reading_id, kind, clarifications: d.clarifications || [],
+left: d.clarify_left != null ? d.clarify_left : ((userProfile && userProfile.max_clarify) || 3),
+cost: d.clarify_cost != null ? d.clarify_cost : clarifyCost() } : null;
+}
+function clarifyCost() { const c = userProfile && userProfile.costs; return c && c.clarify != null ? c.clarify : 25; }
+function renderClarifications() {
+const box = document.getElementById("r-clar");
+const list = (currentReading && currentReading.clarifications) || [];
+box.innerHTML = list.map(c => `<p style="margin-top:.9rem">${md(c.text)}</p>`).join("");
+}
+function showClarify() {
+const el = document.getElementById("r-clarify");
+if (!currentReading || currentReading.left <= 0) { el.classList.add("hidden"); return; }
+const cost = currentReading.cost;
+document.getElementById("clar-cost").textContent = cost > 0 ? `${cost} ✨` : "🌟 бесплатно";
+document.getElementById("clar-left").textContent = `Можно ещё ${currentReading.left}.`;
+el.classList.remove("hidden");
+}
+// Расклад, ради которого человек ушёл пополнять баланс: переживает перезапуск мини-аппа
+const PENDING_KEY = "pending_reading";
+function setPending(id) {
+try { if (id) localStorage.setItem(PENDING_KEY, String(id)); else localStorage.removeItem(PENDING_KEY); } catch {}
+try { if (tg.CloudStorage) { if (id) tg.CloudStorage.setItem(PENDING_KEY, String(id)); else tg.CloudStorage.removeItem(PENDING_KEY); } } catch {}
+}
+function getPending() {
+return new Promise(res => {
+let local = null; try { local = localStorage.getItem(PENDING_KEY); } catch {}
+if (local) return res(local);
+try {
+if (tg.CloudStorage && tg.isVersionAtLeast && tg.isVersionAtLeast("6.9")) {
+const t = setTimeout(() => res(null), 1500);
+tg.CloudStorage.getItem(PENDING_KEY, (err, v) => { clearTimeout(t); res(err ? null : (v || null)); });
+return;
+}
+} catch {}
+res(null);
+});
+}
+let pendingStoreFor = null;   // id расклада, если магазин открыт ради уточнения
+async function clarifyReading() {
+if (!currentReading) return;
+const cost = currentReading.cost;
+track("clarify_click", { kind: currentReading.kind });
+if (cost > 0 && userProfile.balance < cost) {
+pendingStoreFor = currentReading.id; setPending(currentReading.id);
+openStore();
+tg.showAlert(`Нужно ${cost} Энергии. После пополнения вы вернётесь к этому раскладу.`);
+return;
+}
+const btn = document.getElementById("btn-clarify");
+btn.disabled = true; btn.style.opacity = ".6";
+document.getElementById("clar-cost").textContent = "тянем карту…";
+try {
+const r = await fetch(`${BACKEND}/api/readings/${currentReading.id}/clarify`, { method:"POST", headers:{ Authorization: initData } });
+const d = await r.json().catch(() => ({}));
+if (!r.ok) { tg.showAlert(d.detail || "Ошибка"); return; }
+setPending(null);
+userProfile.balance = d.new_balance; updateUI();
+currentReading.clarifications.push(d.clarification);
+currentReading.left = d.clarify_left;
+appendClarCard(d.clarification.card);
+renderClarifications();
+if (tg.HapticFeedback) tg.HapticFeedback.notificationOccurred("success");
+document.getElementById("r-clar").lastElementChild && document.getElementById("r-clar").lastElementChild.scrollIntoView({ behavior:"smooth", block:"start" });
+} catch { tg.showAlert("Ошибка соединения."); }
+finally { btn.disabled = false; btn.style.opacity = "1"; showClarify(); }
+}
+function appendClarCard(card) {
+const ctr = document.getElementById("r-cards");
+const el = document.createElement("div");
+el.className = "card-wrap card-in";
+el.style.cssText = "width:90px;height:156px;opacity:0";
+el.innerHTML = `<div class="card-inner card-flipped"><div class="card-face">${backFace()}</div><div class="card-face-back">${frontFace(card.name)}</div></div>`;
+ctr.appendChild(el);
 }
 
 function updateUI() {
@@ -883,8 +1098,19 @@ document.getElementById("disp-bal").textContent = p.balance;
 const free = (p.free_readings || 0) > 0;   // подарок — первый Быстрый ответ
 document.getElementById("free-badge").classList.toggle("hidden", !free);
 const db = document.getElementById("btn-daily");
-db.textContent = p.daily_available === false ? "✓ Получена" : "Получить";
-db.style.opacity = p.daily_available === false ? ".55" : "1";
+const taken = p.daily_available === false;
+db.textContent = taken ? (p.today_daily_id ? "Открыть" : "✓ Получена") : "Получить";
+db.style.opacity = taken && !p.today_daily_id ? ".55" : "1";
+document.getElementById("daily-sub").textContent = (p.streak || 0) >= 2
+? `🔥 Серия: ${p.streak} дн. подряд · не прерывай`
+: "Послание карт на сегодня · 1 раз в день";
+const freePreset = (p.free_preset || 0) > 0;
+document.getElementById("preset-free-badge").classList.toggle("hidden", !freePreset);
+document.getElementById("preset-price-badge").classList.toggle("hidden", freePreset);
+document.getElementById("preset-cost").textContent = freePreset ? "🎁 Бесплатно (подарок)" : ((p.costs && p.costs.preset) || 150) + " энергии";
+document.getElementById("preset-cost").style.color = freePreset ? "#4ade80" : "#D4AF37";
+document.getElementById("upsell-preset-price").textContent = freePreset ? "🎁 бесплатно" : ((p.costs && p.costs.preset) || 150) + " ✨";
+renderSpreads();
 const qc = quickCost();
 document.getElementById("quick-price-badge").textContent = qc;
 document.getElementById("quick-price-badge").classList.toggle("hidden", free);
@@ -927,6 +1153,122 @@ document.getElementById("store-note").textContent = card
 : "Платеж проходит через официальный шлюз Telegram Stars. Энергия зачисляется моментально.";
 const firstStars = p.first_purchase && p.prices && p.prices.pack_150 < 150;
 document.getElementById("first-buy-label").classList.toggle("hidden", card || !firstStars);
+// Подписка — только звёздами
+const sub = p.sub || {};
+document.getElementById("row-sub").classList.toggle("hidden", card || !sub.price);
+if (sub.price) {
+document.getElementById("price-sub").textContent = sub.price;
+document.getElementById("sub-desc").textContent = sub.active
+? `Активна до ${new Date(sub.until + "Z").toLocaleDateString("ru-RU")}`
+: `+${sub.energy} Энергии каждый месяц и бесплатные уточнения`;
+document.getElementById("btn-sub").disabled = !!sub.active;
+document.getElementById("btn-sub").style.opacity = sub.active ? ".5" : "1";
+}
+document.getElementById("store-pending").classList.toggle("hidden", !pendingStoreFor);
+}
+
+// ── Тематические расклады ──
+let activeSpread = null;
+function spreadById(id) { return ((userProfile && userProfile.spreads) || []).find(s => s.id === id); }
+function renderSpreads() {
+const list = (userProfile && userProfile.spreads) || [];
+document.getElementById("spreads-wrap").classList.toggle("hidden", !list.length);
+document.getElementById("spreads").innerHTML = list.map(s => `
+<button onclick="openSpread('${esc(s.id)}')" class="rounded-2xl p-3 text-left active:scale-95 transition-all" style="background:linear-gradient(to right,#1F103A,#0F081D);border:1px solid rgba(88,28,135,.4)">
+<span style="display:block;font-size:20px">${esc(s.emoji)}</span>
+<span style="display:block;font-size:12px;font-weight:700;color:#fff;margin-top:2px">${esc(s.title)}</span>
+<span style="display:block;font-size:10px;color:#D4AF37;margin-top:2px">${s.cards} ${s.cards % 10 >= 2 && s.cards % 10 <= 4 && (s.cards % 100 < 12 || s.cards % 100 > 14) ? "карты" : "карт"} · ${s.cost} ✨</span>
+</button>`).join("");
+}
+function openSpread(id) {
+const s = spreadById(id); if (!s) return;
+activeSpread = s;
+document.getElementById("sp-emoji").textContent = s.emoji;
+document.getElementById("sp-title").textContent = s.title;
+document.getElementById("sp-desc").textContent = s.desc + ".";
+const ta = document.getElementById("sp-q");
+ta.value = ""; ta.placeholder = s.default_q ? `Можно оставить пустым: «${s.default_q}»` : "Например: «Анна, 12.05.1995. Как сложатся отношения с Сергеем?»";
+document.getElementById("sp-cost").textContent = `${s.cost} энергии`;
+track("spread_open", { spread: id });
+openModal("spread");
+}
+function triggerSpread() {
+const s = activeSpread; if (!s) return;
+const q = document.getElementById("sp-q").value.trim();
+if (!q && !s.default_q) { tg.showAlert("Введите ваш вопрос."); return; }
+if (userProfile.balance < s.cost) { closeModal("spread"); openStore(); tg.showAlert(`Нужно ${s.cost} Энергии.`); return; }
+closeModal("spread"); startSpread(s, q);
+}
+async function startSpread(s, q) {
+if (document.activeElement) document.activeElement.blur();
+toReadingScreen(s.title);
+try {
+const r = await fetch(`${BACKEND}/api/user/use-spread`, {
+method:"POST", headers:{"Content-Type":"application/json","Authorization":initData},
+body: JSON.stringify({ spread: s.id, question: q })
+});
+const d = await r.json().catch(() => ({}));
+if (!r.ok) { tg.showAlert(d.detail || "Ошибка"); goBack(); return; }
+userProfile.balance = d.new_balance; updateUI();
+document.getElementById("sp-q").value = "";
+setCurrent(d, "sp_" + s.id);
+rateCtx = { kind:"sp_" + s.id, question: q || s.default_q, cards:(d.cards||[]).map(c => c.name || c).join(", ") };
+renderCards(d.cards, d.text);
+} catch { tg.showAlert("Ошибка соединения."); goBack(); }
+}
+
+// ── Мои расклады ──
+function fmtDate(iso) {
+try { return new Date(iso + (iso.endsWith("Z") ? "" : "Z")).toLocaleDateString("ru-RU", { day:"numeric", month:"short" }); } catch { return ""; }
+}
+async function openHistory() {
+const box = document.getElementById("history-list");
+box.innerHTML = `<p class="text-xs text-center" style="color:rgba(196,181,253,.6)">Загружаем…</p>`;
+openModal("history");
+try {
+const r = await fetch(`${BACKEND}/api/readings`, { headers:{ Authorization: initData } });
+const d = await r.json();
+if (!d.readings || !d.readings.length) {
+box.innerHTML = `<p class="text-xs text-center leading-relaxed" style="color:rgba(196,181,253,.6)">Здесь будут все ваши расклады. Их можно перечитать и дополнить уточняющей картой.</p>`;
+return;
+}
+box.innerHTML = d.readings.map(x => `
+<button onclick="closeModal('history');openReading(${x.id})" class="w-full text-left rounded-xl p-3 active:scale-95" style="background:rgba(15,8,29,.7);border:1px solid rgba(88,28,135,.5)">
+<span style="display:flex;justify-content:space-between;font-size:11px;color:#D4AF37;font-weight:700"><span>${esc(x.title)}</span><span style="color:rgba(196,181,253,.55);font-weight:400">${fmtDate(x.created_at)}</span></span>
+${x.question ? `<span style="display:block;font-size:12px;color:#fff;margin-top:3px">«${esc(x.question.slice(0, 90))}»</span>` : ""}
+<span style="display:block;font-size:10px;color:rgba(196,181,253,.6);margin-top:3px">${esc(x.cards.slice(0, 4).join(", "))}${x.cards.length > 4 ? "…" : ""}${x.clarifications ? ` · 🔎 ${x.clarifications}` : ""}</span>
+</button>`).join("");
+} catch { box.innerHTML = `<p class="text-xs text-center" style="color:#f87171">Не удалось загрузить. Попробуйте ещё раз.</p>`; }
+}
+// Открыть сохранённый расклад без анимации тасования
+async function openReading(id, note) {
+toReadingScreen("Расклад");
+try {
+const r = await fetch(`${BACKEND}/api/readings/${id}`, { headers:{ Authorization: initData } });
+const d = await r.json().catch(() => ({}));
+if (!r.ok) { tg.showAlert(d.detail || "Расклад не найден."); goBack(); return; }
+document.getElementById("r-title").textContent = kindTitle(d.kind);
+document.getElementById("r-sub").textContent = fmtDate(d.created_at) + (d.question ? ` · «${d.question.slice(0, 50)}»` : "");
+currentReading = { id: d.id, kind: d.kind, clarifications: d.clarifications || [], left: d.clarify_left, cost: d.clarify_cost };
+rateCtx = null;
+renderCards(d.cards, d.text, { fast: true, note });
+} catch { tg.showAlert("Ошибка соединения."); goBack(); }
+}
+function dailyClick() {
+if (userProfile && userProfile.daily_available === false) {
+if (userProfile.today_daily_id) openReading(userProfile.today_daily_id);
+else tg.showAlert("Карта дня уже получена сегодня. Возвращайтесь завтра 🌙");
+return;
+}
+openModal("daily");
+}
+async function enableDailyPush() {
+document.getElementById("r-dailypush").classList.add("hidden");
+try {
+await fetch(`${BACKEND}/api/user/settings`, { method:"POST", headers:{"Content-Type":"application/json","Authorization":initData}, body: JSON.stringify({ daily_push: true }) });
+userProfile.daily_push = true;
+tg.showPopup({ title:"Готово 🌅", message:"Карта Дня будет приходить каждое утро. Выключить можно командой /daily в боте.", buttons:[{type:"ok"}] });
+} catch {}
 }
 
 // ── Поделиться / пригласить ──
@@ -945,7 +1287,19 @@ if (lastReading && lastReading.cards && lastReading.cards.length) {
 t += ": " + lastReading.cards.slice(0, 3).map(c => c.name.replace("Старший Аркан: ", "")).join(", ");
 }
 t += ". Сделай свой — первый расклад бесплатно 👇";
+track("share_click");
 tg.openTelegramLink(shareUrl(t));
+}
+// Сторис: картинка лежит рядом с мини-аппом, текст с картами и реф-ссылкой
+function canStory() { return !!(tg.shareToStory && tg.isVersionAtLeast && tg.isVersionAtLeast("7.8")); }
+function shareStory() {
+if (!canStory()) return;
+const names = (lastReading && lastReading.cards || []).slice(0, 3).map(c => c.name.replace("Старший Аркан: ", "")).join(", ");
+const link = (userProfile && userProfile.ref_link) || `https://t.me/${BOT_USERNAME}`;
+const img = new URL("story.jpg", location.href.split("#")[0].split("?")[0]).href;
+track("story_share");
+try { tg.shareToStory(img, { text: `🔮 Мне выпали карты: ${names}. Задай свой вопрос картам: ${link}`.slice(0, 200) }); }
+catch { tg.showAlert("Не удалось открыть сторис."); }
 }
 
 // ── Init: сервер на Render может просыпаться до минуты — ждём и показываем это ──
@@ -968,12 +1322,28 @@ clearTimeout(slow);
 updateUI();
 document.getElementById("s-loading").classList.add("hidden");
 document.getElementById("s-dashboard").classList.remove("hidden");
+openDeepLinkedReading();
 return;
 } catch (e) { await new Promise(res => setTimeout(res, 1500)); }
 }
 clearTimeout(slow);
 showErr("Не удалось связаться с сервером. Проверьте интернет.");
 document.getElementById("btn-retry").classList.remove("hidden");
+}
+// Куда вернуть человека: ?r=<id> из кнопки бота, startapp=r_<id>, или расклад, ради которого он ушёл платить
+async function openDeepLinkedReading() {
+let id = null, fromPay = false;
+try { id = new URLSearchParams(location.search).get("r"); } catch {}
+const sp = tg.initDataUnsafe && tg.initDataUnsafe.start_param;
+if (!id && sp && /^r_\d+$/.test(sp)) id = sp.slice(2);
+const pending = await getPending();
+if (!id && pending) { id = pending; fromPay = true; }
+if (!id || !/^\d+$/.test(String(id))) return;
+if (pending && String(pending) === String(id)) fromPay = true;
+if (pending) setPending(null);   // возвращаем один раз
+// Оплату бросили — не выдёргиваем человека с главного экрана при каждом запуске
+if (fromPay && id === pending && userProfile.balance < clarifyCost()) return;
+openReading(+id, fromPay ? "✨ Энергия на балансе. Вытяните уточняющую карту, когда будете готовы." : null);
 }
 initApp();
 
@@ -996,19 +1366,36 @@ const d = await r.json();
 if (d.status === "paid") {
 clearInterval(cardPoll); cardPoll = null;
 await refreshProfile();
+afterPaid();
 tg.showPopup({ title:"Готово!", message:"Оплата прошла, энергия зачислена на баланс ✨", buttons:[{type:"ok"}] });
 }
 } catch {}
 }, 4000);
 }
 
+// После оплаты: если пополняли ради уточнения — человек всё ещё на раскладе, кнопка уже ждёт
+function afterPaid() {
+if (pendingStoreFor && currentReading && currentReading.id === pendingStoreFor) {
+setPending(null);
+showNote("✨ Энергия на балансе, теперь можно вытянуть уточняющую карту.");
+showClarify();
+const el = document.getElementById("r-clarify"); if (el) el.scrollIntoView({ behavior:"smooth", block:"center" });
+}
+pendingStoreFor = null;
+}
+function showNote(text) {
+const n = document.getElementById("r-note");
+if (!text) { n.classList.add("hidden"); return; }
+n.textContent = text; n.classList.remove("hidden");
+}
 async function buyPackCard(packId) {
 document.getElementById("s-loading").classList.remove("hidden");
 document.getElementById("loading-text").textContent = "Подготовка оплаты...";
+track("pay_start", { pack: packId, method: "card" });
 try {
 const r = await fetch(`${BACKEND}/api/payment/tribute-order`, {
 method:"POST", headers:{"Content-Type":"application/json","Authorization":initData},
-body: JSON.stringify({ pack: packId })
+body: JSON.stringify({ pack: packId, reading_id: pendingStoreFor })
 });
 document.getElementById("s-loading").classList.add("hidden");
 const d = await r.json().catch(() => ({}));
@@ -1022,13 +1409,15 @@ watchCardPayment(d.order_id);
 
 async function buyPack(packId) {
 closeStore();
-if (payMethod === "card") return buyPackCard(packId);
+if (packId === "sub_month") track("sub_click");
+if (payMethod === "card" && packId !== "sub_month") return buyPackCard(packId);
 document.getElementById("s-loading").classList.remove("hidden");
 document.getElementById("loading-text").textContent = "Подготовка счёта...";
+track("pay_start", { pack: packId, method: "stars" });
 try {
 const r = await fetch(`${BACKEND}/api/payment/stars-invoice`, {
 method:"POST", headers:{"Content-Type":"application/json","Authorization":initData},
-body: JSON.stringify({ pack: packId })
+body: JSON.stringify({ pack: packId, reading_id: pendingStoreFor })
 });
 document.getElementById("s-loading").classList.add("hidden");
 if (r.ok) {
@@ -1036,12 +1425,19 @@ const d = await r.json();
 if (d.invoice_link) {
 tg.openInvoice(d.invoice_link, async st => {
 if (st === "paid") {
-tg.showPopup({ title:"Готово!", message:"Энергия зачислена на ваш баланс.", buttons:[{type:"ok"}] });
+tg.showPopup({ title:"Готово!", message: packId === "sub_month" ? "Подписка «Послание+» оформлена 🌟" : "Энергия зачислена на ваш баланс.", buttons:[{type:"ok"}] });
 document.getElementById("s-loading").classList.remove("hidden");
-await new Promise(res => setTimeout(res, 1200)); // даём боту зачислить платёж
+// даём боту зачислить платёж; если не успел — ещё пара попыток
+const before = userProfile.balance;
+for (let i = 0; i < 4; i++) {
+await new Promise(res => setTimeout(res, 1200));
 const pr = await fetch(`${BACKEND}/api/user/profile`, { headers:{ Authorization: initData } });
-if (pr.ok) { userProfile = await pr.json(); updateUI(); }
+if (pr.ok) { const np = await pr.json(); np.today_daily_id = np.today_daily_id || userProfile.today_daily_id; userProfile = np; updateUI(); }
+if (userProfile.balance > before) break;
+}
+if (currentReading) { currentReading.cost = clarifyCost(); }
 document.getElementById("s-loading").classList.add("hidden");
+afterPaid();
 } else if (st === "cancelled") { tg.showAlert("Оплата отменена. Энергия не списана."); }
 });
 }
@@ -1050,7 +1446,8 @@ document.getElementById("s-loading").classList.add("hidden");
 }
 
 // ── Рендер карт ──
-function renderCards(cards, text) {
+function renderCards(cards, text, opts) {
+opts = opts || {};
 lastReading = { cards, text };
 stopShuf();
 document.getElementById("r-shuffle").classList.add("hidden");
@@ -1059,7 +1456,9 @@ ctr.innerHTML = ""; ctr.classList.remove("hidden");
 // Размер карты зависит от количества
 const cnt = cards.length;
 const w = cnt === 1 ? "150px" : cnt <= 3 ? "110px" : cnt <= 6 ? "90px" : "76px";
-const h = cnt === 1 ? "240px" : cnt <= 3 ? "174px" : cnt <= 6 ? "142px" : "120px";
+const h = cnt === 1 ? "260px" : cnt <= 3 ? "190px" : cnt <= 6 ? "156px" : "132px";  // пропорции карт колоды 1909 года
+// сохранённый расклад открываем сразу, без долгого переворота
+const step = opts.fast ? 0 : 450, start = opts.fast ? 50 : 400;
 cards.forEach((card, i) => {
 const el = document.createElement("div");
 el.className = "card-wrap card-in";
@@ -1067,15 +1466,22 @@ el.style.cssText = `width:${w};height:${h};cursor:pointer;opacity:0;animation-de
 el.onclick = () => { el.querySelector(".card-inner").classList.toggle("card-flipped"); if(tg.HapticFeedback) tg.HapticFeedback.impactOccurred("light"); };
 el.innerHTML = `<div class="card-inner"><div class="card-face">${backFace()}</div><div class="card-face-back">${frontFace(card.name)}</div></div>`;
 ctr.appendChild(el);
-setTimeout(() => { el.querySelector(".card-inner").classList.add("card-flipped"); if(tg.HapticFeedback) tg.HapticFeedback.impactOccurred("light"); }, 400 + i*450);
+setTimeout(() => { el.querySelector(".card-inner").classList.add("card-flipped"); if(!opts.fast && tg.HapticFeedback) tg.HapticFeedback.impactOccurred("light"); }, start + i*step);
 });
+// уточняющие карты, вытянутые раньше
+((currentReading && currentReading.clarifications) || []).forEach(c => appendClarCard(c.card));
 setTimeout(() => {
 document.getElementById("r-text").innerHTML = md(text);
+renderClarifications();
 document.getElementById("r-result").classList.remove("hidden");
 document.getElementById("btn-back").classList.remove("hidden");
 showRate();
 document.getElementById("btn-share").classList.remove("hidden");
-}, 400 + cards.length*450 + 400);
+document.getElementById("btn-story").classList.toggle("hidden", !canStory());
+showClarify();
+showNote(opts.note || null);
+if (opts.dailyPrompt) document.getElementById("r-dailypush").classList.remove("hidden");
+}, start + cards.length*step + (opts.fast ? 0 : 400));
 }
 
 // ── Расклад 1: Карта Дня — бесплатно ──
@@ -1088,9 +1494,15 @@ method:"POST", headers:{ Authorization: initData }
 });
 if (r.ok) {
 const d = await r.json();
-userProfile.balance = d.new_balance; userProfile.daily_available = false; updateUI();
-rateCtx = { kind:"daily", question:"", cards:(d.cards||[]).map(c => c.name || c).join(", ") };
-renderCards(d.cards, d.text);
+userProfile.balance = d.new_balance; userProfile.daily_available = false;
+if (d.reading_id) userProfile.today_daily_id = d.reading_id;
+if (d.streak != null) userProfile.streak = d.streak;
+if (d.streak_reward) await refreshProfile().catch(() => {});
+updateUI();
+setCurrent(d, "daily");
+rateCtx = d.repeat ? null : { kind:"daily", question:"", cards:(d.cards||[]).map(c => c.name || c).join(", ") };
+const note = d.streak_reward || ((d.streak || 0) >= 2 && !d.repeat ? `🔥 Серия: ${d.streak} дн. подряд` : null);
+renderCards(d.cards, d.text, { fast: !!d.repeat, note, dailyPrompt: !d.repeat && !userProfile.daily_push });
 } else {
 const e = await r.json().catch(() => ({}));
 if (r.status === 429) { userProfile.daily_available = false; updateUI(); }
@@ -1113,6 +1525,7 @@ setTimeout(() => el.classList.remove("hidden"), 400 + cards * 450 + 450);
 }
 function upsellTo(kind) {
 if (tg.HapticFeedback) tg.HapticFeedback.impactOccurred("light");
+track("upsell_click", { to: kind });
 goBack();
 if (kind === "preset") {
 document.querySelectorAll(".q-btn").forEach(b => setQStyle(b, false));
@@ -1149,6 +1562,7 @@ if (typeof d.free_readings === "number") userProfile.free_readings = d.free_read
 updateUI();
 document.getElementById("quick-q").value = "";
 lastQuickQuestion = q;
+setCurrent(d, "quick");
 rateCtx = { kind:"quick", question:q, cards:(d.cards||[]).map(c => c.name || c).join(", ") };
 renderCards(d.cards, d.text);
 showUpsell(true);
@@ -1161,7 +1575,7 @@ function triggerPreset() { closeModal("preset"); startPreset(); }
 async function startPreset() {
 const own = (document.getElementById("preset-own").value || "").trim();
 const q = own || document.getElementById("sel-q").value;
-if (userProfile.balance < 150) { openStore(); tg.showAlert("Нужно 150 Энергии."); return; }
+if (!(userProfile.free_preset > 0) && userProfile.balance < 150) { openStore(); tg.showAlert("Нужно 150 Энергии."); return; }
 if (document.activeElement) document.activeElement.blur();
 toReadingScreen("Стандартный разбор");
 try {
@@ -1175,6 +1589,9 @@ userProfile.balance = d.new_balance;
 if (typeof d.free_readings === "number") userProfile.free_readings = d.free_readings;
 document.getElementById("preset-own").value = "";
 updateUI();
+if (typeof d.free_preset === "number") userProfile.free_preset = d.free_preset;
+updateUI();
+setCurrent(d, "preset");
 rateCtx = { kind:"preset", question:q, cards:(d.cards||[]).map(c => c.name || c).join(", ") };
 renderCards(d.cards, d.text);
 } else { const e=await r.json().catch(() => ({})); tg.showAlert(e.detail||"Ошибка"); goBack(); }
@@ -1186,6 +1603,7 @@ setupAsk("ai-q", "btn-ai-run", "Запустить разбор", () => triggerA
 setupAsk("quick-q", "btn-quick-run", "Получить ответ", () => triggerQuick());
 setupAsk("preset-own", "btn-preset-run", "Запустить расклад", () => triggerPreset(), "preset");
 setupAsk("fb-text", "fb-send", "Отправить", () => sendFeedback(), "feedback");
+setupAsk("sp-q", "btn-sp-run", "Запустить расклад", () => triggerSpread(), "spread");
 function triggerAi() { closeModal("ai"); startAi(); }
 async function startAi() {
 const q = document.getElementById("ai-q").value.trim();
@@ -1202,6 +1620,7 @@ if (r.ok) {
 const d = await r.json();
 userProfile.balance = d.new_balance; updateUI();
 document.getElementById("ai-q").value = "";
+setCurrent(d, "ai");
 rateCtx = { kind:"ai", question:q, cards:(d.cards||[]).map(c => c.name || c).join(", ") };
 renderCards(d.cards, d.text);
 } else { const e=await r.json().catch(() => ({})); tg.showAlert(e.detail||"Ошибка"); goBack(); }
