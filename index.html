@@ -270,8 +270,9 @@ style="background:linear-gradient(160deg,#0F081D 0%,#1A0B2E 50%,#0A0514 100%)">
 <span class="flex items-center space-x-3">
 <span class="text-2xl">🎁</span>
 <span>
-<span class="block font-bold text-xs text-white" style="display:block">Пригласи друга — +<span id="ref-bonus">150</span> ✨ обоим</span>
-<span style="display:block;font-size:10px;color:rgba(196,181,253,.6)">Уже пришло по твоей ссылке: <b id="ref-count" style="color:#D4AF37">0</b> · твой бонус придёт, когда друг вернётся</span>
+<span class="block font-bold text-xs text-white" style="display:block">Пригласи друга: +<span id="ref-bonus">150</span> ✨ обоим</span>
+<span style="display:block;font-size:10px;color:rgba(196,181,253,.6)">Друг получит бонус сразу, а ты после его первой покупки</span>
+<span style="display:block;font-size:10px;color:rgba(196,181,253,.6)">Пришло: <b id="ref-invited" style="color:#D4AF37">0</b> · бонусов получено: <b id="ref-count" style="color:#D4AF37">0</b></span>
 </span>
 </span>
 <span class="font-bold text-xs" style="color:#D4AF37">→</span>
@@ -614,7 +615,7 @@ style="background:rgba(15,8,29,.8);border:1px solid rgba(88,28,135,.6)"></textar
 <!-- ══ МАГАЗИН ══ -->
 <div id="modal-store" class="hidden fixed inset-0 z-40 flex items-end justify-center" style="background:rgba(0,0,0,.8);backdrop-filter:blur(8px)">
 <div class="absolute inset-0" onclick="closeStore()"></div>
-<div class="relative z-10 w-full rounded-t-3xl p-6 space-y-4 shadow-2xl" style="max-width:420px;background:linear-gradient(to top,#0A0514,#1A0B2E);border-top:1px solid rgba(212,175,55,.3)">
+<div class="relative z-10 w-full rounded-t-3xl p-6 space-y-4 shadow-2xl overflow-y-auto" style="max-width:420px;max-height:90vh;background:linear-gradient(to top,#0A0514,#1A0B2E);border-top:1px solid rgba(212,175,55,.3)">
 <div class="flex justify-between items-center">
 <div>
 <h3 class="serif text-xl font-bold" style="color:#D4AF37">Пополнение Энергии</h3>
@@ -653,7 +654,6 @@ style="background:rgba(15,8,29,.8);border:1px solid rgba(88,28,135,.6)"></textar
 <span class="text-2xl">⚡</span>
 <div>
 <h4 class="font-bold text-xs text-white">+75 Энергии</h4>
-<p style="font-size:10px;color:rgba(196,181,253,.5)">1 Быстрый ответ</p>
 </div>
 </div>
 <button onclick="buyPack('pack_75')" class="flex items-center space-x-1.5 font-bold px-4 py-2 rounded-xl text-xs active:scale-95 text-black shadow" style="flex-shrink:0;white-space:nowrap;background:linear-gradient(to right,#eab308,#D4AF37)">
@@ -666,12 +666,26 @@ style="background:rgba(15,8,29,.8);border:1px solid rgba(88,28,135,.6)"></textar
 <span class="text-2xl">🎴</span>
 <div>
 <h4 class="font-bold text-xs text-white">+150 Энергии</h4>
-<p style="font-size:10px;color:rgba(196,181,253,.5)">1 Стандартный разбор или 2 Быстрых ответа</p>
 <p id="first-buy-label" class="hidden font-semibold" style="font-size:10px;color:#4ade80">🔥 Цена первой покупки</p>
 </div>
 </div>
 <button onclick="buyPack('pack_150')" class="flex items-center space-x-1.5 font-bold px-4 py-2 rounded-xl text-xs active:scale-95 text-black shadow" style="flex-shrink:0;white-space:nowrap;background:linear-gradient(to right,#eab308,#D4AF37)">
 <span class="pm-icon">⭐</span><span class="flex flex-col items-center leading-tight"><span id="price-pack_150" style="white-space:nowrap">150</span><span id="alt-pack_150" class="hidden font-semibold" style="font-size:11px;opacity:.85;white-space:nowrap;margin-top:1px"></span></span>
+</button>
+</div>
+<!-- Пакет 350 -->
+<div id="row-pack_350" class="flex items-center justify-between rounded-2xl p-4" style="background:rgba(15,8,29,.6);border:1px solid rgba(88,28,135,.5)">
+<div class="flex items-center space-x-3">
+<span class="text-2xl">💞</span>
+<div>
+<div class="flex items-center space-x-2">
+<h4 class="font-bold text-xs text-white">+350 Энергии</h4>
+<span class="font-bold uppercase px-1.5 py-0.5 rounded-full" style="background:rgba(212,175,55,.15);border:1px solid rgba(212,175,55,.4);color:#D4AF37;font-size:8px">−14%</span>
+</div>
+</div>
+</div>
+<button onclick="buyPack('pack_350')" class="flex items-center space-x-1.5 font-bold px-4 py-2 rounded-xl text-xs active:scale-95 text-black shadow" style="flex-shrink:0;white-space:nowrap;background:linear-gradient(to right,#eab308,#D4AF37)">
+<span class="pm-icon">⭐</span><span class="flex flex-col items-center leading-tight"><span id="price-pack_350" style="white-space:nowrap"></span><span id="alt-pack_350" class="hidden font-semibold" style="font-size:11px;opacity:.85;white-space:nowrap;margin-top:1px"></span></span>
 </button>
 </div>
 <!-- Пакет 450 — со скидкой -->
@@ -683,7 +697,6 @@ style="background:rgba(15,8,29,.8);border:1px solid rgba(88,28,135,.6)"></textar
 <h4 class="font-bold text-xs text-white">+450 Энергии</h4>
 <span class="font-bold uppercase px-1.5 py-0.5 rounded-full" style="background:rgba(212,175,55,.15);border:1px solid rgba(212,175,55,.4);color:#D4AF37;font-size:8px">−15%</span>
 </div>
-<p class="font-semibold" style="font-size:10px;color:rgba(212,175,55,.8)">3 Стандартных разбора или 6 Быстрых ответов</p>
 </div>
 </div>
 <button onclick="buyPack('pack_450')" class="flex items-center space-x-1.5 font-bold px-4 py-2 rounded-xl text-xs active:scale-95 text-black shadow" style="flex-shrink:0;white-space:nowrap;background:linear-gradient(to right,#eab308,#D4AF37)">
@@ -695,12 +708,29 @@ style="background:rgba(15,8,29,.8);border:1px solid rgba(88,28,135,.6)"></textar
 <div class="flex items-center space-x-3">
 <span class="text-2xl">🔮</span>
 <div>
+<div class="flex items-center space-x-2">
 <h4 class="font-bold text-xs text-white">+750 Энергии</h4>
-<p style="font-size:10px;color:rgba(196,181,253,.5)">1 Индивидуальный разбор или 10 Быстрых ответов</p>
+<span class="font-bold uppercase px-1.5 py-0.5 rounded-full" style="background:rgba(212,175,55,.15);border:1px solid rgba(212,175,55,.4);color:#D4AF37;font-size:8px">−20%</span>
+</div>
 </div>
 </div>
 <button onclick="buyPack('pack_750')" class="flex items-center space-x-1.5 font-bold px-4 py-2 rounded-xl text-xs active:scale-95 text-white shadow" style="flex-shrink:0;white-space:nowrap;background:linear-gradient(to right,#7c3aed,#D4AF37)">
-<span class="pm-icon">⭐</span><span class="flex flex-col items-center leading-tight"><span id="price-pack_750" style="white-space:nowrap">750</span><span id="alt-pack_750" class="hidden font-semibold" style="font-size:11px;opacity:.85;white-space:nowrap;margin-top:1px"></span></span>
+<span class="pm-icon">⭐</span><span class="flex flex-col items-center leading-tight"><span id="price-pack_750" style="white-space:nowrap">600</span><span id="alt-pack_750" class="hidden font-semibold" style="font-size:11px;opacity:.85;white-space:nowrap;margin-top:1px"></span></span>
+</button>
+</div>
+<!-- Пакет 1500 -->
+<div id="row-pack_1500" class="flex items-center justify-between rounded-2xl p-4" style="background:rgba(15,8,29,.6);border:1px solid rgba(212,175,55,.45)">
+<div class="flex items-center space-x-3">
+<span class="text-2xl">👑</span>
+<div>
+<div class="flex items-center space-x-2">
+<h4 class="font-bold text-xs text-white">+1500 Энергии</h4>
+<span class="font-bold uppercase px-1.5 py-0.5 rounded-full" style="background:rgba(212,175,55,.15);border:1px solid rgba(212,175,55,.4);color:#D4AF37;font-size:8px">−25%</span>
+</div>
+</div>
+</div>
+<button onclick="buyPack('pack_1500')" class="flex items-center space-x-1.5 font-bold px-4 py-2 rounded-xl text-xs active:scale-95 text-white shadow" style="flex-shrink:0;white-space:nowrap;background:linear-gradient(to right,#7c3aed,#D4AF37)">
+<span class="pm-icon">⭐</span><span class="flex flex-col items-center leading-tight"><span id="price-pack_1500" style="white-space:nowrap"></span><span id="alt-pack_1500" class="hidden font-semibold" style="font-size:11px;opacity:.85;white-space:nowrap;margin-top:1px"></span></span>
 </button>
 </div>
 </div>
@@ -1117,6 +1147,7 @@ document.getElementById("quick-price-badge").classList.toggle("hidden", free);
 document.getElementById("quick-cost").textContent = free ? "🎁 Бесплатно (подарок)" : qc + " энергии";
 document.getElementById("quick-cost").style.color = free ? "#4ade80" : "#D4AF37";
 document.getElementById("ref-count").textContent = p.ref_count || 0;
+document.getElementById("ref-invited").textContent = p.ref_invited || 0;
 document.getElementById("ref-bonus").textContent = p.ref_bonus || 150;
 renderStorePrices();
 }
@@ -1137,7 +1168,7 @@ document.getElementById("pm-stars").style.cssText = card ? off : on;
 document.getElementById("pm-card").style.cssText = card ? on : off;
 const prices = card ? (p.card_prices || {}) : (p.prices || {});
 const sign = p.card_currency || "₽";
-["pack_75","pack_150","pack_450","pack_750"].forEach(k => {
+["pack_75","pack_150","pack_350","pack_450","pack_750","pack_1500"].forEach(k => {
 const row = document.getElementById("row-" + k);
 if (row) row.classList.toggle("hidden", prices[k] == null);  // пакета нет для этого способа оплаты
 const el = document.getElementById("price-" + k);
