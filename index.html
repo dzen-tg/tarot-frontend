@@ -408,7 +408,7 @@ style="background:linear-gradient(160deg,#0F081D 0%,#1A0B2E 50%,#0A0514 100%)">
 <div id="fate-form" class="space-y-3">
 <div class="space-y-2 text-xs leading-relaxed" style="color:rgba(196,181,253,.8)">
 <p class="font-semibold text-white">Подарок по дате рождения</p>
-<p>Посчитаем знак, число судьбы и главный аркан матрицы, а потом расскажем, что они говорят о тебе.</p>
+<p>Посчитаем знак, число судьбы и два аркана — личности и главной энергии, а потом расскажем, что они говорят о тебе.</p>
 </div>
 <input id="fate-date" type="text" inputmode="numeric" autocomplete="bday" maxlength="10" placeholder="ДД.ММ.ГГГГ, например 14.03.1992"
 class="w-full rounded-xl p-3 text-sm text-white focus:outline-none" style="background:rgba(15,8,29,.6);border:1px solid rgba(88,28,135,.5)">
@@ -420,7 +420,7 @@ class="w-full rounded-xl p-3 text-sm text-white focus:outline-none" style="backg
 </div>
 <!-- Готовый код -->
 <div id="fate-result" class="hidden space-y-4">
-<div class="text-center" style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px">
+<div class="text-center" style="display:grid;grid-template-columns:repeat(2,1fr);gap:8px">
 <div class="rounded-xl" style="padding:8px;background:rgba(15,8,29,.6);border:1px solid rgba(88,28,135,.4)">
 <div style="font-size:10px;color:rgba(196,181,253,.6)">Знак</div>
 <div id="fate-zodiac" class="text-sm font-bold text-white"></div>
@@ -430,10 +430,17 @@ class="w-full rounded-xl p-3 text-sm text-white focus:outline-none" style="backg
 <div id="fate-life" class="text-sm font-bold text-white"></div>
 </div>
 <div class="rounded-xl" style="padding:8px;background:rgba(15,8,29,.6);border:1px solid rgba(212,175,55,.35)">
-<div style="font-size:10px;color:rgba(196,181,253,.6)">Главный аркан</div>
+<div style="font-size:10px;color:rgba(196,181,253,.6)">Аркан личности</div>
+<div id="fate-personality" class="text-sm font-bold" style="color:#D4AF37"></div>
+<div style="font-size:10px;color:rgba(196,181,253,.6)">каким тебя видят люди</div>
+</div>
+<div class="rounded-xl" style="padding:8px;background:rgba(15,8,29,.6);border:1px solid rgba(212,175,55,.35)">
+<div style="font-size:10px;color:rgba(196,181,253,.6)">Главная энергия</div>
 <div id="fate-arcana" class="text-sm font-bold" style="color:#D4AF37"></div>
+<div style="font-size:10px;color:rgba(196,181,253,.6)">твоя главная тема и задача</div>
 </div>
 </div>
+<p id="fate-same" class="hidden text-xs text-center" style="color:rgba(212,175,55,.85)">Оба аркана совпали: одна и та же энергия у тебя и в характере, и в главной задаче.</p>
 <div id="fate-text" class="space-y-3 text-sm leading-relaxed" style="color:rgba(230,224,255,.9)"></div>
 <p id="fate-born" class="text-xs" style="color:rgba(196,181,253,.5)"></p>
 <button id="btn-fate-quick" onclick="fateCta('quick')" class="w-full font-bold py-3.5 rounded-xl text-xs tracking-wider uppercase active:scale-95 text-black" style="background:linear-gradient(to right,#eab308,#D4AF37)"></button>
@@ -1567,7 +1574,7 @@ const p = userProfile || {}, f = p.fate;
 document.getElementById("fate-badge").classList.toggle("hidden", !!f);
 document.getElementById("fate-card").classList.toggle("card-focus", !f);   // первый шаг для новичка
 document.getElementById("fate-sub").textContent = f
-? `${f.zodiac} · число ${f.life_path} · ${f.arcana_roman} ${f.arcana_name}`
+? `${f.zodiac} · ${f.personality_name} · ${f.arcana_name}`
 : "Знак, число судьбы и аркан по дате рождения";
 document.getElementById("btn-fate").textContent = f ? "Читать" : "Узнать";
 document.getElementById("fate-form").classList.toggle("hidden", !!f);
@@ -1575,8 +1582,12 @@ document.getElementById("fate-result").classList.toggle("hidden", !f);
 if (!f) return;
 document.getElementById("fate-zodiac").textContent = f.zodiac;
 document.getElementById("fate-life").textContent = f.life_path;
+document.getElementById("fate-personality").textContent = `${f.personality_roman} ${f.personality_name}`;
 document.getElementById("fate-arcana").textContent = `${f.arcana_roman} ${f.arcana_name}`;
-document.getElementById("fate-text").innerHTML = String(f.text).split(/\n\s*\n/).map(t => `<p>${esc(t.trim())}</p>`).join("");
+document.getElementById("fate-same").classList.toggle("hidden", !f.same);
+document.getElementById("fate-text").innerHTML = f.stale
+? `<p style="color:rgba(196,181,253,.7)">Обновляем твой Код судьбы: теперь в нём два аркана. Это до 20 секунд…</p>`
+: String(f.text).split(/\n\s*\n/).map(t => `<p>${esc(t.trim())}</p>`).join("");
 document.getElementById("fate-born").textContent = p.birth_date ? `Дата рождения: ${p.birth_date}` : "";
 const freeQ = (p.free_readings || 0) > 0, freeP = (p.free_preset || 0) > 0;
 const c = p.costs || {};
@@ -1588,6 +1599,19 @@ renderFate();
 document.getElementById("fate-err").classList.add("hidden");
 openModal("fate");
 if (userProfile && userProfile.fate) track("fate_open");
+if (userProfile && userProfile.fate && userProfile.fate.stale) refreshFate();
+}
+// Старый текст с одним арканом: сервер один раз пишет новый, с двумя
+async function refreshFate() {
+if (fateBusy) return;
+fateBusy = true;
+try {
+const r = await fetch(`${BACKEND}/api/user/fate-code`, { method:"POST", headers:{"Content-Type":"application/json","Authorization":initData}, body: "{}" });
+const d = await r.json().catch(() => ({}));
+if (r.ok && d.fate) { userProfile.fate = d.fate; userProfile.birth_date = d.birth_date; }
+else userProfile.fate.stale = false;   // не вышло — показываем прежний текст
+} catch { userProfile.fate.stale = false; }
+finally { fateBusy = false; renderFate(); }
 }
 function fateCta(kind) {
 track(kind === "quick" ? "fate_cta_free" : "fate_cta_paid", { via: "app" });
