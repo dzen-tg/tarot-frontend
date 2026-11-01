@@ -129,6 +129,16 @@ display: block; margin: 1rem 0 .35rem;
 #daily-card .daily-extra{flex-basis:100%;margin-top:12px;padding-top:10px;border-top:1px solid rgba(88,28,135,.35)}
 #daily-card .push-row{display:flex;align-items:center;justify-content:space-between;gap:12px;min-height:44px;cursor:pointer;margin-top:10px}
 .streak-dots{display:flex;gap:6px;margin-bottom:6px}
+/* Сегодня: Число дня и Луна */
+#today-card{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.today-tile{display:flex;align-items:center;gap:10px;min-height:64px;padding:12px;border-radius:16px;text-align:left;background:linear-gradient(to right,#1F103A,#0F081D);border:1px solid rgba(88,28,135,.4);color:#fff;min-width:0}
+.today-tile:active{transform:scale(.97)}
+.today-tile .ico{font-size:24px;flex-shrink:0}
+.today-tile .lbl{font-size:10px;color:rgba(196,181,253,.72)}
+.today-tile .val{font-size:13px;font-weight:700;line-height:1.25;overflow-wrap:anywhere}
+.today-num{width:52px;height:52px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:24px;font-weight:700;color:#000;background:linear-gradient(to right,#eab308,#D4AF37);flex-shrink:0}
+.source-btn{width:100%;min-height:44px;border-radius:12px;font-size:14px;color:#fff;background:#1F103A;border:1px solid rgba(212,175,55,.3)}
+.source-btn:active{transform:scale(.97)}
 .streak-dots span{flex:1;height:26px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:12px;background:rgba(15,8,29,.6);border:1px solid rgba(88,28,135,.45);color:rgba(196,181,253,.55)}
 .streak-dots span.on{background:linear-gradient(to right,#eab308,#D4AF37);border-color:#D4AF37;color:#000;font-weight:700}
 .streak-dots span.today{border-color:#D4AF37;border-style:dashed;color:#D4AF37}
@@ -223,6 +233,18 @@ style="background:linear-gradient(160deg,#0F081D 0%,#1A0B2E 50%,#0A0514 100%)">
 <span class="text-xs" style="color:rgba(220,214,255,.85)">⏰ Во сколько присылать</span>
 <select id="push-hour" class="push-select" onchange="setPushHour(+this.value)"></select>
 </label>
+</div>
+
+<!-- 1а. Сегодня: Число дня и Луна – бесплатно -->
+<div id="today-card">
+<button class="today-tile" onclick="openToday('number')" aria-label="Число дня">
+<span class="ico">🔢</span>
+<span style="min-width:0"><span class="lbl">Число дня</span><br><span id="tile-number" class="val">…</span></span>
+</button>
+<button class="today-tile" onclick="openToday('moon')" aria-label="Луна сегодня">
+<span id="tile-moon-ico" class="ico">🌙</span>
+<span style="min-width:0"><span class="lbl">Луна сегодня</span><br><span id="tile-moon" class="val">…</span></span>
+</button>
 </div>
 
 <!-- 1б. Быстрый ответ -->
@@ -393,6 +415,60 @@ style="background:linear-gradient(160deg,#0F081D 0%,#1A0B2E 50%,#0A0514 100%)">
 </div>
 </div>
 
+<!-- ══ МОДАЛКА: СЕГОДНЯ ══ -->
+<div id="modal-today" class="hidden fixed inset-0 z-40 flex items-end justify-center" style="background:rgba(0,0,0,.8);backdrop-filter:blur(10px)">
+<div class="absolute inset-0" onclick="closeModal('today')"></div>
+<div class="relative z-10 w-full rounded-t-3xl p-6 space-y-5 shadow-2xl overflow-y-auto" style="max-width:420px;max-height:85vh;background:linear-gradient(to top,#0A0514,#1A0B2E);border-top:1px solid rgba(212,175,55,.3)">
+<div class="flex justify-between items-center">
+<div>
+<h3 class="serif text-xl font-bold" style="color:#D4AF37">Сегодня</h3>
+<p id="today-date" class="text-xs" style="color:rgba(196,181,253,.72)"></p>
+</div>
+<button onclick="closeModal('today')" aria-label="Закрыть" class="w-8 h-8 rounded-full flex items-center justify-center text-purple-200" style="background:rgba(49,10,77,.5);border:1px solid rgba(88,28,135,.4)">✕</button>
+</div>
+<p id="today-err" class="hidden text-sm" style="color:rgba(230,224,255,.9)">Не получилось загрузить. Проверь интернет и открой ещё раз.</p>
+<section id="today-number" class="space-y-3">
+<div class="flex items-center space-x-3">
+<div id="today-num" class="today-num">…</div>
+<div style="min-width:0">
+<div class="text-xs" style="color:rgba(196,181,253,.72)">Число дня</div>
+<div id="today-word" class="text-base font-bold text-white"></div>
+<div id="today-kind" class="text-xs" style="color:rgba(196,181,253,.72)"></div>
+</div>
+</div>
+<div id="today-num-text" class="space-y-3 text-sm leading-relaxed" style="color:rgba(230,224,255,.9)">
+<p style="color:rgba(196,181,253,.72)">Считаем твоё число дня…</p>
+</div>
+<button id="btn-today-fate" onclick="closeModal('today');openFate()" class="hidden w-full font-bold py-3 rounded-xl text-xs tracking-wider uppercase active:scale-95 text-white" style="background:#1F103A;border:1px solid rgba(212,175,55,.3)">🔢 Ввести дату рождения</button>
+</section>
+<section id="today-moon" class="space-y-3" style="border-top:1px solid rgba(88,28,135,.35);padding-top:16px">
+<div class="flex items-center space-x-3">
+<span id="today-moon-ico" style="font-size:40px;line-height:1">🌙</span>
+<div style="min-width:0">
+<div class="text-xs" style="color:rgba(196,181,253,.72)">Луна сегодня</div>
+<div id="today-moon-name" class="text-base font-bold text-white"></div>
+<div id="today-moon-meta" class="text-xs" style="color:rgba(196,181,253,.72)"></div>
+</div>
+</div>
+<p id="today-moon-text" class="text-sm leading-relaxed" style="color:rgba(230,224,255,.9)"></p>
+<p id="today-moon-next" class="text-xs" style="color:rgba(212,175,55,.85)"></p>
+</section>
+</div>
+</div>
+
+<!-- ══ МОДАЛКА: ОТКУДА УЗНАЛ(А) ══ -->
+<div id="modal-source" class="hidden fixed inset-0 z-40 flex items-end justify-center" style="background:rgba(0,0,0,.8);backdrop-filter:blur(10px)">
+<div class="absolute inset-0" onclick="chooseSource('skip')"></div>
+<div class="relative z-10 w-full rounded-t-3xl p-6 space-y-4 shadow-2xl" style="max-width:420px;background:linear-gradient(to top,#0A0514,#1A0B2E);border-top:1px solid rgba(212,175,55,.3)">
+<div>
+<h3 class="serif text-xl font-bold" style="color:#D4AF37">Откуда ты о нас узнал(а)?</h3>
+<p class="text-xs mt-1" style="color:rgba(196,181,253,.72)">Один вопрос, чтобы мы понимали, где рассказывать о Послании Таро.</p>
+</div>
+<div id="source-list" class="space-y-2"></div>
+<button onclick="chooseSource('skip')" class="w-full text-xs py-2" style="min-height:44px;color:rgba(196,181,253,.72)">Пропустить</button>
+</div>
+</div>
+
 <!-- ══ МОДАЛКА: КОД СУДЬБЫ ══ -->
 <div id="modal-fate" class="hidden fixed inset-0 z-40 flex items-end justify-center" style="background:rgba(0,0,0,.8);backdrop-filter:blur(10px)">
 <div class="absolute inset-0" onclick="closeModal('fate')"></div>
@@ -500,7 +576,7 @@ style="background:rgba(15,8,29,.8);border:1px solid rgba(88,28,135,.6)"></textar
 </div>
 <div class="space-y-2 text-xs leading-relaxed" style="color:rgba(196,181,253,.85)">
 <p class="font-semibold text-white">Расклад на 3 карты</p>
-<p>Три карты раскрывают три пласта твоей ситуации – прошлое, настоящее и будущее. Выбери вопрос из списка или впиши свой.</p>
+<p>Три карты: что происходит сейчас, что ты можешь сделать и куда это может привести. Выбери вопрос из списка или впиши свой.</p>
 </div>
 <!-- Вопросы -->
 <div id="preset-list" class="space-y-1.5 overflow-y-auto pr-1" style="max-height:34vh">
@@ -1451,10 +1527,11 @@ userProfile.push_hour = h; userProfile.tz_offset_min = TZ_OFFSET;
 if (tg.HapticFeedback) tg.HapticFeedback.impactOccurred("light");
 } catch { renderPushTime(); tg.showAlert("Не получилось сохранить время. Попробуй ещё раз."); }
 }
-// Часовой пояс сохраняем, только когда человек сам выбрал время: до этого рассылка идёт по-старому
+// Часовой пояс телефона: по нему считаются сутки Карты Дня и серии. Время рассылки он меняет,
+// только если человек сам выбрал час (без выбора рассылка по-прежнему в 11:00 по Алматы)
 function syncTimezone() {
 const p = userProfile || {};
-if (p.push_hour != null && p.tz_offset_min !== TZ_OFFSET) {
+if (p.tz_offset_min !== TZ_OFFSET) {
 saveSettings({ tz_offset_min: TZ_OFFSET }).then(() => { p.tz_offset_min = TZ_OFFSET; }).catch(() => {});
 }
 }
@@ -1546,6 +1623,8 @@ document.getElementById("s-dashboard").classList.remove("hidden");
 openDeepLinkedReading();
 openDeepLinkedAction();
 syncTimezone();
+loadToday();
+maybeAskSource();
 return;
 } catch (e) { await new Promise(res => setTimeout(res, 1500)); }
 }
@@ -1613,8 +1692,12 @@ else userProfile.fate.stale = false;   // не вышло – показывае
 } catch { userProfile.fate.stale = false; }
 finally { fateBusy = false; renderFate(); }
 }
+function ctaFree(kind) {
+const p = userProfile || {};
+return kind === "quick" ? (p.free_readings || 0) > 0 : (p.free_preset || 0) > 0;
+}
 function fateCta(kind) {
-track(kind === "quick" ? "fate_cta_free" : "fate_cta_paid", { via: "app" });
+track(kind === "quick" ? "fate_cta_free" : "fate_cta_paid", { via: "app", free: ctaFree(kind) });
 closeModal("fate");
 openModal(kind);
 }
@@ -1641,9 +1724,70 @@ const d = await r.json().catch(() => ({}));
 if (!r.ok) { err.textContent = r.status === 400 ? "Такой даты нет. Проверь число и месяц" : (d.detail || "Не получилось. Попробуй ещё раз."); err.classList.remove("hidden"); return; }
 userProfile.fate = d.fate; userProfile.birth_date = d.birth_date;
 renderFate();
+todayData = null; todayLoading = null; loadToday();   // число дня теперь личное
 if (tg.HapticFeedback) tg.HapticFeedback.notificationOccurred("success");
 } catch { err.textContent = "Нет связи с сервером. Попробуй ещё раз."; err.classList.remove("hidden"); }
 finally { fateBusy = false; btn.disabled = false; btn.textContent = "Открыть Код судьбы"; }
+}
+
+// ── Сегодня: Число дня и Луна ──
+let todayData = null, todayLoading = null, todayFailed = false;
+function loadToday() {
+if (todayLoading) return todayLoading;
+todayFailed = false; renderToday();
+todayLoading = fetchWithTimeout(`${BACKEND}/api/user/today`, { headers:{ Authorization: initData } }, 30000)
+.then(r => r.ok ? r.json() : Promise.reject(r.status))
+.then(d => { todayData = d; renderToday(); })
+.catch(() => { todayLoading = null; todayFailed = true; renderToday(); });
+return todayLoading;
+}
+function renderToday() {
+const d = todayData, n = d && d.number, m = d && d.moon, wait = todayFailed ? "—" : "…";
+document.getElementById("tile-number").textContent = n ? `${n.value} · ${n.word}` : wait;
+document.getElementById("tile-moon").textContent = m ? m.name : wait;
+document.getElementById("tile-moon-ico").textContent = m ? m.emoji : "🌙";
+document.getElementById("today-err").classList.toggle("hidden", !todayFailed || !!d);
+if (!d) return;
+document.getElementById("today-date").textContent = d.date;
+document.getElementById("today-num").textContent = n.value;
+document.getElementById("today-word").textContent = n.word;
+document.getElementById("today-kind").textContent = n.personal ? "Личное число по твоей дате рождения" : "Общее для всех · личное считается по дате рождения";
+document.getElementById("today-num-text").innerHTML = String(n.text).split(/\n\s*\n/).map(t => `<p>${esc(t.trim())}</p>`).join("");
+document.getElementById("btn-today-fate").classList.toggle("hidden", n.personal);
+document.getElementById("today-moon-ico").textContent = m.emoji;
+document.getElementById("today-moon-name").textContent = m.name;
+document.getElementById("today-moon-meta").textContent = `${m.lunar_day}-й лунный день · освещена на ${m.illumination}%`;
+document.getElementById("today-moon-text").textContent = m.text;
+document.getElementById("today-moon-next").textContent = `${m.next.name}: ${m.next.date}`;
+}
+function openToday(section) {
+openModal("today");
+track("today_open", { section });
+if (!todayData) loadToday();
+const el = document.getElementById(section === "moon" ? "today-moon" : "today-number");
+setTimeout(() => el.scrollIntoView({ block: "start", behavior: "smooth" }), 50);
+}
+
+// ── «Откуда узнал(а)?» – для тех, кто пришёл сразу в приложение, мимо /start ──
+function maybeAskSource() {
+const p = userProfile || {};
+if (!p.ask_source || !(p.source_options || []).length) return;
+let open = null;
+try { open = new URLSearchParams(location.search).get("open"); } catch {}
+if (open) return;   // человек пришёл по кнопке за конкретным делом – не мешаем
+document.getElementById("source-list").innerHTML = p.source_options
+.map(([k, label]) => `<button class="source-btn" onclick="chooseSource('${k}')">${esc(label)}</button>`).join("");
+setTimeout(() => {
+// уже открыто другое окно или расклад – спросим в другой раз
+if (document.querySelector('[id^="modal-"]:not(.hidden)') || !document.getElementById("s-reading").classList.contains("hidden")) return;
+openModal("source");
+}, 1200);
+}
+function chooseSource(key) {
+closeModal("source");
+if (userProfile) userProfile.ask_source = false;
+fetch(`${BACKEND}/api/user/source`, { method:"POST", headers:{"Content-Type":"application/json","Authorization":initData}, body: JSON.stringify({ source: key }) }).catch(() => {});
+if (key !== "skip" && tg.HapticFeedback) tg.HapticFeedback.notificationOccurred("success");
 }
 
 // Кнопки бота после «Кода судьбы»: ?open=quick / ?open=preset (&from=fate – для воронки)
@@ -1651,7 +1795,7 @@ function openDeepLinkedAction() {
 let open = null, from = null;
 try { const q = new URLSearchParams(location.search); open = q.get("open"); from = q.get("from"); } catch {}
 if (open !== "quick" && open !== "preset") return;
-if (from === "fate") track(open === "quick" ? "fate_cta_free" : "fate_cta_paid");
+if (from === "fate") track(open === "quick" ? "fate_cta_free" : "fate_cta_paid", { free: ctaFree(open) });
 openModal(open);
 }
 initApp();
