@@ -137,6 +137,14 @@ display: block; margin: 1rem 0 .35rem;
 .today-tile .lbl{font-size:10px;color:rgba(196,181,253,.72)}
 .today-tile .val{font-size:13px;font-weight:700;line-height:1.25;overflow-wrap:anywhere}
 .today-num{width:52px;height:52px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:24px;font-weight:700;color:#000;background:linear-gradient(to right,#eab308,#D4AF37);flex-shrink:0}
+.sky-chip{display:inline-flex;align-items:center;gap:4px;margin-top:2px;padding:2px 8px;min-height:24px;border-radius:999px;font-size:11px;color:rgba(220,214,255,.9);background:rgba(124,58,237,.18);border:1px solid rgba(124,58,237,.4)}
+.sky-chip:active{transform:scale(.96)}
+.sky-block{padding:14px;border-radius:16px;background:rgba(15,8,29,.6);border:1px solid rgba(88,28,135,.4)}
+.sky-h{font-size:10px;letter-spacing:.08em;text-transform:uppercase;color:rgba(196,181,253,.72);margin-bottom:8px}
+.sign-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.sign-btn{min-height:56px;border-radius:12px;font-size:12px;color:#fff;background:#1F103A;border:1px solid rgba(88,28,135,.5);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px}
+.sign-btn .em{font-size:18px;color:#D4AF37}
+.sign-btn.on{border-color:#D4AF37;background:rgba(212,175,55,.12)}
 .source-btn{width:100%;min-height:44px;border-radius:12px;font-size:14px;color:#fff;background:#1F103A;border:1px solid rgba(212,175,55,.3)}
 .source-btn:active{transform:scale(.97)}
 .streak-dots span{flex:1;height:26px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:12px;background:rgba(15,8,29,.6);border:1px solid rgba(88,28,135,.45);color:rgba(196,181,253,.55)}
@@ -183,7 +191,7 @@ style="background:linear-gradient(160deg,#0F081D 0%,#1A0B2E 50%,#0A0514 100%)">
 <div class="w-10 h-10 rounded-xl flex items-center justify-center text-lg shadow" style="background:linear-gradient(135deg,#7c3aed,#D4AF37)">🔮</div>
 <div>
 <h3 id="disp-name" class="font-bold text-sm text-white">Искатель</h3>
-<p class="text-purple-200 uppercase tracking-widest" style="font-size:9px;opacity:.5">Послание Таро</p>
+<button id="sky-chip" class="sky-chip" onclick="openSky()" aria-label="Небо сегодня">🌙 Небо сегодня</button>
 </div>
 </div>
 <div class="flex flex-col items-end space-y-1">
@@ -241,9 +249,13 @@ style="background:linear-gradient(160deg,#0F081D 0%,#1A0B2E 50%,#0A0514 100%)">
 <span class="ico">🔢</span>
 <span style="min-width:0"><span class="lbl">Число дня</span><br><span id="tile-number" class="val">…</span></span>
 </button>
-<button class="today-tile" onclick="openToday('moon')" aria-label="Луна сегодня">
+<button class="today-tile" onclick="openSky()" aria-label="Небо сегодня">
 <span id="tile-moon-ico" class="ico">🌙</span>
-<span style="min-width:0"><span class="lbl">Луна сегодня</span><br><span id="tile-moon" class="val">…</span></span>
+<span style="min-width:0"><span class="lbl">Небо сегодня</span><br><span id="tile-moon" class="val">…</span></span>
+</button>
+<button class="today-tile" style="grid-column:1 / -1" onclick="openHoro()" aria-label="Гороскоп на неделю">
+<span class="ico">🔭</span>
+<span style="min-width:0"><span class="lbl">Гороскоп на неделю</span><br><span id="tile-horo" class="val">Выбери свой знак</span></span>
 </button>
 </div>
 
@@ -441,18 +453,62 @@ style="background:linear-gradient(160deg,#0F081D 0%,#1A0B2E 50%,#0A0514 100%)">
 </div>
 <button id="btn-today-fate" onclick="closeModal('today');openFate()" class="hidden w-full font-bold py-3 rounded-xl text-xs tracking-wider uppercase active:scale-95 text-white" style="background:#1F103A;border:1px solid rgba(212,175,55,.3)">🔢 Ввести дату рождения</button>
 </section>
-<section id="today-moon" class="space-y-3" style="border-top:1px solid rgba(88,28,135,.35);padding-top:16px">
+</div>
+</div>
+
+<!-- ══ МОДАЛКА: НЕБО СЕГОДНЯ ══ -->
+<div id="modal-sky" class="hidden fixed inset-0 z-40 flex items-end justify-center" style="background:rgba(0,0,0,.8);backdrop-filter:blur(10px)">
+<div class="absolute inset-0" onclick="closeModal('sky')"></div>
+<div class="relative z-10 w-full rounded-t-3xl p-6 space-y-4 shadow-2xl overflow-y-auto" style="max-width:420px;max-height:85vh;background:linear-gradient(to top,#0A0514,#1A0B2E);border-top:1px solid rgba(212,175,55,.3)">
+<div class="flex justify-between items-center">
+<h3 class="serif text-xl font-bold" style="color:#D4AF37">Небо сегодня</h3>
+<button onclick="closeModal('sky')" aria-label="Закрыть" class="w-8 h-8 rounded-full flex items-center justify-center text-purple-200" style="background:rgba(49,10,77,.5);border:1px solid rgba(88,28,135,.4)">✕</button>
+</div>
+<p id="sky-err" class="hidden text-sm" style="color:rgba(230,224,255,.9)">Не получилось загрузить. Проверь интернет и открой ещё раз.</p>
+<div id="sky-body" class="space-y-4">
+<div class="sky-block">
+<div class="sky-h">Луна</div>
 <div class="flex items-center space-x-3">
-<span id="today-moon-ico" style="font-size:40px;line-height:1">🌙</span>
+<span id="sky-moon-ico" style="font-size:40px;line-height:1">🌙</span>
 <div style="min-width:0">
-<div class="text-xs" style="color:rgba(196,181,253,.72)">Луна сегодня</div>
-<div id="today-moon-name" class="text-base font-bold text-white"></div>
-<div id="today-moon-meta" class="text-xs" style="color:rgba(196,181,253,.72)"></div>
+<div id="sky-moon-name" class="text-base font-bold text-white">Считаем небо…</div>
+<div id="sky-moon-meta" class="text-xs" style="color:rgba(196,181,253,.72)"></div>
 </div>
 </div>
-<p id="today-moon-text" class="text-sm leading-relaxed" style="color:rgba(230,224,255,.9)"></p>
-<p id="today-moon-next" class="text-xs" style="color:rgba(212,175,55,.85)"></p>
-</section>
+<p id="sky-moon-good" class="text-sm mt-3" style="color:rgba(230,224,255,.9)"></p>
+</div>
+<div class="sky-block">
+<div class="sky-h">Ретроградные планеты</div>
+<div id="sky-retro" class="space-y-3 text-sm" style="color:rgba(230,224,255,.9)"></div>
+</div>
+<div class="sky-block">
+<div class="sky-h">Ближайшее событие</div>
+<div id="sky-next" class="text-sm" style="color:rgba(230,224,255,.9)"></div>
+<div id="sky-events" class="space-y-1 text-xs mt-3" style="color:rgba(196,181,253,.72)"></div>
+</div>
+</div>
+</div>
+</div>
+
+<!-- ══ МОДАЛКА: ГОРОСКОП НА НЕДЕЛЮ ══ -->
+<div id="modal-horo" class="hidden fixed inset-0 z-40 flex items-end justify-center" style="background:rgba(0,0,0,.8);backdrop-filter:blur(10px)">
+<div class="absolute inset-0" onclick="closeModal('horo')"></div>
+<div class="relative z-10 w-full rounded-t-3xl p-6 space-y-4 shadow-2xl overflow-y-auto" style="max-width:420px;max-height:85vh;background:linear-gradient(to top,#0A0514,#1A0B2E);border-top:1px solid rgba(212,175,55,.3)">
+<div class="flex justify-between items-center">
+<div>
+<h3 id="horo-title" class="serif text-xl font-bold" style="color:#D4AF37">Гороскоп на неделю</h3>
+<p id="horo-week" class="text-xs" style="color:rgba(196,181,253,.72)"></p>
+</div>
+<button onclick="closeModal('horo')" aria-label="Закрыть" class="w-8 h-8 rounded-full flex items-center justify-center text-purple-200" style="background:rgba(49,10,77,.5);border:1px solid rgba(88,28,135,.4)">✕</button>
+</div>
+<div id="horo-pick" class="hidden space-y-3">
+<p class="text-sm" style="color:rgba(230,224,255,.9)">Выбери свой знак:</p>
+<div id="horo-signs" class="sign-grid"></div>
+</div>
+<div id="horo-text" class="space-y-3 text-sm leading-relaxed" style="color:rgba(230,224,255,.9)"></div>
+<button id="btn-horo-other" onclick="showSignPicker()" class="hidden w-full text-xs py-2" style="min-height:44px;color:rgba(196,181,253,.72)">Другой знак</button>
+<button id="btn-horo-date" onclick="closeModal('horo');openFate()" class="hidden w-full font-bold py-3 rounded-xl text-xs tracking-wider uppercase active:scale-95 text-white" style="background:#1F103A;border:1px solid rgba(212,175,55,.3)">🔢 Ввести дату рождения</button>
+<p id="horo-date-hint" class="hidden text-xs text-center" style="color:rgba(196,181,253,.72)">С датой рождения знак определится сам, а ещё откроется Код судьбы.</p>
 </div>
 </div>
 
@@ -1624,6 +1680,8 @@ openDeepLinkedReading();
 openDeepLinkedAction();
 syncTimezone();
 loadToday();
+loadSky();
+renderHoroTile();
 maybeAskSource();
 return;
 } catch (e) { await new Promise(res => setTimeout(res, 1500)); }
@@ -1725,6 +1783,7 @@ if (!r.ok) { err.textContent = r.status === 400 ? "Такой даты нет. �
 userProfile.fate = d.fate; userProfile.birth_date = d.birth_date;
 renderFate();
 todayData = null; todayLoading = null; loadToday();   // число дня теперь личное
+refreshProfile().then(renderHoroTile).catch(() => {});    // знак для гороскопа – по дате
 if (tg.HapticFeedback) tg.HapticFeedback.notificationOccurred("success");
 } catch { err.textContent = "Нет связи с сервером. Попробуй ещё раз."; err.classList.remove("hidden"); }
 finally { fateBusy = false; btn.disabled = false; btn.textContent = "Открыть Код судьбы"; }
@@ -1754,18 +1813,102 @@ document.getElementById("today-word").textContent = n.word;
 document.getElementById("today-kind").textContent = n.personal ? "Личное число по твоей дате рождения" : "Общее для всех · личное считается по дате рождения";
 document.getElementById("today-num-text").innerHTML = String(n.text).split(/\n\s*\n/).map(t => `<p>${esc(t.trim())}</p>`).join("");
 document.getElementById("btn-today-fate").classList.toggle("hidden", n.personal);
-document.getElementById("today-moon-ico").textContent = m.emoji;
-document.getElementById("today-moon-name").textContent = m.name;
-document.getElementById("today-moon-meta").textContent = `${m.lunar_day}-й лунный день · освещена на ${m.illumination}%`;
-document.getElementById("today-moon-text").textContent = m.text;
-document.getElementById("today-moon-next").textContent = `${m.next.name}: ${m.next.date}`;
 }
 function openToday(section) {
 openModal("today");
 track("today_open", { section });
 if (!todayData) loadToday();
-const el = document.getElementById(section === "moon" ? "today-moon" : "today-number");
-setTimeout(() => el.scrollIntoView({ block: "start", behavior: "smooth" }), 50);
+}
+
+// ── Небо сегодня: Луна, ретрограды, ближайшее событие ──
+let skyData = null, skyLoading = null, skyFailed = false;
+function loadSky() {
+if (skyLoading) return skyLoading;
+skyFailed = false;
+skyLoading = fetchWithTimeout(`${BACKEND}/api/sky`, { headers:{ Authorization: initData } }, 30000)
+.then(r => r.ok ? r.json() : Promise.reject(r.status))
+.then(d => { skyData = d; renderSky(); })
+.catch(() => { skyLoading = null; skyFailed = true; renderSky(); });
+return skyLoading;
+}
+function renderSky() {
+const d = skyData, m = d && d.moon;
+document.getElementById("sky-chip").textContent = m ? `${m.emoji} ${m.lunar_day}-й лунный день` : "🌙 Небо сегодня";
+document.getElementById("sky-err").classList.toggle("hidden", !skyFailed || !!d);
+if (!d) return;
+document.getElementById("sky-moon-ico").textContent = m.emoji;
+document.getElementById("sky-moon-name").textContent = m.name;
+document.getElementById("sky-moon-meta").textContent = `${m.lunar_day}-й лунный день · освещена на ${m.illumination}%`;
+document.getElementById("sky-moon-good").textContent = `День хорош, чтобы ${m.good_for.charAt(0).toLowerCase()}${m.good_for.slice(1)}`;
+document.getElementById("sky-retro").innerHTML = d.retro.length
+? d.retro.map(r => `<div><div class="font-bold text-white">${esc(r.label)}${r.until ? " до " + esc(r.until) : ""}</div><div style="color:rgba(196,181,253,.85)">${esc(r.tip)}</div></div>`).join("")
+: `<div>Сейчас ретроградных планет нет: хорошее время двигаться вперёд.</div>`;
+const n = d.next;
+document.getElementById("sky-next").innerHTML = n
+? `<div class="font-bold text-white">${n.emoji} ${esc(n.title)} – ${esc(n.countdown)}</div><div style="color:rgba(196,181,253,.72)">${esc(n.date)}</div>`
+: `<div>В ближайший месяц больших событий нет.</div>`;
+document.getElementById("sky-events").innerHTML = d.events.slice(1, 6)
+.map(e => `<div>${e.emoji} ${esc(e.title)} · ${esc(e.date)}</div>`).join("");
+}
+function openSky() {
+openModal("sky");
+track("sky_viewed");
+if (!skyData) loadSky();
+}
+
+// ── Гороскоп на неделю ──
+const SIGN_NAME = {};
+function signName(k) {
+if (!Object.keys(SIGN_NAME).length) ((userProfile && userProfile.signs) || []).forEach(([key, n, e]) => SIGN_NAME[key] = [n, e]);
+return SIGN_NAME[k] || ["", ""];
+}
+function renderHoroTile() {
+const k = userProfile && userProfile.horo_sign;
+document.getElementById("tile-horo").textContent = k ? `${signName(k)[1]} ${signName(k)[0]}` : "Выбери свой знак";
+}
+function showSignPicker(current) {
+const p = userProfile || {};
+document.getElementById("horo-signs").innerHTML = (p.signs || [])
+.map(([k, n, e]) => `<button class="sign-btn${k === current ? " on" : ""}" onclick="pickSign('${k}')"><span class="em">${e}</span>${esc(n)}</button>`).join("");
+document.getElementById("horo-pick").classList.remove("hidden");
+document.getElementById("horo-text").innerHTML = "";
+document.getElementById("btn-horo-other").classList.add("hidden");
+document.getElementById("horo-title").textContent = "Гороскоп на неделю";
+}
+function pickSign(k) {
+const p = userProfile || {};
+if (!p.birth_date) {   // своего знака по дате нет – запомним выбор для рассылки
+p.horo_sign = k; renderHoroTile();
+fetch(`${BACKEND}/api/user/horo-sign`, { method:"POST", headers:{"Content-Type":"application/json","Authorization":initData}, body: JSON.stringify({ sign: k }) }).catch(() => {});
+}
+loadHoro(k);
+}
+async function loadHoro(sign) {
+const box = document.getElementById("horo-text");
+document.getElementById("horo-pick").classList.add("hidden");
+box.innerHTML = `<p style="color:rgba(196,181,253,.72)">Читаем звёзды на неделю…</p>`;
+try {
+const r = await fetchWithTimeout(`${BACKEND}/api/horoscope?sign=${encodeURIComponent(sign || "")}`, { headers:{ Authorization: initData } }, 60000);
+const d = await r.json();
+document.getElementById("horo-week").textContent = d.week || "";
+const p = userProfile || {};
+document.getElementById("btn-horo-date").classList.toggle("hidden", !!d.has_birth_date);
+document.getElementById("horo-date-hint").classList.toggle("hidden", !!d.has_birth_date);
+if (d.need_sign) { showSignPicker(); return; }
+const [n, e] = signName(d.sign);
+document.getElementById("horo-title").textContent = `${e} ${n}`;
+box.innerHTML = d.text
+? String(d.text).split(/\n\s*\n/).map(t => `<p>${esc(t.trim())}</p>`).join("")
+: `<p>Гороскоп на эту неделю ещё пишется. Загляни через пару минут 🌙</p>`;
+document.getElementById("btn-horo-other").classList.remove("hidden");
+} catch {
+box.innerHTML = `<p>Не получилось загрузить. Проверь интернет и попробуй ещё раз.</p>`;
+}
+}
+function openHoro(sign) {
+openModal("horo");
+const k = (sign && signName(sign)[0]) ? sign : (userProfile && userProfile.horo_sign);
+if (k) loadHoro(k); else { loadHoro(""); }
 }
 
 // ── «Откуда узнал(а)?» – для тех, кто пришёл сразу в приложение, мимо /start ──
@@ -1794,6 +1937,13 @@ if (key !== "skip" && tg.HapticFeedback) tg.HapticFeedback.notificationOccurred(
 function openDeepLinkedAction() {
 let open = null, from = null;
 try { const q = new URLSearchParams(location.search); open = q.get("open"); from = q.get("from"); } catch {}
+if (open === "horoscope") {
+let sign = null;
+try { sign = new URLSearchParams(location.search).get("sign"); } catch {}
+if (from === "broadcast") track("horoscope_from_broadcast", { sign: sign || null });
+openHoro(sign);
+return;
+}
 if (open !== "quick" && open !== "preset") return;
 if (from === "fate") track(open === "quick" ? "fate_cta_free" : "fate_cta_paid", { free: ctaFree(open) });
 openModal(open);
