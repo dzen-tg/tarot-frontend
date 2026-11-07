@@ -846,6 +846,7 @@ style="background:rgba(15,8,29,.8);border:1px solid rgba(88,28,135,.6)"></textar
 <button onclick="closeModal('pview')" aria-label="Закрыть" class="w-8 h-8 rounded-full flex items-center justify-center text-purple-200" style="flex-shrink:0;background:rgba(49,10,77,.5);border:1px solid rgba(88,28,135,.4)">✕</button>
 </div>
 <p id="pv-date" class="text-xs" style="color:rgba(196,181,253,.72)"></p>
+<div id="pv-chart"></div>
 <div id="pv-facts" style="display:grid;grid-template-columns:1fr 1fr;gap:6px"></div>
 <div id="pv-body" class="space-y-4 text-sm leading-relaxed" style="color:rgba(230,224,255,.9)"></div>
 </div>
@@ -1662,7 +1663,7 @@ try {
 const r = await fetch(`${BACKEND}/api/matrix/preview`, { headers:{ Authorization: initData } });
 const d = await r.json();
 if (!r.ok) { body.innerHTML = `<p class="text-xs" style="color:#f87171">${esc(d.detail || "Ошибка")}</p>`; return; }
-body.innerHTML = `<p>Полная матрица по методу Натальи Ладини: все точки считаются по дате рождения, а разбор пишется по каждому разделу.</p>
+body.innerHTML = `<p>Все точки считаются по твоей дате рождения, а разбор пишется по каждому разделу.</p>
 <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">${tile("Аркан личности", `${d.personality.num} · ${d.personality.name}`, "каким тебя видят")}${tile("Главная энергия", `${d.main.num} · ${d.main.name}`, "центр матрицы")}</div>
 <p class="text-xs font-semibold" style="color:rgba(196,181,253,.8)">В полной матрице:</p>
 <div class="space-y-1">${d.locked.map(t => `<div class="text-xs rounded-lg px-3 py-2" style="background:rgba(15,8,29,.6);border:1px solid rgba(88,28,135,.4)">🔒 ${esc(t)}</div>`).join("")}</div>
@@ -1776,6 +1777,49 @@ if (tg.HapticFeedback) tg.HapticFeedback.notificationOccurred("success");
 openProduct(d.id);
 } catch { tg.showAlert("Ошибка соединения. Если энергия списалась, разбор появится в «Моих разборах»."); pay.disabled = false; }
 }
+// Рисунок матрицы судьбы: ромб (день, месяц, год, низ) и квадрат рода, точки к центру, деньги и отношения
+function r22(n) { while (n > 22) n = String(n).split("").reduce((a, b) => a + +b, 0); return n; }
+function matrixSvg(p) {
+const cx = 170, cy = 170, R = 128, Q = 91;
+const pt = (x, y, t) => [x + (cx - x) * t, y + (cy - y) * t];
+const out = { A:[cx - R, cy], B:[cx, cy - R], C:[cx + R, cy], D:[cx, cy + R], F:[cx - Q, cy - Q], G:[cx + Q, cy - Q], H:[cx + Q, cy + Q], I:[cx - Q, cy + Q] };
+const ray = (X) => { const x1 = r22(X + p.E); return [r22(X + x1), x1]; };
+const circle = (x, y, rad, n, fill, stroke, color, size) => `<circle cx="${x.toFixed(1)}" cy="${y.toFixed(1)}" r="${rad}" fill="${fill}" stroke="${stroke}" stroke-width="1.5"/><text x="${x.toFixed(1)}" y="${(y + size * 0.36).toFixed(1)}" text-anchor="middle" font-size="${size}" font-weight="700" fill="${color}" font-family="Inter,system-ui,sans-serif">${n}</text>`;
+let lines = "", nodes = "";
+const line = (a, b, c, w, dash) => { lines += `<line x1="${a[0].toFixed(1)}" y1="${a[1].toFixed(1)}" x2="${b[0].toFixed(1)}" y2="${b[1].toFixed(1)}" stroke="${c}" stroke-width="${w}"${dash ? ' stroke-dasharray="3 4"' : ""}/>`; };
+// фигуры
+line(out.A, out.B, "rgba(212,175,55,.55)", 1.4); line(out.B, out.C, "rgba(212,175,55,.55)", 1.4); line(out.C, out.D, "rgba(212,175,55,.55)", 1.4); line(out.D, out.A, "rgba(212,175,55,.55)", 1.4);
+line(out.F, out.G, "rgba(167,139,250,.5)", 1.4); line(out.G, out.H, "rgba(167,139,250,.5)", 1.4); line(out.H, out.I, "rgba(167,139,250,.5)", 1.4); line(out.I, out.F, "rgba(167,139,250,.5)", 1.4);
+line(out.A, out.C, "rgba(212,175,55,.25)", 1, true); line(out.B, out.D, "rgba(212,175,55,.25)", 1, true);
+line(out.F, out.H, "rgba(167,139,250,.22)", 1, true); line(out.G, out.I, "rgba(167,139,250,.22)", 1, true);
+// канал денег и отношений
+const c1 = pt(...out.C, 0.42), d1 = pt(...out.D, 0.42), bal = [(c1[0] + d1[0]) / 2, (c1[1] + d1[1]) / 2];
+const money = [(c1[0] + bal[0]) / 2, (c1[1] + bal[1]) / 2], love = [(d1[0] + bal[0]) / 2, (d1[1] + bal[1]) / 2];
+line(c1, d1, "rgba(74,222,128,.55)", 1.2);
+// точки на лучах
+["A","B","C","D"].forEach(k => { const [x2, x1] = ray(p[k]); const a = pt(...out[k], 0.22), b = pt(...out[k], 0.42);
+nodes += circle(a[0], a[1], 10.5, x2, "#1A0B2E", "rgba(212,175,55,.6)", "#f5e6b0", 10) + circle(b[0], b[1], 10.5, x1, "#1A0B2E", "rgba(212,175,55,.6)", "#f5e6b0", 10); });
+["F","G","H","I"].forEach(k => { const [x2, x1] = ray(p[k]); const a = pt(...out[k], 0.2), b = pt(...out[k], 0.36);
+nodes += circle(a[0], a[1], 10, x2, "#1A0B2E", "rgba(167,139,250,.55)", "#ddd6fe", 9.5) + circle(b[0], b[1], 10, x1, "#1A0B2E", "rgba(167,139,250,.55)", "#ddd6fe", 9.5); });
+nodes += circle(bal[0], bal[1], 10, p.balance, "#0F2A1A", "rgba(74,222,128,.7)", "#bbf7d0", 9.5);
+nodes += circle(money[0], money[1], 9.5, p.money, "#0F2A1A", "rgba(74,222,128,.7)", "#bbf7d0", 9);
+nodes += circle(love[0], love[1], 9.5, p.rel_mid, "#2A0F1F", "rgba(244,114,182,.7)", "#fbcfe8", 9);
+nodes += `<text x="${(money[0] + 13).toFixed(1)}" y="${(money[1] + 4).toFixed(1)}" font-size="12" fill="#4ade80" font-weight="700">$</text>`;
+nodes += `<text x="${(love[0] - 13).toFixed(1)}" y="${(love[1] + 4).toFixed(1)}" text-anchor="end" font-size="12" fill="#f472b6">♥</text>`;
+// внешние точки и центр
+const ages = { A:0, F:10, B:20, G:30, C:40, H:50, D:60, I:70 };
+const labelPos = { A:[-22, 0], B:[0, -22], C:[22, 0], D:[0, 24], F:[-17, -17], G:[17, -17], H:[17, 19], I:[-17, 19] };
+["F","G","H","I"].forEach(k => { nodes += circle(out[k][0], out[k][1], 15, p[k], "#1F103A", "#a78bfa", "#fff", 12.5); });
+["A","B","C","D"].forEach(k => { nodes += circle(out[k][0], out[k][1], 17, p[k], k === "D" ? "#7f1d1d" : "#5b21b6", "#D4AF37", "#fff", 13.5); });
+Object.keys(ages).forEach(k => { const [dx, dy] = labelPos[k]; nodes += `<text x="${(out[k][0] + dx).toFixed(1)}" y="${(out[k][1] + dy + 3).toFixed(1)}" text-anchor="middle" font-size="8.5" fill="rgba(196,181,253,.6)">${ages[k]}</text>`; });
+nodes += circle(cx, cy, 21, p.E, "#D4AF37", "#f5e6b0", "#1A0B2E", 16);
+return `<div class="rounded-2xl p-2" style="background:rgba(15,8,29,.6);border:1px solid rgba(212,175,55,.3)">
+<svg viewBox="0 0 340 340" width="100%" style="display:block;max-width:360px;margin:0 auto" role="img" aria-label="Схема матрицы судьбы">
+<circle cx="${cx}" cy="${cy}" r="150" fill="none" stroke="rgba(212,175,55,.12)" stroke-width="1"/>${lines}${nodes}</svg>
+<div class="flex flex-wrap justify-center pb-1" style="column-gap:12px;row-gap:2px;font-size:10px;color:rgba(196,181,253,.7)">
+<span><b style="color:#D4AF37">●</b> центр – главная энергия</span><span><b style="color:#4ade80">$</b> деньги</span><span><b style="color:#f472b6">♥</b> отношения</span><span>цифры по краю – возраст</span>
+</div></div>`;
+}
 let productPoll = null;
 async function openProduct(id) {
 if (productPoll) { clearTimeout(productPoll); productPoll = null; }
@@ -1783,6 +1827,7 @@ document.getElementById("pv-title").textContent = "Разбор";
 document.getElementById("pv-emoji").textContent = "✨";
 document.getElementById("pv-date").textContent = "";
 document.getElementById("pv-facts").innerHTML = "";
+document.getElementById("pv-chart").innerHTML = "";
 document.getElementById("pv-body").innerHTML = `<p class="text-xs" style="color:rgba(196,181,253,.72)">Загружаем…</p>`;
 openModal("pview");
 const started = Date.now();
@@ -1794,6 +1839,7 @@ if (!r.ok) { document.getElementById("pv-body").innerHTML = `<p class="text-xs" 
 document.getElementById("pv-title").textContent = d.title;
 document.getElementById("pv-emoji").textContent = d.emoji;
 document.getElementById("pv-date").textContent = fmtDate(d.created_at);
+document.getElementById("pv-chart").innerHTML = d.points ? matrixSvg(d.points) : "";
 document.getElementById("pv-facts").innerHTML = (d.facts || []).map(f => `<div class="rounded-lg" style="padding:6px 8px;background:rgba(15,8,29,.6);border:1px solid rgba(88,28,135,.4)"><div style="font-size:10px;color:rgba(196,181,253,.6)">${esc(f[0])}</div><div style="font-size:12px;font-weight:700;color:#D4AF37">${esc(f[1])}</div></div>`).join("");
 if (d.status === "pending") {
 document.getElementById("pv-body").innerHTML = `<div class="text-center space-y-2 py-4"><div class="text-3xl">✨</div><p class="text-sm">Пишем твой разбор…</p><p class="text-xs" style="color:rgba(196,181,253,.72)">Обычно это занимает до минуты. Можно закрыть окно: разбор появится в «Моих разборах».</p></div>`;
