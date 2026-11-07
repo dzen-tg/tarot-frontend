@@ -259,6 +259,39 @@ style="background:linear-gradient(160deg,#0F081D 0%,#1A0B2E 50%,#0A0514 100%)">
 </button>
 </div>
 
+<!-- 1а2. Марафон «7 дней знаков Вселенной» – бесплатно -->
+<div id="marathon-card" class="rounded-2xl p-4 shadow-md" style="background:linear-gradient(to right,#1F103A,#0F081D);border:1px solid rgba(88,28,135,.4)">
+<div class="flex items-center justify-between">
+<div class="flex items-center space-x-3" style="min-width:0">
+<span class="text-3xl">🗓</span>
+<div style="min-width:0">
+<div class="card-title">
+<h2 class="serif text-base font-bold text-white">Марафон 7 дней</h2>
+<span class="font-bold uppercase px-1.5 py-0.5 rounded-full" style="background:rgba(124,58,237,.2);border:1px solid rgba(124,58,237,.45);color:rgba(220,214,255,.9);font-size:9px">Бесплатно</span>
+</div>
+<p id="marathon-sub" class="text-purple-200" style="font-size:11px;opacity:.5">«Знаки Вселенной» · задание и карта по теме</p>
+</div>
+</div>
+<button id="btn-marathon" onclick="marathonClick()" class="font-bold rounded-xl px-4 py-2 text-xs tracking-wider uppercase transition-all active:scale-95 text-white" style="flex-shrink:0;background:#1F103A;border:1px solid rgba(212,175,55,.3)">Начать</button>
+</div>
+<div id="marathon-dots" class="streak-dots hidden" style="margin:12px 0 0" aria-hidden="true"></div>
+</div>
+
+<!-- 1а3. Толкователь снов – 1 сон в день бесплатно, дальше за энергию -->
+<div class="flex items-center justify-between rounded-2xl p-4 shadow-md" style="background:linear-gradient(to right,#1F103A,#0F081D);border:1px solid rgba(88,28,135,.4)">
+<div class="flex items-center space-x-3" style="min-width:0">
+<span class="text-3xl">🌙</span>
+<div style="min-width:0">
+<div class="card-title">
+<h2 class="serif text-base font-bold text-white">Толкователь снов</h2>
+<span id="dream-badge" class="font-bold uppercase px-1.5 py-0.5 rounded-full" style="background:rgba(124,58,237,.2);border:1px solid rgba(124,58,237,.45);color:rgba(220,214,255,.9);font-size:9px">Бесплатно</span>
+</div>
+<p id="dream-sub" class="text-purple-200" style="font-size:11px;opacity:.5">Голосом или текстом · 1 сон в день бесплатно</p>
+</div>
+</div>
+<button id="btn-dream" onclick="openDream()" class="font-bold rounded-xl px-4 py-2 text-xs tracking-wider uppercase transition-all active:scale-95 text-white" style="flex-shrink:0;background:#1F103A;border:1px solid rgba(212,175,55,.3)">Рассказать</button>
+</div>
+
 <!-- 1б. Быстрый ответ -->
 <div class="flex items-center justify-between rounded-2xl p-4 shadow-md" style="background:linear-gradient(to right,#1F103A,#0F081D);border:1px solid rgba(88,28,135,.4)">
 <div class="flex items-center space-x-3">
@@ -827,6 +860,18 @@ style="background:rgba(15,8,29,.8);border:1px solid rgba(88,28,135,.6)"></textar
 <div id="r-rate-thanks" class="hidden text-xs" style="color:rgba(220,214,255,.85)"></div>
 </div>
 
+<!-- Финал марафона: разобрать главный вопрос -->
+<div id="r-marathon-cta" class="hidden rounded-2xl p-4 mb-4 space-y-3" style="background:linear-gradient(135deg,rgba(124,58,237,.18),rgba(212,175,55,.08));border:1px solid rgba(212,175,55,.3)">
+<p class="serif text-sm font-bold" style="color:#D4AF37">Марафон пройден ✨</p>
+<p class="text-xs leading-relaxed" style="color:rgba(220,214,255,.85)">За неделю ты многое заметил(а). Хочешь разобрать главный вопрос с картами?</p>
+<button onclick="marathonCta('quick')" class="w-full flex items-center justify-between font-bold rounded-xl px-4 py-3 text-xs active:scale-95 text-black" style="background:linear-gradient(to right,#eab308,#D4AF37)">
+<span>⚡ Быстрый ответ · 1 карта</span><span id="mcta-quick-price">75 ✨</span>
+</button>
+<button onclick="marathonCta('preset')" class="w-full flex items-center justify-between font-bold rounded-xl px-4 py-3 text-xs active:scale-95 text-white" style="background:linear-gradient(to right,#7c3aed,#D4AF37)">
+<span>🎴 Расклад на ситуацию · 3 карты</span><span id="mcta-preset-price">150 ✨</span>
+</button>
+</div>
+
 <!-- После Быстрого ответа: предложение разобрать вопрос подробнее -->
 <div id="r-upsell" class="hidden rounded-2xl p-4 mb-4 space-y-3" style="background:linear-gradient(135deg,rgba(124,58,237,.18),rgba(212,175,55,.08));border:1px solid rgba(212,175,55,.3)">
 <p class="serif text-sm font-bold" style="color:#D4AF37">Хочешь разобрать глубже?</p>
@@ -1261,7 +1306,7 @@ document.getElementById("r-result").classList.add("hidden");
 document.getElementById("btn-back").classList.add("hidden");
 document.getElementById("btn-share").classList.add("hidden");
 document.getElementById("btn-story").classList.add("hidden");
-["r-clarify","r-dailypush","r-note"].forEach(id => document.getElementById(id).classList.add("hidden"));
+["r-clarify","r-dailypush","r-note","r-marathon-cta"].forEach(id => document.getElementById(id).classList.add("hidden"));
 document.getElementById("r-clar").innerHTML = "";
 showUpsell(false);
 document.getElementById("r-rate").classList.add("hidden");
@@ -1276,7 +1321,7 @@ try { fetch(`${BACKEND}/api/event`, { method:"POST", headers:{"Content-Type":"ap
 
 // ── Текущий расклад: id в базе, уточнения ──
 let currentReading = null;   // { id, kind, clarifications:[], left, cost }
-const KIND_TITLES = { daily:"Карта Дня", quick:"Быстрый ответ", preset:"Расклад на ситуацию", ai:"Индивидуальный разбор" };
+const KIND_TITLES = { daily:"Карта Дня", marathon:"Марафон 7 дней", quick:"Быстрый ответ", preset:"Расклад на ситуацию", ai:"Индивидуальный разбор" };
 function kindTitle(kind) {
 if (KIND_TITLES[kind]) return KIND_TITLES[kind];
 const sp = spreadById(String(kind || "").replace(/^sp_/, ""));
@@ -1390,6 +1435,97 @@ document.getElementById("ref-count").textContent = p.ref_count || 0;
 document.getElementById("ref-invited").textContent = p.ref_invited || 0;
 document.getElementById("ref-bonus").textContent = p.ref_bonus || 150;
 renderStorePrices();
+renderMarathon();
+renderDream();
+}
+
+// ── Марафон «7 дней знаков Вселенной» ──
+function renderMarathon() {
+const m = userProfile && userProfile.marathon;
+if (!m) return;
+const btn = document.getElementById("btn-marathon"), sub = document.getElementById("marathon-sub");
+const dots = document.getElementById("marathon-dots");
+const total = m.total || 7;
+let label = "Начать", text = "«Знаки Вселенной» · задание и карта по теме";
+if (m.status === "ready") {
+label = `День ${m.next_day}`;
+text = m.skipped ? `Продолжим с дня ${m.next_day} – прогресс сохранён` : `День ${m.next_day} из ${total} · ${m.theme}`;
+} else if (m.status === "done_today") {
+label = "Открыть";
+text = `День ${m.day_done} из ${total} пройден · завтра день ${m.next_day}`;
+} else if (m.status === "finished") {
+label = m.today_reading_id ? "Открыть" : "Заново";
+text = "Марафон пройден ✨ Можно начать заново";
+}
+btn.textContent = label;
+sub.textContent = text;
+const show = m.status === "ready" || m.status === "done_today" || (m.status === "finished" && m.today_reading_id);
+dots.classList.toggle("hidden", !show);
+if (show) {
+const out = [];
+for (let d = 1; d <= total; d++) out.push(`<span class="${d <= m.day_done ? "on" : (m.status === "ready" && d === m.next_day ? "today" : "")}">${d}</span>`);
+dots.innerHTML = out.join("");
+}
+}
+function showMarathonCta(on) {
+const p = userProfile || {}, c = p.costs || {};
+document.getElementById("mcta-quick-price").textContent = (p.free_readings || 0) > 0 ? "🎁 бесплатно" : (c.quick || 75) + " ✨";
+document.getElementById("mcta-preset-price").textContent = (p.free_preset || 0) > 0 ? "🎁 бесплатно" : (c.preset || 150) + " ✨";
+const el = document.getElementById("r-marathon-cta");
+if (!on) { el.classList.add("hidden"); return; }
+setTimeout(() => el.classList.remove("hidden"), 1300);
+}
+function marathonCta(kind) {
+track("marathon_cta_clicked", { kind, via: "app" });
+goBack();
+openModal(kind);
+}
+async function marathonClick() {
+const m = userProfile && userProfile.marathon;
+if (!m) return;
+if (m.today_reading_id && (m.status === "done_today" || m.status === "finished")) { openReading(m.today_reading_id); return; }
+const fresh = m.status === "none" || m.status === "finished";
+toReadingScreen(`Марафон · день ${fresh ? 1 : m.next_day} из ${m.total || 7}`);
+try {
+const r = await fetch(`${BACKEND}/api/marathon/${fresh ? "start" : "day"}`, { method:"POST", headers:{ Authorization: initData } });
+const d = await r.json().catch(() => ({}));
+if (!r.ok) { tg.showAlert(d.detail || "Ошибка"); goBack(); return; }
+if (d.marathon) userProfile.marathon = d.marathon;
+if (d.new_balance != null) userProfile.balance = d.new_balance;
+if (d.streak != null) userProfile.streak = d.streak;
+if (d.streak_reward) await refreshProfile().catch(() => {});
+updateUI();
+setCurrent(d, "marathon");
+rateCtx = null;
+document.getElementById("r-title").textContent = `Марафон · день ${d.day} из ${(d.marathon && d.marathon.total) || 7}`;
+renderCards(d.cards, d.text, { fast: !!d.repeat, note: d.streak_reward || null });
+if (d.day >= ((d.marathon && d.marathon.total) || 7)) showMarathonCta(true);
+} catch { tg.showAlert("Ошибка соединения."); goBack(); }
+}
+
+// ── Толкователь снов: рассказ – в чате бота (голосом или текстом) ──
+function renderDream() {
+const d = userProfile && userProfile.dream;
+if (!d) return;
+const badge = document.getElementById("dream-badge");
+badge.textContent = d.free ? "Бесплатно" : String(d.cost || 75);
+badge.style.cssText = d.free
+? "background:rgba(124,58,237,.2);border:1px solid rgba(124,58,237,.45);color:rgba(220,214,255,.9);font-size:9px"
+: "background:rgba(212,175,55,.1);border:1px solid rgba(212,175,55,.3);color:#D4AF37;font-size:9px";
+document.getElementById("dream-sub").textContent = d.free ? "Голосом или текстом · 1 сон в день бесплатно" : "Сегодняшний бесплатный сон растолкован · завтра снова бесплатно";
+}
+async function openDream() {
+if (tg.HapticFeedback) tg.HapticFeedback.impactOccurred("light");
+const btn = document.getElementById("btn-dream");
+btn.disabled = true;
+try {
+const r = await fetch(`${BACKEND}/api/dream/start`, { method:"POST", headers:{ Authorization: initData } });
+const d = await r.json().catch(() => ({}));
+if (!r.ok) { tg.showAlert(d.detail || "Не получилось открыть чат. Напиши боту /dream."); return; }
+tg.openTelegramLink(`https://t.me/${d.bot || BOT_USERNAME}`);
+setTimeout(() => { try { tg.close(); } catch {} }, 600);
+} catch { tg.showAlert("Ошибка соединения."); }
+finally { btn.disabled = false; }
 }
 
 // ── Способ оплаты: Stars / карта (Tribute) ──
@@ -1523,6 +1659,7 @@ document.getElementById("r-sub").textContent = fmtDate(d.created_at) + (d.questi
 currentReading = { id: d.id, kind: d.kind, clarifications: d.clarifications || [], left: d.clarify_left, cost: d.clarify_cost };
 rateCtx = null;
 renderCards(d.cards, d.text, { fast: true, note });
+if (d.kind === "marathon" && /день 7\b/.test(d.question || "")) showMarathonCta(true);
 } catch { tg.showAlert("Ошибка соединения."); goBack(); }
 }
 // ── Серия Карт Дня: подарок на 3-й день и каждый 7-й – Энергия ──
@@ -1944,7 +2081,9 @@ if (from === "broadcast") track("horoscope_from_broadcast", { sign: sign || null
 openHoro(sign);
 return;
 }
+if (open === "store") { openStore(); return; }
 if (open !== "quick" && open !== "preset") return;
+if (from === "marathon") track("marathon_cta_clicked", { kind: open, via: "bot" });
 if (from === "fate") track(open === "quick" ? "fate_cta_free" : "fate_cta_paid", { free: ctaFree(open) });
 openModal(open);
 }
