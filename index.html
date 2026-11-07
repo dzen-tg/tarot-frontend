@@ -1807,17 +1807,23 @@ nodes += circle(love[0], love[1], 9.5, p.rel_mid, "#2A0F1F", "rgba(244,114,182,.
 nodes += `<text x="${(money[0] + 13).toFixed(1)}" y="${(money[1] + 4).toFixed(1)}" font-size="12" fill="#4ade80" font-weight="700">$</text>`;
 nodes += `<text x="${(love[0] - 13).toFixed(1)}" y="${(love[1] + 4).toFixed(1)}" text-anchor="end" font-size="12" fill="#f472b6">♥</text>`;
 // внешние точки и центр
-const ages = { A:0, F:10, B:20, G:30, C:40, H:50, D:60, I:70 };
-const labelPos = { A:[-22, 0], B:[0, -22], C:[22, 0], D:[0, 24], F:[-17, -17], G:[17, -17], H:[17, 19], I:[-17, 19] };
+// шкала возраста: точка на каждый год, подписи каждые 10 лет (0 – слева, по часовой стрелке)
+let ring = "";
+for (let y = 0; y < 80; y++) {
+const a = Math.PI + y * Math.PI / 40, big = y % 10 === 0, half = y % 5 === 0;
+const x = cx + 152 * Math.cos(a), yy = cy + 152 * Math.sin(a);
+ring += `<circle cx="${x.toFixed(1)}" cy="${yy.toFixed(1)}" r="${big ? 2.6 : half ? 1.7 : 1.1}" fill="${big ? "#D4AF37" : "rgba(196,181,253,.45)"}"/>`;
+if (big) { const c = Math.cos(a), side = c < -0.3 ? "end" : c > 0.3 ? "start" : "middle", rr = side === "middle" ? 164 : 158;
+ring += `<text x="${(cx + rr * c).toFixed(1)}" y="${(cy + rr * Math.sin(a) + 3).toFixed(1)}" text-anchor="${side}" font-size="8.5" fill="rgba(212,175,55,.85)">${y} лет</text>`; }
+}
 ["F","G","H","I"].forEach(k => { nodes += circle(out[k][0], out[k][1], 15, p[k], "#1F103A", "#a78bfa", "#fff", 12.5); });
 ["A","B","C","D"].forEach(k => { nodes += circle(out[k][0], out[k][1], 17, p[k], k === "D" ? "#7f1d1d" : "#5b21b6", "#D4AF37", "#fff", 13.5); });
-Object.keys(ages).forEach(k => { const [dx, dy] = labelPos[k]; nodes += `<text x="${(out[k][0] + dx).toFixed(1)}" y="${(out[k][1] + dy + 3).toFixed(1)}" text-anchor="middle" font-size="8.5" fill="rgba(196,181,253,.6)">${ages[k]}</text>`; });
 nodes += circle(cx, cy, 21, p.E, "#D4AF37", "#f5e6b0", "#1A0B2E", 16);
 return `<div class="rounded-2xl p-2" style="background:rgba(15,8,29,.6);border:1px solid rgba(212,175,55,.3)">
-<svg viewBox="0 0 340 340" width="100%" style="display:block;max-width:360px;margin:0 auto" role="img" aria-label="Схема матрицы судьбы">
-<circle cx="${cx}" cy="${cy}" r="150" fill="none" stroke="rgba(212,175,55,.12)" stroke-width="1"/>${lines}${nodes}</svg>
+<svg viewBox="-22 -10 384 360" width="100%" style="display:block;max-width:380px;margin:0 auto" role="img" aria-label="Схема матрицы судьбы">
+${ring}${lines}${nodes}</svg>
 <div class="flex flex-wrap justify-center pb-1" style="column-gap:12px;row-gap:2px;font-size:10px;color:rgba(196,181,253,.7)">
-<span><b style="color:#D4AF37">●</b> центр – главная энергия</span><span><b style="color:#4ade80">$</b> деньги</span><span><b style="color:#f472b6">♥</b> отношения</span><span>цифры по краю – возраст</span>
+<span>Точки по кругу – возраст, от 0 лет слева по часовой стрелке</span><span>Всё внутри круга – темы на всю жизнь</span><span><b style="color:#D4AF37">●</b> центр – главная энергия</span><span><b style="color:#4ade80">$</b> деньги</span><span><b style="color:#f472b6">♥</b> отношения</span>
 </div></div>`;
 }
 let productPoll = null;
