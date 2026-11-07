@@ -370,10 +370,20 @@ style="background:linear-gradient(160deg,#0F081D 0%,#1A0B2E 50%,#0A0514 100%)">
 
 </div>
 
+<!-- Разборы по дате рождения (релиз 5) -->
+<div id="paid-wrap" class="mt-3">
+<p class="uppercase tracking-widest font-semibold mb-2" style="font-size:10px;color:rgba(196,181,253,.6)">Разборы по дате рождения</p>
+<div id="paid-grid" style="display:grid;grid-template-columns:1fr 1fr;gap:8px"></div>
+</div>
+
 <!-- Мои расклады -->
 <button onclick="openHistory()" class="w-full flex items-center justify-center space-x-2 rounded-2xl py-3 mt-1 transition-all active:scale-95" style="background:rgba(49,10,77,.35);border:1px solid rgba(124,58,237,.45)">
 <span style="font-size:14px">📜</span>
 <span class="font-bold tracking-wider uppercase" style="font-size:11px;color:rgba(220,214,255,.9)">Мои расклады</span>
+</button>
+<button onclick="openMyProducts()" class="w-full flex items-center justify-center space-x-2 rounded-2xl py-3 mt-1 transition-all active:scale-95" style="background:rgba(49,10,77,.35);border:1px solid rgba(124,58,237,.45)">
+<span style="font-size:14px">📚</span>
+<span class="font-bold tracking-wider uppercase" style="font-size:11px;color:rgba(220,214,255,.9)">Мои разборы</span>
 </button>
 
 <!-- Кнопка пополнения под услугами -->
@@ -794,6 +804,67 @@ style="background:rgba(15,8,29,.8);border:1px solid rgba(88,28,135,.6)"></textar
 </div>
 </div>
 
+<div id="modal-paid" class="hidden fixed inset-0 z-40 flex items-end justify-center" style="background:rgba(0,0,0,.8);backdrop-filter:blur(10px)">
+<div class="absolute inset-0" onclick="closeModal('paid')"></div>
+<div class="relative z-10 w-full rounded-t-3xl p-6 space-y-4 shadow-2xl overflow-y-auto" style="max-width:420px;max-height:85vh;background:linear-gradient(to top,#0A0514,#1A0B2E);border-top:1px solid rgba(212,175,55,.3)">
+<div class="flex justify-between items-center">
+<div class="flex items-center space-x-2" style="min-width:0">
+<span id="paid-emoji" class="text-2xl"></span>
+<h3 id="paid-title" class="serif text-xl font-bold" style="color:#D4AF37"></h3>
+</div>
+<button onclick="closeModal('paid')" aria-label="Закрыть" class="w-8 h-8 rounded-full flex items-center justify-center text-purple-200" style="flex-shrink:0;background:rgba(49,10,77,.5);border:1px solid rgba(88,28,135,.4)">✕</button>
+</div>
+<div id="paid-body" class="space-y-3 text-sm leading-relaxed" style="color:rgba(230,224,255,.9)"></div>
+</div>
+</div>
+
+<div id="modal-confirm" class="hidden fixed inset-0 z-40 flex items-end justify-center" style="background:rgba(0,0,0,.8);backdrop-filter:blur(10px)">
+<div class="absolute inset-0" onclick="closeModal('confirm')"></div>
+<div class="relative z-10 w-full rounded-t-3xl p-6 space-y-4 shadow-2xl overflow-y-auto" style="max-width:420px;max-height:85vh;background:linear-gradient(to top,#0A0514,#1A0B2E);border-top:1px solid rgba(212,175,55,.3)">
+<div class="flex justify-between items-center">
+<div class="flex items-center space-x-2" style="min-width:0">
+<span id="cf-emoji" class="text-2xl"></span>
+<h3 id="cf-title" class="serif text-xl font-bold" style="color:#D4AF37"></h3>
+</div>
+<button onclick="closeModal('confirm')" aria-label="Закрыть" class="w-8 h-8 rounded-full flex items-center justify-center text-purple-200" style="flex-shrink:0;background:rgba(49,10,77,.5);border:1px solid rgba(88,28,135,.4)">✕</button>
+</div>
+<p id="cf-text" class="text-sm leading-relaxed" style="color:rgba(230,224,255,.9)"></p>
+<button id="cf-pay" onclick="doBuy()" class="w-full font-bold py-3.5 rounded-xl text-xs tracking-wider uppercase active:scale-95 text-black" style="background:linear-gradient(to right,#eab308,#D4AF37)"></button>
+<button id="cf-store" onclick="closeModal('confirm');closeModal('paid');openStore()" class="hidden w-full font-bold py-3.5 rounded-xl text-xs tracking-wider uppercase active:scale-95 text-white" style="background:linear-gradient(to right,#7c3aed,#D4AF37)">⭐ Пополнить Энергию</button>
+<button onclick="closeModal('confirm')" class="w-full text-xs py-2" style="min-height:44px;color:rgba(196,181,253,.72)">Не сейчас</button>
+</div>
+</div>
+
+<div id="modal-pview" class="hidden fixed inset-0 z-40 flex items-end justify-center" style="background:rgba(0,0,0,.8);backdrop-filter:blur(10px)">
+<div class="absolute inset-0" onclick="closeModal('pview')"></div>
+<div class="relative z-10 w-full rounded-t-3xl p-6 space-y-4 shadow-2xl overflow-y-auto" style="max-width:420px;max-height:85vh;background:linear-gradient(to top,#0A0514,#1A0B2E);border-top:1px solid rgba(212,175,55,.3)">
+<div class="flex justify-between items-center">
+<div class="flex items-center space-x-2" style="min-width:0">
+<span id="pv-emoji" class="text-2xl"></span>
+<h3 id="pv-title" class="serif text-xl font-bold" style="color:#D4AF37"></h3>
+</div>
+<button onclick="closeModal('pview')" aria-label="Закрыть" class="w-8 h-8 rounded-full flex items-center justify-center text-purple-200" style="flex-shrink:0;background:rgba(49,10,77,.5);border:1px solid rgba(88,28,135,.4)">✕</button>
+</div>
+<p id="pv-date" class="text-xs" style="color:rgba(196,181,253,.72)"></p>
+<div id="pv-facts" style="display:grid;grid-template-columns:1fr 1fr;gap:6px"></div>
+<div id="pv-body" class="space-y-4 text-sm leading-relaxed" style="color:rgba(230,224,255,.9)"></div>
+</div>
+</div>
+
+<div id="modal-myproducts" class="hidden fixed inset-0 z-40 flex items-end justify-center" style="background:rgba(0,0,0,.8);backdrop-filter:blur(10px)">
+<div class="absolute inset-0" onclick="closeModal('myproducts')"></div>
+<div class="relative z-10 w-full rounded-t-3xl p-6 space-y-4 shadow-2xl overflow-y-auto" style="max-width:420px;max-height:85vh;background:linear-gradient(to top,#0A0514,#1A0B2E);border-top:1px solid rgba(212,175,55,.3)">
+<div class="flex justify-between items-center">
+<div class="flex items-center space-x-2" style="min-width:0">
+<span id="mp-emoji" class="text-2xl"></span>
+<h3 id="mp-title" class="serif text-xl font-bold" style="color:#D4AF37">Мои разборы</h3>
+</div>
+<button onclick="closeModal('myproducts')" aria-label="Закрыть" class="w-8 h-8 rounded-full flex items-center justify-center text-purple-200" style="flex-shrink:0;background:rgba(49,10,77,.5);border:1px solid rgba(88,28,135,.4)">✕</button>
+</div>
+<div id="mp-list" class="space-y-2"></div>
+</div>
+</div>
+
 <!-- ══ ЭКРАН РАСКЛАДА ══ -->
 <div id="s-reading" class="hidden relative z-10 flex-1 flex flex-col justify-between p-4 mx-auto w-full" style="max-width:420px">
 <div class="text-center py-2">
@@ -1015,6 +1086,21 @@ style="background:rgba(15,8,29,.8);border:1px solid rgba(88,28,135,.6)"></textar
 </div>
 <button onclick="buyPack('pack_1500')" class="flex items-center space-x-1.5 font-bold px-4 py-2 rounded-xl text-xs active:scale-95 text-white shadow" style="flex-shrink:0;white-space:nowrap;background:linear-gradient(to right,#7c3aed,#D4AF37)">
 <span class="pm-icon">⭐</span><span class="flex flex-col items-center leading-tight"><span id="price-pack_1500" style="white-space:nowrap"></span><span id="alt-pack_1500" class="hidden font-semibold" style="font-size:11px;opacity:.85;white-space:nowrap;margin-top:1px"></span></span>
+</button>
+</div>
+<div id="row-pack_3000" class="flex items-center justify-between rounded-2xl p-4" style="background:rgba(15,8,29,.6);border:1px solid rgba(212,175,55,.45)">
+<div class="flex items-center space-x-3">
+<span class="text-2xl">💎</span>
+<div>
+<div class="flex items-center space-x-2">
+<h4 class="font-bold text-xs text-white">+3000 Энергии</h4>
+<span class="font-bold uppercase px-1.5 py-0.5 rounded-full" style="background:rgba(212,175,55,.15);border:1px solid rgba(212,175,55,.4);color:#D4AF37;font-size:8px">−30%</span>
+</div>
+<p style="font-size:10px;color:rgba(196,181,253,.6);margin-top:2px">Для тех, кто часто обращается к картам</p>
+</div>
+</div>
+<button onclick="buyPack('pack_3000')" class="flex items-center space-x-1.5 font-bold px-4 py-2 rounded-xl text-xs active:scale-95 text-white shadow" style="flex-shrink:0;white-space:nowrap;background:linear-gradient(to right,#7c3aed,#D4AF37)">
+<span class="pm-icon">⭐</span><span class="flex flex-col items-center leading-tight"><span id="price-pack_3000" style="white-space:nowrap"></span><span id="alt-pack_3000" class="hidden font-semibold" style="font-size:11px;opacity:.85;white-space:nowrap;margin-top:1px"></span></span>
 </button>
 </div>
 </div>
@@ -1437,6 +1523,7 @@ document.getElementById("ref-bonus").textContent = p.ref_bonus || 150;
 renderStorePrices();
 renderMarathon();
 renderDream();
+renderPaidTiles();
 }
 
 // ── Марафон «7 дней знаков Вселенной» ──
@@ -1528,6 +1615,221 @@ setTimeout(() => { try { tg.close(); } catch {} }, 600);
 finally { btn.disabled = false; }
 }
 
+// ── Платные разборы: матрица, совместимость, нумерология, прогнозы (релиз 5) ──
+const PAID = {
+matrix: { emoji:"🔯", title:"Матрица судьбы", sub:"Предназначение, деньги, любовь" },
+compat: { emoji:"💞", title:"Совместимость", sub:"Превью бесплатно" },
+numerology: { emoji:"🔢", title:"Нумерология", sub:"Портрет по имени и дате" },
+month: { emoji:"🗓", title:"Прогноз на месяц", sub:"По неделям" },
+year: { emoji:"📅", title:"Прогноз на год", sub:"По месяцам" },
+};
+const PAID_DEFAULT = { matrix:450, compat:300, numerology:300, month:150, year:450 };
+function paidCost(k) { const c = userProfile && userProfile.paid && userProfile.paid.costs; return (c && c[k]) || PAID_DEFAULT[k]; }
+function renderPaidTiles() {
+document.getElementById("paid-grid").innerHTML = Object.keys(PAID).map(k => `
+<button onclick="openPaid('${k}')" class="rounded-2xl p-3 text-left active:scale-95 transition-all" style="background:linear-gradient(to right,#1F103A,#0F081D);border:1px solid rgba(88,28,135,.4)${k === "year" ? ";grid-column:1 / -1" : ""}">
+<span style="display:block;font-size:20px">${PAID[k].emoji}</span>
+<span style="display:block;font-size:12px;font-weight:700;color:#fff;margin-top:2px">${PAID[k].title}</span>
+<span style="display:block;font-size:10px;color:#D4AF37;margin-top:2px">${PAID[k].sub} · ${paidCost(k)} ✨</span>
+</button>`).join("");
+}
+function paidHeader(k) {
+document.getElementById("paid-emoji").textContent = PAID[k].emoji;
+document.getElementById("paid-title").textContent = PAID[k].title;
+}
+const GOLD_BTN = 'class="w-full font-bold py-3.5 rounded-xl text-xs tracking-wider uppercase active:scale-95 text-black" style="background:linear-gradient(to right,#eab308,#D4AF37)"';
+const DARK_BTN = 'class="w-full font-bold py-3 rounded-xl text-xs tracking-wider uppercase active:scale-95 text-white" style="background:#1F103A;border:1px solid rgba(212,175,55,.3)"';
+const INPUT = 'class="w-full rounded-xl p-3 text-sm text-white focus:outline-none" style="background:rgba(15,8,29,.6);border:1px solid rgba(88,28,135,.5)"';
+function tile(label, value, hint) {
+return `<div class="rounded-xl text-center" style="padding:8px;background:rgba(15,8,29,.6);border:1px solid rgba(212,175,55,.35)">
+<div style="font-size:10px;color:rgba(196,181,253,.6)">${esc(label)}</div>
+<div class="text-sm font-bold" style="color:#D4AF37">${esc(value)}</div>${hint ? `<div style="font-size:10px;color:rgba(196,181,253,.6)">${esc(hint)}</div>` : ""}</div>`;
+}
+async function openPaid(k) {
+track("paid_open", { kind: k });
+if (!userProfile) return;
+if (!userProfile.birth_date) {
+tg.showAlert("Сначала введи дату рождения: по ней считаются все разборы.");
+openFate(); return;
+}
+paidHeader(k);
+const body = document.getElementById("paid-body");
+const cost = paidCost(k), pd = userProfile.paid || {};
+if (k === "matrix") {
+body.innerHTML = `<p class="text-xs" style="color:rgba(196,181,253,.72)">Считаем твою матрицу…</p>`;
+openModal("paid");
+try {
+const r = await fetch(`${BACKEND}/api/matrix/preview`, { headers:{ Authorization: initData } });
+const d = await r.json();
+if (!r.ok) { body.innerHTML = `<p class="text-xs" style="color:#f87171">${esc(d.detail || "Ошибка")}</p>`; return; }
+body.innerHTML = `<p>Полная матрица по методу Натальи Ладини: все точки считаются по дате рождения, а разбор пишется по каждому разделу.</p>
+<div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">${tile("Аркан личности", `${d.personality.num} · ${d.personality.name}`, "каким тебя видят")}${tile("Главная энергия", `${d.main.num} · ${d.main.name}`, "центр матрицы")}</div>
+<p class="text-xs font-semibold" style="color:rgba(196,181,253,.8)">В полной матрице:</p>
+<div class="space-y-1">${d.locked.map(t => `<div class="text-xs rounded-lg px-3 py-2" style="background:rgba(15,8,29,.6);border:1px solid rgba(88,28,135,.4)">🔒 ${esc(t)}</div>`).join("")}</div>
+${d.owned_id ? `<button onclick="closeModal('paid');openProduct(${d.owned_id})" ${DARK_BTN}>📖 Открыть мою матрицу</button>` : ""}
+<button onclick="confirmBuy('matrix')" ${GOLD_BTN}>${d.owned_id ? "Новый разбор" : "Открыть полную матрицу"} · ${cost} ✨</button>`;
+} catch { body.innerHTML = `<p class="text-xs" style="color:#f87171">Ошибка соединения.</p>`; }
+return;
+}
+if (k === "compat") {
+body.innerHTML = `<p>Посчитаем совместимость по матрицам: каналы отношений, общую задачу пары, знаки и числа судьбы. Короткий вывод – бесплатно.</p>
+<input id="cp-name" type="text" maxlength="40" placeholder="Как зовут партнёра" ${INPUT}>
+<input id="cp-date" type="text" inputmode="numeric" maxlength="10" placeholder="Дата рождения партнёра: ДД.ММ.ГГГГ" ${INPUT}>
+<p id="cp-err" class="hidden text-xs" style="color:#f87171"></p>
+<button id="cp-run" onclick="compatPreview()" ${GOLD_BTN}>Посмотреть совместимость · бесплатно</button>
+<div id="cp-result" class="space-y-3"></div>`;
+const dt = document.getElementById("cp-date");
+dt.addEventListener("input", e => {
+if (e.inputType && e.inputType.startsWith("delete")) return;
+const v = dt.value.replace(/\D/g, "").slice(0, 8);
+dt.value = v.length > 4 ? `${v.slice(0,2)}.${v.slice(2,4)}.${v.slice(4)}` : v.length > 2 ? `${v.slice(0,2)}.${v.slice(2)}` : v;
+});
+openModal("paid");
+return;
+}
+if (k === "numerology") {
+body.innerHTML = `<p>Нумерологический портрет по пифагорейской системе: число судьбы, имени, души и личности, кармические числа и твой личный год.</p>
+<p class="text-xs" style="color:rgba(196,181,253,.72)">Напиши имя так, как пишешь его сам(а): имя или имя и фамилию, русскими буквами.</p>
+<input id="nm-name" type="text" maxlength="60" placeholder="Например, Анна Петрова" value="${esc(pd.numerology_name || "")}" ${INPUT}>
+<p id="nm-err" class="hidden text-xs" style="color:#f87171"></p>
+<button onclick="numerologyBuy()" ${GOLD_BTN}>Получить портрет · ${cost} ✨</button>`;
+openModal("paid");
+return;
+}
+const period = k === "month" ? pd.month_title : pd.year_title;
+body.innerHTML = k === "month"
+? `<p>Прогноз на <b>${esc(period || "месяц")}</b>: твой личный месяц по нумерологии и события неба – фазы Луны, ретрограды, вход Солнца в знак. Разбор по неделям.</p>
+<button onclick="confirmBuy('month')" ${GOLD_BTN}>Получить прогноз · ${cost} ✨</button>`
+: `<p>Прогноз на <b>${esc(period || "год")} год</b>: твой личный год, разбор по месяцам и ключевые события неба – затмения и ретрограды.</p>
+<button onclick="confirmBuy('year')" ${GOLD_BTN}>Получить прогноз · ${cost} ✨</button>`;
+openModal("paid");
+}
+async function compatPreview() {
+const name = document.getElementById("cp-name").value.trim(), date = document.getElementById("cp-date").value.trim();
+const err = document.getElementById("cp-err"), btn = document.getElementById("cp-run");
+err.classList.add("hidden");
+if (name.length < 2) { err.textContent = "Напиши, как зовут партнёра."; err.classList.remove("hidden"); return; }
+if (!/^\d{1,2}\.\d{1,2}\.\d{4}$/.test(date)) { err.textContent = "Введи дату полностью, например 14.03.1992"; err.classList.remove("hidden"); return; }
+btn.disabled = true; btn.textContent = "Считаем…";
+try {
+const r = await fetch(`${BACKEND}/api/compat/preview`, { method:"POST", headers:{"Content-Type":"application/json","Authorization":initData}, body: JSON.stringify({ name, date }) });
+const d = await r.json().catch(() => ({}));
+if (!r.ok) { err.textContent = d.detail || "Ошибка"; err.classList.remove("hidden"); return; }
+document.getElementById("cp-result").innerHTML = `
+<div class="rounded-xl p-3" style="background:rgba(15,8,29,.6);border:1px solid rgba(212,175,55,.35)">
+<p class="text-xs font-semibold mb-1" style="color:#D4AF37">Ты и ${esc(d.partner_name)}: коротко</p>
+<p class="text-sm leading-relaxed">${esc(d.text)}</p></div>
+<p class="text-xs" style="color:rgba(196,181,253,.8)">В полной версии: знаки, числа судьбы и арканы обоих, общая задача пары, сильные стороны, точки напряжения и советы.</p>
+<button onclick="confirmBuy('compat', { preview_id: ${d.preview_id} }, '${esc(d.partner_name)}')" ${GOLD_BTN}>Полная совместимость · ${d.cost} ✨</button>
+<button onclick="shareCompat('${esc(d.share_link)}')" ${DARK_BTN}>💌 Отправить партнёру</button>
+<p class="text-center" style="font-size:10px;color:rgba(196,181,253,.55)">Партнёр получит только ссылку на бот, без ваших дат и разбора.</p>`;
+} catch { err.textContent = "Ошибка соединения."; err.classList.remove("hidden"); }
+finally { btn.disabled = false; btn.textContent = "Посмотреть совместимость · бесплатно"; }
+}
+function shareCompat(link) {
+track("compat_shared");
+tg.openTelegramLink("https://t.me/share/url?url=" + encodeURIComponent(link) + "&text=" + encodeURIComponent("💞 Я посчитал(а) нашу совместимость в «Послании Таро». Посмотри свою матрицу:"));
+}
+function numerologyBuy() {
+const name = document.getElementById("nm-name").value.trim(), err = document.getElementById("nm-err");
+err.classList.add("hidden");
+if (!/^[А-Яа-яЁё\- ]{2,60}$/.test(name)) { err.textContent = "Напиши имя русскими буквами, например «Анна Петрова»."; err.classList.remove("hidden"); return; }
+confirmBuy("numerology", { name });
+}
+function newRequestId() {
+try { if (crypto.randomUUID) return crypto.randomUUID(); } catch {}
+return "r" + Date.now().toString(36) + Math.random().toString(36).slice(2, 12);
+}
+let pendingBuy = null;
+function confirmBuy(kind, extra, label) {
+const cost = paidCost(kind), bal = (userProfile && userProfile.balance) || 0;
+pendingBuy = { kind, extra: extra || {}, request_id: newRequestId() };
+document.getElementById("cf-emoji").textContent = PAID[kind].emoji;
+const pd = (userProfile && userProfile.paid) || {};
+const what = kind === "compat" && label ? `Совместимость: ${label}` : kind === "month" ? `Прогноз: ${pd.month_title || "месяц"}` : kind === "year" ? `Прогноз на ${pd.year_title || ""} год` : PAID[kind].title;
+document.getElementById("cf-title").textContent = what;
+const enough = bal >= cost;
+document.getElementById("cf-text").textContent = enough
+? `Спишем ${cost} энергии один раз. На балансе ${bal}, останется ${bal - cost}. Разбор сохранится в «Моих разборах» – перечитать можно бесплатно.`
+: `Нужно ${cost} энергии, а на балансе ${bal}. Не хватает ${cost - bal} – пополни баланс, и разбор будет ждать тебя здесь.`;
+const pay = document.getElementById("cf-pay");
+pay.classList.toggle("hidden", !enough); pay.disabled = false; pay.textContent = `Оплатить · ${cost} ✨`;
+document.getElementById("cf-store").classList.toggle("hidden", enough);
+openModal("confirm");
+}
+async function doBuy() {
+if (!pendingBuy) return;
+const pay = document.getElementById("cf-pay");
+if (pay.disabled) return;
+pay.disabled = true; pay.textContent = "Оплачиваем…";
+try {
+const r = await fetch(`${BACKEND}/api/products/buy`, { method:"POST", headers:{"Content-Type":"application/json","Authorization":initData},
+body: JSON.stringify({ kind: pendingBuy.kind, request_id: pendingBuy.request_id, ...pendingBuy.extra }) });
+const d = await r.json().catch(() => ({}));
+if (r.status === 402) { document.getElementById("cf-text").textContent = d.detail || "Не хватает энергии."; pay.classList.add("hidden"); document.getElementById("cf-store").classList.remove("hidden"); return; }
+if (!r.ok) { tg.showAlert(d.detail || "Ошибка"); pay.disabled = false; pay.textContent = `Оплатить · ${paidCost(pendingBuy.kind)} ✨`; return; }
+if (d.new_balance != null) { userProfile.balance = d.new_balance; updateUI(); }
+if (pendingBuy.kind === "numerology" && pendingBuy.extra.name && userProfile.paid) userProfile.paid.numerology_name = pendingBuy.extra.name;
+pendingBuy = null;
+closeModal("confirm"); closeModal("paid");
+if (tg.HapticFeedback) tg.HapticFeedback.notificationOccurred("success");
+openProduct(d.id);
+} catch { tg.showAlert("Ошибка соединения. Если энергия списалась, разбор появится в «Моих разборах»."); pay.disabled = false; }
+}
+let productPoll = null;
+async function openProduct(id) {
+if (productPoll) { clearTimeout(productPoll); productPoll = null; }
+document.getElementById("pv-title").textContent = "Разбор";
+document.getElementById("pv-emoji").textContent = "✨";
+document.getElementById("pv-date").textContent = "";
+document.getElementById("pv-facts").innerHTML = "";
+document.getElementById("pv-body").innerHTML = `<p class="text-xs" style="color:rgba(196,181,253,.72)">Загружаем…</p>`;
+openModal("pview");
+const started = Date.now();
+const load = async () => {
+try {
+const r = await fetch(`${BACKEND}/api/products/${id}`, { headers:{ Authorization: initData } });
+const d = await r.json().catch(() => ({}));
+if (!r.ok) { document.getElementById("pv-body").innerHTML = `<p class="text-xs" style="color:#f87171">${esc(d.detail || "Разбор не найден.")}</p>`; return; }
+document.getElementById("pv-title").textContent = d.title;
+document.getElementById("pv-emoji").textContent = d.emoji;
+document.getElementById("pv-date").textContent = fmtDate(d.created_at);
+document.getElementById("pv-facts").innerHTML = (d.facts || []).map(f => `<div class="rounded-lg" style="padding:6px 8px;background:rgba(15,8,29,.6);border:1px solid rgba(88,28,135,.4)"><div style="font-size:10px;color:rgba(196,181,253,.6)">${esc(f[0])}</div><div style="font-size:12px;font-weight:700;color:#D4AF37">${esc(f[1])}</div></div>`).join("");
+if (d.status === "pending") {
+document.getElementById("pv-body").innerHTML = `<div class="text-center space-y-2 py-4"><div class="text-3xl">✨</div><p class="text-sm">Пишем твой разбор…</p><p class="text-xs" style="color:rgba(196,181,253,.72)">Обычно это занимает до минуты. Можно закрыть окно: разбор появится в «Моих разборах».</p></div>`;
+if (Date.now() - started < 4 * 60 * 1000 && !document.getElementById("modal-pview").classList.contains("hidden")) productPoll = setTimeout(load, 3000);
+return;
+}
+if (d.status === "failed") {
+document.getElementById("pv-body").innerHTML = `<p class="text-sm" style="color:#f87171">${esc(d.detail || "Не получилось.")}</p>`;
+refreshProfile().catch(() => {});
+return;
+}
+document.getElementById("pv-body").innerHTML = (d.sections || []).map(s => `<div><h4 class="serif text-base font-bold mb-1" style="color:#D4AF37">${esc(s.title)}</h4><div class="reading-body">${md(s.text)}</div></div>`).join("");
+} catch { document.getElementById("pv-body").innerHTML = `<p class="text-xs" style="color:#f87171">Ошибка соединения.</p>`; }
+};
+load();
+}
+async function openMyProducts() {
+document.getElementById("mp-emoji").textContent = "📚";
+const box = document.getElementById("mp-list");
+box.innerHTML = `<p class="text-xs text-center" style="color:rgba(196,181,253,.6)">Загружаем…</p>`;
+openModal("myproducts");
+try {
+const r = await fetch(`${BACKEND}/api/products`, { headers:{ Authorization: initData } });
+const d = await r.json();
+if (!d.products || !d.products.length) {
+box.innerHTML = `<p class="text-xs text-center leading-relaxed" style="color:rgba(196,181,253,.6)">Здесь будут твои матрицы, совместимости, портреты и прогнозы. Перечитывать их можно бесплатно.</p>`;
+return;
+}
+box.innerHTML = d.products.map(x => `
+<button onclick="closeModal('myproducts');openProduct(${x.id})" class="w-full text-left rounded-xl p-3 active:scale-95" style="background:rgba(15,8,29,.7);border:1px solid rgba(88,28,135,.5)">
+<span style="display:flex;justify-content:space-between;gap:8px;font-size:12px;color:#D4AF37;font-weight:700"><span>${x.emoji} ${esc(x.title)}</span><span style="color:rgba(196,181,253,.55);font-weight:400;white-space:nowrap">${fmtDate(x.created_at)}</span></span>
+${x.status === "pending" ? `<span style="display:block;font-size:10px;color:rgba(196,181,253,.6);margin-top:3px">Пишется…</span>` : ""}
+</button>`).join("");
+} catch { box.innerHTML = `<p class="text-xs text-center" style="color:#f87171">Не удалось загрузить. Попробуй ещё раз.</p>`; }
+}
+
 // ── Способ оплаты: Stars / карта (Tribute) ──
 let payMethod = "stars";
 function setPayMethod(m) {
@@ -1544,7 +1846,7 @@ document.getElementById("pm-stars").style.cssText = card ? off : on;
 document.getElementById("pm-card").style.cssText = card ? on : off;
 const prices = card ? (p.card_prices || {}) : (p.prices || {});
 const sign = p.card_currency || "₽";
-["pack_75","pack_150","pack_350","pack_450","pack_750","pack_1500"].forEach(k => {
+["pack_75","pack_150","pack_350","pack_450","pack_750","pack_1500","pack_3000"].forEach(k => {
 const row = document.getElementById("row-" + k);
 if (row) row.classList.toggle("hidden", prices[k] == null);  // пакета нет для этого способа оплаты
 const el = document.getElementById("price-" + k);
