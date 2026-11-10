@@ -126,7 +126,7 @@ display: block; margin: 1rem 0 .35rem;
 #services p.text-purple-200{opacity:.72!important}
 #fate-card.card-focus{border-color:rgba(230,210,181,.75)!important;box-shadow:0 0 18px rgba(230,210,181,.18)}
 #fate-card.card-focus #fate-badge{background:rgba(230,210,181,.15)!important;border-color:rgba(230,210,181,.5)!important;color:#E6D2B5!important}
-/* Карта Дня: прогресс серии и переключатель рассылки */
+/* Карта дня: прогресс серии и переключатель рассылки */
 #daily-card .daily-extra{flex-basis:100%;margin-top:12px;padding-top:10px;border-top:1px solid rgba(255,255,255,.08)}
 #daily-card .push-row{display:flex;align-items:center;justify-content:space-between;gap:12px;min-height:44px;cursor:pointer;margin-top:10px}
 .streak-dots{display:flex;gap:6px;margin-bottom:6px}
@@ -144,7 +144,7 @@ display: block; margin: 1rem 0 .35rem;
 .sky-h{font-size:10px;letter-spacing:.08em;text-transform:uppercase;color:rgba(207,201,220,0.78);margin-bottom:8px}
 .sign-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
 .sign-btn{min-height:56px;border-radius:12px;font-size:12px;color:#fff;background:#1A1824;border:1px solid rgba(255,255,255,.08);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px}
-.sign-btn .em{font-size:18px;color:#E6D2B5}
+.sign-btn .em{font-size:18px;color:#E6D2B5;font-family:"Apple Symbols","Segoe UI Symbol","Noto Sans Symbols2",sans-serif}
 .sign-btn.on{border-color:#E6D2B5;background:rgba(230,210,181,.12)}
 .source-btn{width:100%;min-height:44px;border-radius:12px;font-size:14px;color:#fff;background:#1A1824;border:1px solid rgba(230,210,181,.3)}
 .source-btn:active{transform:scale(.97)}
@@ -240,9 +240,10 @@ body{font-family:var(--sans);color:var(--text)}
 .sheet>.sheet-panel{transform:translateY(100%);transition:transform .3s cubic-bezier(.2,.8,.2,1);background:#14121C!important;border-top:1px solid rgba(230,210,181,.22)!important;border-radius:28px 28px 0 0!important;padding-bottom:calc(24px + var(--safe-b))!important;max-height:88vh!important;overscroll-behavior:contain}
 .sheet.open>.sheet-panel{transform:none}
 .sheet.dragging>.sheet-panel{transition:none}
+#toast{position:fixed;left:16px;right:16px;top:calc(12px + env(safe-area-inset-top,0px));z-index:2000;max-width:388px;margin:0 auto;padding:12px 16px;border-radius:16px;background:#1F1C2B;border:1px solid rgba(230,210,181,.4);color:#F2EDE4;font-size:14px;line-height:1.4;text-align:center;box-shadow:0 12px 32px rgba(0,0,0,.5);opacity:0;transform:translateY(-12px);pointer-events:none;transition:opacity .2s,transform .2s}
+#toast.on{opacity:1;transform:none;pointer-events:auto}
 .sheet-handle{width:40px;height:5px;border-radius:3px;background:rgba(255,255,255,.18);margin:-10px auto 6px}
 @supports not ((backdrop-filter:blur(1px)) or (-webkit-backdrop-filter:blur(1px))){.glass-card{background:rgba(23,21,31,.92)}}
-#marathon-dots{display:none!important}
 @media (prefers-reduced-motion:reduce){.sheet>.sheet-panel,.card-inner{transition:none!important}}
 @media (max-width:360px){.premium .serif{font-size:18px!important}.app{padding-left:12px;padding-right:12px}.grid3{gap:8px}.tile{padding:12px}.daily-face{width:84px;height:132px}.daily-title{font-size:21px}.big-num{font-size:38px}}
 </style>
@@ -259,9 +260,9 @@ style="background:radial-gradient(120% 40% at 50% 0%,#1E1830 0%,#0B0A10 60%) fix
 <svg class="ico ico-lg" style="color:#E6D2B5" aria-hidden="true"><use href="#i-sparkle"/></svg>
 </div>
 </div>
-<h2 class="serif text-2xl font-bold mb-3 tracking-wide" style="color:#E6D2B5">Настройка небесных сфер</h2>
+<h2 class="serif text-2xl font-bold mb-3 tracking-wide" style="color:#E6D2B5">Послание Таро</h2>
 <p id="loading-text" class="text-sm leading-relaxed animate-pulse" style="color:rgba(207,201,220,0.78);max-width:280px">
-Колода тасуется, космические энергии приходят в движение...
+Тасуем колоду…
 </p>
 <button id="btn-retry" onclick="initApp()" class="hidden mt-3 font-bold rounded-xl px-6 py-3 text-xs tracking-wider uppercase active:scale-95" style="background:#1A1824;border:1px solid rgba(230,210,181,.4);color:#E6D2B5">Попробовать снова</button>
 </div>
@@ -337,31 +338,30 @@ style="background:radial-gradient(120% 40% at 50% 0%,#1E1830 0%,#0B0A10 60%) fix
 </div>
 <button class="premium tap w-full flex items-center" style="gap:12px;min-height:76px;padding:14px 16px;margin-top:10px;text-align:left;color:var(--text)" onclick="openModal('ai')" data-block="big_spread">
 <span class="row-ico" style="background:rgba(230,210,181,.2)"><svg class="ico" aria-hidden="true"><use href="#i-sparkle"/></svg></span>
-<span class="row-main"><span class="serif" style="display:block;font-size:20px;font-weight:600;color:var(--gold)">Большой расклад</span><span class="row-sub" style="display:block">Глубокий разбор · 6–10 карт</span></span>
+<span class="row-main"><span class="serif" style="display:block;font-size:20px;font-weight:600;color:var(--gold)">Индивидуальный разбор</span><span class="row-sub" style="display:block">Глубокий разбор · 6–10 карт</span></span>
 <span class="price-plaque">750</span>
 </button>
 </div>
 
-<!-- e. Для вас сегодня -->
+<!-- e. Для тебя сегодня -->
 <div>
-<p class="cat-label" style="margin-bottom:10px">Для вас сегодня</p>
+<p class="cat-label" style="margin-bottom:10px">Для тебя сегодня</p>
 <div class="grid3">
 <button class="glass-card tile tap" onclick="openHoro()" data-block="horoscope"><span class="t-ico"><svg class="ico" aria-hidden="true"><use href="#i-star"/></svg></span><span class="t-title">Гороскоп</span><span id="tile-horo" class="t-sub">Выбери знак</span></button>
-<button id="btn-dream" class="glass-card tile tap" onclick="openDream()" data-block="dream"><span class="t-ico"><svg class="ico" aria-hidden="true"><use href="#i-dream"/></svg></span><span class="t-title">Сонник</span><span id="dream-sub" class="t-sub">1 бесплатно</span><span id="dream-badge" class="hidden"></span></button>
-<button id="marathon-card" class="glass-card tile tap" onclick="marathonClick()" data-block="marathon"><span class="t-ico"><svg class="ico" aria-hidden="true"><use href="#i-calendar"/></svg></span><span class="t-title">Марафон</span><span id="marathon-sub" class="t-sub">Начать</span><span id="btn-marathon" class="hidden"></span><span id="marathon-dots" class="hidden"></span></button>
+<button id="btn-dream" class="glass-card tile tap" onclick="openDream()" data-block="dream"><span class="t-ico"><svg class="ico" aria-hidden="true"><use href="#i-dream"/></svg></span><span class="t-title">Сонник</span><span id="dream-sub" class="t-sub">1 бесплатно</span></button>
+<button id="marathon-card" class="glass-card tile tap" onclick="marathonClick()" data-block="marathon"><span class="t-ico"><svg class="ico" aria-hidden="true"><use href="#i-calendar"/></svg></span><span class="t-title">Марафон</span><span id="marathon-sub" class="t-sub">Начать</span></button>
 </div>
 </div>
 
-<!-- f. Ещё о вас -->
+<!-- f. Ещё о тебе -->
 <div>
-<p class="cat-label" style="margin-bottom:10px">Ещё о вас</p>
+<p class="cat-label" style="margin-bottom:10px">Ещё о тебе</p>
 <div class="grid2">
-<button id="fate-card" class="glass-card tile tap" onclick="openFate()" data-block="fate"><span class="flex items-center justify-between w-full"><span class="t-ico"><svg class="ico" aria-hidden="true"><use href="#i-key"/></svg></span><span id="fate-badge" class="price-chip free" style="min-height:22px;font-size:10px">Начни здесь</span></span><span class="t-title">Код судьбы</span><span id="fate-sub" class="t-sub">Знак, число и арканы</span><span id="btn-fate" class="hidden"></span></button>
+<button id="fate-card" class="glass-card tile tap" onclick="openFate()" data-block="fate"><span class="flex items-center justify-between w-full"><span class="t-ico"><svg class="ico" aria-hidden="true"><use href="#i-key"/></svg></span><span id="fate-badge" class="price-chip free" style="min-height:22px;font-size:10px">Начни здесь</span></span><span class="t-title">Код судьбы</span><span id="fate-sub" class="t-sub">Знак, число и арканы</span></button>
 <button class="glass-card tile tap" onclick="openPaid('matrix')" data-block="matrix"><span class="t-ico"><svg class="ico" aria-hidden="true"><use href="#i-matrix"/></svg></span><span class="t-title">Матрица судьбы</span><span class="t-sub" data-cost="matrix" data-suffix=" энергии">450 энергии</span></button>
 <button class="glass-card tile tap" onclick="openPaid('compat')" data-block="compat"><span class="t-ico"><svg class="ico" aria-hidden="true"><use href="#i-rings"/></svg></span><span class="t-title">Совместимость</span><span class="t-sub">Превью бесплатно</span></button>
 <button class="glass-card tile tap" onclick="openPaid('numerology')" data-block="numerology"><span class="t-ico"><svg class="ico" aria-hidden="true"><use href="#i-abc"/></svg></span><span class="t-title">Нумерология</span><span class="t-sub" data-cost="numerology" data-suffix=" энергии">300 энергии</span></button>
-<button class="glass-card tile disabled" aria-disabled="true" data-block="natal"><span class="flex items-center justify-between w-full"><span class="t-ico"><svg class="ico" aria-hidden="true"><use href="#i-natal"/></svg></span><span class="soon">скоро</span></span><span class="t-title">Натальная карта</span><span class="t-sub">По дате, времени и месту</span></button>
-<button class="glass-card tile tap" onclick="openForecasts()" data-block="forecasts"><span class="t-ico"><svg class="ico" aria-hidden="true"><use href="#i-chart"/></svg></span><span class="t-title">Прогнозы</span><span class="t-sub">На месяц и на год</span></button>
+<button class="glass-card tile tap" style="grid-column:1 / -1" onclick="openForecasts()" data-block="forecasts"><span class="t-ico"><svg class="ico" aria-hidden="true"><use href="#i-chart"/></svg></span><span class="t-title">Прогнозы</span><span class="t-sub">На месяц и на год</span></button>
 </div>
 </div>
 
@@ -398,23 +398,17 @@ style="background:radial-gradient(120% 40% at 50% 0%,#1E1830 0%,#0B0A10 60%) fix
 <section id="tab-more" class="tab hidden">
 <div>
 <p class="cat-label">Ещё</p>
-<h2 class="serif" style="font-size:30px;font-weight:600;color:var(--text);margin-top:4px">Все услуги</h2>
-</div>
-<div class="glass-card rows" style="overflow:hidden">
-<button class="tap" onclick="openToday('number')"><span class="row-ico"><svg class="ico" aria-hidden="true"><use href="#i-hash"/></svg></span><span class="row-main"><span class="row-title" style="display:block">Число дня</span></span><span class="chev"><svg class="ico ico-sm" aria-hidden="true"><use href="#i-chev"/></svg></span></button>
-<button class="tap" onclick="openSky()"><span class="row-ico"><svg class="ico" aria-hidden="true"><use href="#i-moon"/></svg></span><span class="row-main"><span class="row-title" style="display:block">Небо сегодня</span></span><span class="chev"><svg class="ico ico-sm" aria-hidden="true"><use href="#i-chev"/></svg></span></button>
-<button class="tap" onclick="openHoro()"><span class="row-ico"><svg class="ico" aria-hidden="true"><use href="#i-star"/></svg></span><span class="row-main"><span class="row-title" style="display:block">Гороскоп на неделю</span></span><span class="chev"><svg class="ico ico-sm" aria-hidden="true"><use href="#i-chev"/></svg></span></button>
-<button class="tap" onclick="openDream()"><span class="row-ico"><svg class="ico" aria-hidden="true"><use href="#i-dream"/></svg></span><span class="row-main"><span class="row-title" style="display:block">Толкователь снов</span></span><span class="chev"><svg class="ico ico-sm" aria-hidden="true"><use href="#i-chev"/></svg></span></button>
-<button class="tap" onclick="marathonClick()"><span class="row-ico"><svg class="ico" aria-hidden="true"><use href="#i-calendar"/></svg></span><span class="row-main"><span class="row-title" style="display:block">Марафон «7 дней знаков Вселенной»</span></span><span class="chev"><svg class="ico ico-sm" aria-hidden="true"><use href="#i-chev"/></svg></span></button>
+<h2 class="serif" style="font-size:30px;font-weight:600;color:var(--text);margin-top:4px">Расклады по темам</h2>
+<p style="font-size:14px;line-height:1.5;color:var(--text2,rgba(207,201,220,.85));margin-top:6px">Готовые расклады под конкретный вопрос. Свой вопрос можно добавить.</p>
 </div>
 <div id="spreads-wrap" class="hidden">
-<p class="cat-label" style="margin-bottom:10px">Тематические расклады</p>
 <div id="spreads" class="grid2"></div>
 </div>
-<div id="paid-wrap">
-<p class="cat-label" style="margin-bottom:10px">Разборы по дате рождения</p>
-<div id="paid-grid" class="grid2"></div>
-</div>
+<button class="glass-card w-full flex items-center tap" style="gap:12px;min-height:72px;padding:14px 16px;text-align:left;color:var(--text)" onclick="openTarologist()" data-block="tarologist-more">
+<span class="row-ico"><svg class="ico" aria-hidden="true"><use href="#i-tarologist"/></svg></span>
+<span class="row-main"><span class="row-title" style="display:block">Личный расклад от таролога</span><span class="row-sub" style="display:block">Живой разбор твоей ситуации</span></span>
+<span class="chev"><svg class="ico ico-sm" aria-hidden="true"><use href="#i-chev"/></svg></span>
+</button>
 </section>
 
 <!-- ─── Раздел «Профиль» ─── -->
@@ -427,7 +421,6 @@ style="background:radial-gradient(120% 40% at 50% 0%,#1E1830 0%,#0B0A10 60%) fix
 <div class="glass-card rows" style="overflow:hidden">
 <button class="tap" onclick="openHistory()"><span class="row-ico"><svg class="ico" aria-hidden="true"><use href="#i-scroll"/></svg></span><span class="row-main"><span class="row-title" style="display:block">Мои расклады</span></span><span class="chev"><svg class="ico ico-sm" aria-hidden="true"><use href="#i-chev"/></svg></span></button>
 <button class="tap" onclick="openMyProducts()"><span class="row-ico"><svg class="ico" aria-hidden="true"><use href="#i-book"/></svg></span><span class="row-main"><span class="row-title" style="display:block">Мои разборы</span><span class="row-sub" style="display:block">Матрицы, совместимости, прогнозы</span></span><span class="chev"><svg class="ico ico-sm" aria-hidden="true"><use href="#i-chev"/></svg></span></button>
-<button class="tap" onclick="switchTab('deck')"><span class="row-ico"><svg class="ico" aria-hidden="true"><use href="#i-deck"/></svg></span><span class="row-main"><span class="row-title" style="display:block">Коллекция карт</span><span id="profile-deck" class="row-sub" style="display:block"></span></span><span class="chev"><svg class="ico ico-sm" aria-hidden="true"><use href="#i-chev"/></svg></span></button>
 </div>
 <div class="glass-card" style="padding:16px">
 <div class="flex items-center" style="gap:12px"><span class="row-ico"><svg class="ico" aria-hidden="true"><use href="#i-bell"/></svg></span><p class="row-title" style="flex:1">Карта дня каждое утро</p>
@@ -444,7 +437,7 @@ style="background:radial-gradient(120% 40% at 50% 0%,#1E1830 0%,#0B0A10 60%) fix
 <span class="chev"><svg class="ico ico-sm" aria-hidden="true"><use href="#i-chev"/></svg></span>
 </button>
 <button onclick="openFeedback()" class="glass-button w-full"><svg class="ico ico-sm" aria-hidden="true"><use href="#i-chat"/></svg>Отзыв или идея</button>
-<p class="text-center" style="font-size:11px;line-height:1.5;color:var(--muted)">Все предсказания носят ознакомительно-развлекательный характер. Нажимая кнопки, ты соглашаешься с условиями сервиса.</p>
+<p class="text-center" style="font-size:11px;line-height:1.5;color:var(--muted)">Расклады носят рекомендательный и развлекательный характер. Нажимая кнопки, ты соглашаешься с условиями сервиса.</p>
 </section>
 
 <!-- Нижнее меню -->
@@ -517,33 +510,6 @@ style="background:radial-gradient(120% 40% at 50% 0%,#1E1830 0%,#0B0A10 60%) fix
 </div>
 </div>
 
-<!-- ══ МОДАЛКА: КАРТА ДНЯ ══ -->
-<div id="modal-daily" class="hidden fixed inset-0 z-40 flex items-end justify-center" style="background:rgba(0,0,0,.8);backdrop-filter:blur(10px)">
-<div class="absolute inset-0" onclick="closeModal('daily')"></div>
-<div class="relative z-10 w-full rounded-t-3xl p-6 space-y-4 shadow-2xl overflow-y-auto" style="max-width:420px;max-height:85vh;background:#14121C;border-top:1px solid rgba(230,210,181,.3)">
-<div class="flex justify-between items-center">
-<div class="flex items-center space-x-2">
-<svg class="ico ico-lg" style="color:#E6D2B5" aria-hidden="true"><use href="#i-sparkle"/></svg>
-<h3 class="serif text-xl font-bold" style="color:#E6D2B5">Карта Дня</h3>
-<span class="font-bold uppercase px-2 py-0.5 rounded-full text-xs" style="background:rgba(34,197,94,.15);border:1px solid rgba(34,197,94,.4);color:#4ade80">Бесплатно</span>
-</div>
-<button onclick="closeModal('daily')" class="w-8 h-8 rounded-full flex items-center justify-center text-purple-200" style="background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.08)"><svg class="ico ico-sm" aria-hidden="true"><use href="#i-close"/></svg></button>
-</div>
-<div class="space-y-3 text-xs leading-relaxed" style="color:rgba(207,201,220,0.80)">
-<p class="font-semibold text-white">Послание на каждый день</p>
-<p>Каждый день ты получаешь одну карту, которая станет твоим ориентиром на ближайшие 24 часа. Карта подсвечивает скрытые течения дня, указывает на возможности и даёт конкретный совет.</p>
-<p class="italic" style="color:rgba(230,210,181,.9)">Рекомендуется получать каждое утро – в тишине и с намерением.</p>
-</div>
-<div class="flex justify-between items-center rounded-xl p-3" style="background:rgba(255,255,255,.04);border:1px solid rgba(34,197,94,.25)">
-<span class="text-xs" style="color:rgba(207,201,220,0.78)">Стоимость:</span>
-<span class="text-sm font-bold" style="color:#4ade80">Бесплатно · 1 раз в сутки</span>
-</div>
-<button onclick="triggerDaily()" class="w-full font-bold py-3.5 rounded-xl text-xs tracking-wider uppercase active:scale-95" style="background:linear-gradient(to right,#16a34a,#4ade80);color:#000">
-Получить Карту Дня
-</button>
-</div>
-</div>
-
 <!-- ══ МОДАЛКА: СЕГОДНЯ ══ -->
 <div id="modal-today" class="hidden fixed inset-0 z-40 flex items-end justify-center" style="background:rgba(0,0,0,.8);backdrop-filter:blur(10px)">
 <div class="absolute inset-0" onclick="closeModal('today')"></div>
@@ -574,6 +540,23 @@ style="background:radial-gradient(120% 40% at 50% 0%,#1E1830 0%,#0B0A10 60%) fix
 </div>
 
 <!-- ══ МОДАЛКА: НЕБО СЕГОДНЯ ══ -->
+<div id="modal-dream" class="hidden fixed inset-0 z-40 flex items-end justify-center" style="background:rgba(0,0,0,.8)">
+<div class="absolute inset-0" onclick="closeModal('dream')"></div>
+<div class="relative z-10 w-full rounded-t-3xl p-6 space-y-4 shadow-2xl overflow-y-auto" style="max-width:420px;max-height:85vh;background:#14121C;border-top:1px solid rgba(230,210,181,.3)">
+<div class="flex justify-between items-center">
+<div class="flex items-center space-x-2"><svg class="ico ico-lg" style="color:#E6D2B5" aria-hidden="true"><use href="#i-dream"/></svg><h3 class="serif text-xl font-bold" style="color:#E6D2B5">Сонник</h3></div>
+<button onclick="closeModal('dream')" aria-label="Закрыть" class="w-8 h-8 rounded-full flex items-center justify-center text-purple-200" style="background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.08)"><svg class="ico ico-sm" aria-hidden="true"><use href="#i-close"/></svg></button>
+</div>
+<p class="text-sm leading-relaxed" style="color:rgba(242,237,228,.9)">Сон рассказывают в чате с ботом: текстом или голосовым сообщением. Бот вытянет карту и объяснит, о чём был сон.</p>
+<p class="text-xs leading-relaxed" style="color:rgba(207,201,220,0.78)">Приложение закроется и откроется чат. Толкование придёт туда же.</p>
+<div class="flex justify-between items-center rounded-xl p-3" style="background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08)">
+<span class="text-xs" style="color:rgba(207,201,220,0.78)">Стоимость:</span>
+<span id="dream-cost" class="text-sm font-bold" style="color:#E6D2B5">75 энергии</span>
+</div>
+<button id="btn-dream-go" onclick="goDream()" class="w-full font-bold py-3.5 rounded-xl text-xs tracking-wider uppercase active:scale-95" style="background:#E6D2B5;color:#0B0A10">Рассказать сон в чате</button>
+</div>
+</div>
+
 <div id="modal-sky" class="hidden fixed inset-0 z-40 flex items-end justify-center" style="background:rgba(0,0,0,.8);backdrop-filter:blur(10px)">
 <div class="absolute inset-0" onclick="closeModal('sky')"></div>
 <div class="relative z-10 w-full rounded-t-3xl p-6 space-y-4 shadow-2xl overflow-y-auto" style="max-width:420px;max-height:85vh;background:#14121C;border-top:1px solid rgba(230,210,181,.3)">
@@ -722,7 +705,7 @@ class="w-full rounded-xl p-3 text-xs text-white resize-none focus:outline-none t
 style="background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08)"></textarea>
 <div class="flex flex-wrap" style="gap:6px">
 <button onclick="fillQuick('Стоит ли мне это делать?')" class="rounded-full px-2.5 py-1 active:scale-95" style="font-size:10px;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.08);color:rgba(207,201,220,0.85)">Стоит ли мне это делать?</button>
-<button onclick="fillQuick('Что он чувствует ко мне?')" class="rounded-full px-2.5 py-1 active:scale-95" style="font-size:10px;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.08);color:rgba(207,201,220,0.85)">Что он чувствует ко мне?</button>
+<button onclick="fillQuick('Что этот человек чувствует ко мне?')" class="rounded-full px-2.5 py-1 active:scale-95" style="font-size:10px;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.08);color:rgba(207,201,220,0.85)">Что этот человек чувствует ко мне?</button>
 <button onclick="fillQuick('Получится ли задуманное?')" class="rounded-full px-2.5 py-1 active:scale-95" style="font-size:10px;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.08);color:rgba(207,201,220,0.85)">Получится ли задуманное?</button>
 </div>
 </div>
@@ -759,11 +742,11 @@ style="background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08)">
 <button onclick="pickQ(this,'Любит ли меня загаданный человек?')" class="q-btn w-full text-left rounded-xl p-2.5 text-xs transition-all flex items-center justify-between active:scale-[0.98]">
 <span>2. Любит ли меня загаданный человек?</span>
 </button>
-<button onclick="pickQ(this,'Позвонит/напишет ли он в ближайшее время?')" class="q-btn w-full text-left rounded-xl p-2.5 text-xs transition-all flex items-center justify-between active:scale-[0.98]">
-<span>3. Позвонит/напишет ли он в ближайшее время?</span>
+<button onclick="pickQ(this,'Выйдет ли этот человек на связь?')" class="q-btn w-full text-left rounded-xl p-2.5 text-xs transition-all flex items-center justify-between active:scale-[0.98]">
+<span>3. Выйдет ли этот человек на связь?</span>
 </button>
-<button onclick="pickQ(this,'Что он чувствует ко мне сейчас?')" class="q-btn w-full text-left rounded-xl p-2.5 text-xs transition-all flex items-center justify-between active:scale-[0.98]">
-<span>4. Что он чувствует ко мне сейчас?</span>
+<button onclick="pickQ(this,'Что этот человек чувствует ко мне?')" class="q-btn w-full text-left rounded-xl p-2.5 text-xs transition-all flex items-center justify-between active:scale-[0.98]">
+<span>4. Что этот человек чувствует ко мне?</span>
 </button>
 <button onclick="pickQ(this,'Стоит ли делать первый шаг?')" class="q-btn w-full text-left rounded-xl p-2.5 text-xs transition-all flex items-center justify-between active:scale-[0.98]">
 <span>5. Стоит ли делать первый шаг?</span>
@@ -820,7 +803,7 @@ style="background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08)">
 </div>
 <div class="flex justify-between items-center rounded-xl p-3" style="background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08)">
 <span class="text-xs" style="color:rgba(207,201,220,0.78)">Стоимость:</span>
-<span class="text-sm font-bold" style="color:#E6D2B5">750 энергии</span>
+<span id="ai-cost" class="text-sm font-bold" style="color:#E6D2B5">750 энергии</span>
 </div>
 <div class="space-y-1.5">
 <label class="uppercase tracking-widest font-semibold" style="font-size:10px;color:rgba(207,201,220,0.78)">Твой вопрос картам:</label>
@@ -943,8 +926,8 @@ style="background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08)">
 <!-- ══ ЭКРАН РАСКЛАДА ══ -->
 <div id="s-reading" class="hidden relative z-10 flex-1 flex flex-col justify-between p-4 mx-auto w-full" style="max-width:420px">
 <div class="text-center py-2">
-<h2 id="r-title" class="serif text-xl font-bold" style="color:#E6D2B5">Таинство началось</h2>
-<p id="r-sub" class="uppercase tracking-widest mt-0.5" style="font-size:10px;color:rgba(207,201,220,0.78)">Внимай знакам судьбы</p>
+<h2 id="r-title" class="serif text-xl font-bold" style="color:#E6D2B5">Расклад</h2>
+<p id="r-sub" class="uppercase tracking-widest mt-0.5" style="font-size:10px;color:rgba(207,201,220,0.78)">Тасуем колоду</p>
 </div>
 
 <div class="flex-1 flex flex-col items-center justify-center my-4">
@@ -990,9 +973,9 @@ style="background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08)">
 </button>
 </div>
 
-<!-- Карта Дня каждое утро -->
+<!-- Карта дня каждое утро -->
 <div id="r-dailypush" class="hidden rounded-2xl p-4 mb-4 space-y-2 text-center" style="background:rgba(255,255,255,.04);border:1px solid rgba(34,197,94,.35)">
-<p class="text-xs" style="color:rgba(242,237,228,.9)">Присылать Карту Дня каждое утро в Telegram?</p>
+<p class="text-xs" style="color:rgba(242,237,228,.9)">Присылать Карту дня каждое утро в Telegram?</p>
 <button onclick="enableDailyPush()" class="w-full font-bold rounded-xl py-2.5 text-xs active:scale-95" style="background:linear-gradient(to right,#16a34a,#4ade80);color:#000">Да, присылать</button>
 </div>
 
@@ -1008,7 +991,7 @@ style="background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08)">
 
 <!-- Финал марафона: разобрать главный вопрос -->
 <div id="r-marathon-cta" class="hidden rounded-2xl p-4 mb-4 space-y-3" style="background:linear-gradient(135deg,rgba(230,210,181,.16),rgba(168,150,199,.14));border:1px solid rgba(230,210,181,.3)">
-<p class="serif text-sm font-bold" style="color:#E6D2B5">Марафон пройден </p>
+<p class="serif text-sm font-bold" style="color:#E6D2B5">Марафон пройден</p>
 <p class="text-xs leading-relaxed" style="color:rgba(242,237,228,.85)">За неделю ты многое заметил(а). Хочешь разобрать главный вопрос с картами?</p>
 <button onclick="marathonCta('quick')" class="w-full flex items-center justify-between font-bold rounded-xl px-4 py-3 text-xs active:scale-95 text-black" style="background:#E6D2B5">
 <span>Быстрый ответ · 1 карта</span><span id="mcta-quick-price">75 энергии</span>
@@ -1026,7 +1009,7 @@ style="background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08)">
 <span>Расклад на ситуацию · 3 карты</span><span id="upsell-preset-price">150 энергии</span>
 </button>
 <button onclick="upsellTo('ai')" class="w-full flex items-center justify-between font-bold rounded-xl px-4 py-3 text-xs active:scale-95 text-white" style="background:#E6D2B5;color:#0B0A10">
-<span>Индивидуальный разбор · 6–10 карт</span><span>750 энергии</span>
+<span>Индивидуальный разбор · 6–10 карт</span><span id="upsell-ai-price">750 энергии</span>
 </button>
 <p style="font-size:10px;color:rgba(207,201,220,0.78)">Твой вопрос подставится автоматически.</p>
 </div>
@@ -1034,10 +1017,10 @@ style="background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08)">
 <button id="btn-share" onclick="shareReading()" class="hidden w-full font-bold py-3.5 rounded-xl text-xs tracking-wider uppercase active:scale-95 mb-2 transition-all text-black" style="background:#E6D2B5">
 Поделиться раскладом
 </button>
-<button id="btn-story" onclick="shareStory()" class="hidden w-full font-bold py-3.5 rounded-xl text-xs tracking-wider uppercase active:scale-95 mb-2 transition-all text-white" style="background:#E6D2B5;color:#0B0A10">
+<button id="btn-story" onclick="shareStory()" class="hidden w-full font-bold py-3.5 rounded-xl text-xs tracking-wider uppercase active:scale-95 mb-2 transition-all" style="background:#1A1824;border:1px solid rgba(230,210,181,.3);color:#E6D2B5">
 Выложить в сторис
 </button>
-<button id="btn-back" onclick="goBack()" class="hidden w-full font-bold py-3.5 rounded-xl text-xs tracking-wider uppercase active:scale-95 mb-2 transition-all" style="background:#1A1824;border:1px solid rgba(230,210,181,.3);color:#E6D2B5">
+<button id="btn-back" onclick="goBack()" class="hidden w-full font-bold py-3.5 rounded-xl text-xs tracking-wider uppercase active:scale-95 mb-2 transition-all" style="background:transparent;color:rgba(207,201,220,.85)">
 На главный экран
 </button>
 </div>
@@ -1062,6 +1045,7 @@ style="background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08)">
 </div>
 </div>
 
+<p id="store-need" class="hidden text-xs rounded-xl" style="padding:8px 12px;background:rgba(230,210,181,.08);border:1px solid rgba(230,210,181,.25);color:#E6D2B5"></p>
 <p id="store-pending" class="hidden text-xs rounded-xl" style="padding:8px 12px;background:rgba(230,210,181,.08);border:1px solid rgba(230,210,181,.25);color:#E6D2B5">После оплаты вернём тебя к раскладу, останется только вытянуть карту.</p>
 
 <div class="space-y-3">
@@ -1191,6 +1175,8 @@ const BACKEND = "https://tarot-backend-136l.onrender.com";
 const BOT_USERNAME = "Poslanie_tarobot";
 const tg = window.Telegram.WebApp;
 tg.ready(); tg.expand();
+try { if (tg.disableVerticalSwipes) tg.disableVerticalSwipes(); } catch {}   // свайп вниз закрывает шторку, а не всё приложение
+const hasBack = !!(tg.BackButton && typeof tg.BackButton.show === "function" && typeof tg.BackButton.onClick === "function");
 // Приложение всегда в своей тёмной палитре – и в светлой, и в тёмной теме Telegram
 try { tg.setHeaderColor("#0B0A10"); } catch {}
 try { tg.setBackgroundColor("#0B0A10"); } catch {}
@@ -1368,8 +1354,8 @@ openModal("feedback");
 async function sendFeedback() {
 if (fbSending) return;
 const text = document.getElementById("fb-text").value.trim();
-if (text.length < 3) { tg.showAlert("Напиши хотя бы пару слов "); return; }
-if (fbState.kind === "review" && !fbState.rating) { tg.showAlert("Поставь оценку звёздами "); return; }
+if (text.length < 3) { toast("Напиши хотя бы пару слов "); return; }
+if (fbState.kind === "review" && !fbState.rating) { toast("Поставь оценку звёздами "); return; }
 const btn = document.getElementById("fb-send");
 fbSending = true;
 btn.disabled = true; btn.textContent = "Отправляем…";
@@ -1379,11 +1365,11 @@ method:"POST", headers:{"Content-Type":"application/json","Authorization":initDa
 body: JSON.stringify({ kind: fbState.kind, rating: fbState.rating || null, text, reading: fbCtx })
 });
 const d = await r.json().catch(() => ({}));
-if (!r.ok) { tg.showAlert(d.detail || "Не удалось отправить."); return; }
+if (!r.ok) { toast(d.detail || "Не удалось отправить."); return; }
 closeModal("feedback");
 tg.showPopup({ title:"Спасибо! ", message:"Твоё сообщение получено. Мы обязательно его прочитаем.", buttons:[{type:"ok"}] });
 if (tg.HapticFeedback) tg.HapticFeedback.notificationOccurred("success");
-} catch { tg.showAlert("Ошибка соединения."); }
+} catch { toast("Ошибка соединения."); }
 finally { fbSending = false; btn.disabled = false; btn.textContent = "Отправить"; }
 }
 
@@ -1449,7 +1435,18 @@ if (m) m.style.paddingBottom = kb > 80 ? kb + "px" : "";
 window.visualViewport.addEventListener("resize", lift);
 window.visualViewport.addEventListener("scroll", lift);
 }
+let pendingAsk = null;   // окно вопроса, к которому вернём после пополнения
+function aiCost() { return (userProfile && userProfile.costs && userProfile.costs.ai) || 750; }
+function needEnergy(cost, modal) {
+openStore();
+pendingAsk = modal || null;
+const n = document.getElementById("store-need");
+n.textContent = `Нужно ${cost} энергии, у тебя ${userProfile.balance}.` + (modal ? " После оплаты вернём тебя к вопросу." : "");
+n.classList.remove("hidden");
+}
 function openStore() {
+pendingAsk = null;
+document.getElementById("store-need").classList.add("hidden");
 document.getElementById("store-pending").classList.toggle("hidden", !pendingStoreFor);
 sheetOpen(document.getElementById("modal-store"));
 track("store_open", { from_reading: !!pendingStoreFor });
@@ -1459,6 +1456,7 @@ function showErr(msg) { document.getElementById("s-loading").classList.remove("h
 
 function goBack() {
 stopShuf();
+if (hasBack) tg.BackButton.hide();
 if (pendingStoreFor) { pendingStoreFor = null; setPending(null); }
 document.getElementById("s-reading").classList.add("hidden");
 document.getElementById("s-dashboard").classList.remove("hidden");
@@ -1468,7 +1466,7 @@ function toReadingScreen(title) {
 document.getElementById("s-dashboard").classList.add("hidden");
 document.getElementById("s-reading").classList.remove("hidden");
 document.getElementById("r-title").textContent = title;
-document.getElementById("r-sub").textContent = "Внимай знакам судьбы";
+document.getElementById("r-sub").textContent = "Тасуем колоду";
 document.getElementById("r-shuffle").classList.remove("hidden");
 document.getElementById("r-cards").classList.add("hidden");
 document.getElementById("r-result").classList.add("hidden");
@@ -1490,7 +1488,7 @@ try { fetch(`${BACKEND}/api/event`, { method:"POST", headers:{"Content-Type":"ap
 
 // ── Текущий расклад: id в базе, уточнения ──
 let currentReading = null;   // { id, kind, clarifications:[], left, cost }
-const KIND_TITLES = { daily:"Карта Дня", marathon:"Марафон 7 дней", quick:"Быстрый ответ", preset:"Расклад на ситуацию", ai:"Индивидуальный разбор" };
+const KIND_TITLES = { daily:"Карта дня", marathon:"Марафон 7 дней", quick:"Быстрый ответ", preset:"Расклад на ситуацию", ai:"Индивидуальный разбор" };
 function kindTitle(kind) {
 if (KIND_TITLES[kind]) return KIND_TITLES[kind];
 const sp = spreadById(String(kind || "").replace(/^sp_/, ""));
@@ -1543,7 +1541,7 @@ track("clarify_click", { kind: currentReading.kind });
 if (cost > 0 && userProfile.balance < cost) {
 pendingStoreFor = currentReading.id; setPending(currentReading.id);
 openStore();
-tg.showAlert(`Нужно ${cost} Энергии. После пополнения ты вернёшься к этому раскладу.`);
+toast(`Нужно ${cost} Энергии. После пополнения ты вернёшься к этому раскладу.`);
 return;
 }
 const btn = document.getElementById("btn-clarify");
@@ -1552,7 +1550,7 @@ document.getElementById("clar-cost").textContent = "тянем карту…";
 try {
 const r = await fetch(`${BACKEND}/api/readings/${currentReading.id}/clarify`, { method:"POST", headers:{ Authorization: initData } });
 const d = await r.json().catch(() => ({}));
-if (!r.ok) { tg.showAlert(d.detail || "Ошибка"); return; }
+if (!r.ok) { toast(d.detail || "Ошибка"); return; }
 setPending(null);
 userProfile.balance = d.new_balance; updateUI();
 currentReading.clarifications.push(d.clarification);
@@ -1561,7 +1559,7 @@ appendClarCard(d.clarification.card);
 renderClarifications();
 if (tg.HapticFeedback) tg.HapticFeedback.notificationOccurred("success");
 document.getElementById("r-clar").lastElementChild && document.getElementById("r-clar").lastElementChild.scrollIntoView({ behavior:"smooth", block:"start" });
-} catch { tg.showAlert("Ошибка соединения."); }
+} catch { toast("Ошибка соединения."); }
 finally { btn.disabled = false; btn.style.opacity = "1"; showClarify(); }
 }
 function appendClarCard(card) {
@@ -1593,7 +1591,9 @@ document.getElementById("preset-free-badge").classList.toggle("hidden", !freePre
 document.getElementById("preset-price-badge").classList.toggle("hidden", freePreset);
 document.getElementById("preset-cost").textContent = freePreset ? "Бесплатно (подарок)" : ((p.costs && p.costs.preset) || 150) + " энергии";
 document.getElementById("preset-cost").style.color = freePreset ? "#4ade80" : "#E6D2B5";
-document.getElementById("upsell-preset-price").textContent = freePreset ? "бесплатно" : ((p.costs && p.costs.preset) || 150) + " ";
+document.getElementById("upsell-preset-price").textContent = freePreset ? "бесплатно" : ((p.costs && p.costs.preset) || 150) + " энергии";
+document.getElementById("upsell-ai-price").textContent = aiCost() + " энергии";
+document.getElementById("ai-cost").textContent = aiCost() + " энергии";
 renderSpreads();
 const qc = quickCost();
 document.getElementById("quick-price-badge").textContent = qc;
@@ -1606,41 +1606,20 @@ document.getElementById("ref-bonus").textContent = p.ref_bonus || 150;
 renderStorePrices();
 renderMarathon();
 renderDream();
-renderPaidTiles();
 }
 
 // ── Марафон «7 дней знаков Вселенной» ──
 function renderMarathon() {
 const m = userProfile && userProfile.marathon;
 if (!m) return;
-const btn = document.getElementById("btn-marathon"), sub = document.getElementById("marathon-sub");
-const dots = document.getElementById("marathon-dots");
 const total = m.total || 7;
-let label = "Начать", text = "«Знаки Вселенной» · задание и карта по теме";
-if (m.status === "ready") {
-label = `День ${m.next_day}`;
-text = m.skipped ? `Продолжим с дня ${m.next_day} – прогресс сохранён` : `День ${m.next_day} из ${total} · ${m.theme}`;
-} else if (m.status === "done_today") {
-label = "Открыть";
-text = `День ${m.day_done} из ${total} пройден · завтра день ${m.next_day}`;
-} else if (m.status === "finished") {
-label = m.today_reading_id ? "Открыть" : "Заново";
-text = "Марафон пройден Можно начать заново";
-}
-btn.textContent = label;
-sub.textContent = m.status === "ready" || m.status === "done_today" ? `день ${m.status === "ready" ? m.next_day : m.day_done} из ${total}` : m.status === "finished" ? "пройден" : "Начать";
-const show = m.status === "ready" || m.status === "done_today" || (m.status === "finished" && m.today_reading_id);
-dots.classList.toggle("hidden", !show);
-if (show) {
-const out = [];
-for (let d = 1; d <= total; d++) out.push(`<span class="${d <= m.day_done ? "on" : (m.status === "ready" && d === m.next_day ? "today" : "")}">${d}</span>`);
-dots.innerHTML = out.join("");
-}
+document.getElementById("marathon-sub").textContent = m.status === "ready" || m.status === "done_today"
+? `день ${m.status === "ready" ? m.next_day : m.day_done} из ${total}` : m.status === "finished" ? "пройден" : "Начать";
 }
 function showMarathonCta(on) {
 const p = userProfile || {}, c = p.costs || {};
-document.getElementById("mcta-quick-price").textContent = (p.free_readings || 0) > 0 ? "бесплатно" : (c.quick || 75) + " ";
-document.getElementById("mcta-preset-price").textContent = (p.free_preset || 0) > 0 ? "бесплатно" : (c.preset || 150) + " ";
+document.getElementById("mcta-quick-price").textContent = (p.free_readings || 0) > 0 ? "бесплатно" : (c.quick || 75) + " энергии";
+document.getElementById("mcta-preset-price").textContent = (p.free_preset || 0) > 0 ? "бесплатно" : (c.preset || 150) + " энергии";
 const el = document.getElementById("r-marathon-cta");
 if (!on) { el.classList.add("hidden"); return; }
 setTimeout(() => el.classList.remove("hidden"), 1300);
@@ -1659,7 +1638,7 @@ toReadingScreen(`Марафон · день ${fresh ? 1 : m.next_day} из ${m.t
 try {
 const r = await fetch(`${BACKEND}/api/marathon/${fresh ? "start" : "day"}`, { method:"POST", headers:{ Authorization: initData } });
 const d = await r.json().catch(() => ({}));
-if (!r.ok) { tg.showAlert(d.detail || "Ошибка"); goBack(); return; }
+if (!r.ok) { toast(d.detail || "Ошибка"); goBack(); return; }
 if (d.marathon) userProfile.marathon = d.marathon;
 if (d.new_balance != null) userProfile.balance = d.new_balance;
 if (d.streak != null) userProfile.streak = d.streak;
@@ -1670,52 +1649,41 @@ rateCtx = null;
 document.getElementById("r-title").textContent = `Марафон · день ${d.day} из ${(d.marathon && d.marathon.total) || 7}`;
 renderCards(d.cards, d.text, { fast: !!d.repeat, note: d.streak_reward || null });
 if (d.day >= ((d.marathon && d.marathon.total) || 7)) showMarathonCta(true);
-} catch { tg.showAlert("Ошибка соединения."); goBack(); }
+} catch { toast("Ошибка соединения."); goBack(); }
 }
 
 // ── Толкователь снов: рассказ – в чате бота (голосом или текстом) ──
 function renderDream() {
 const d = userProfile && userProfile.dream;
 if (!d) return;
-const badge = document.getElementById("dream-badge");
-badge.textContent = d.free ? "Бесплатно" : String(d.cost || 75);
-badge.style.cssText = d.free
-? "background:rgba(168,150,199,.2);border:1px solid rgba(168,150,199,.45);color:rgba(242,237,228,.9);font-size:9px"
-: "background:rgba(230,210,181,.1);border:1px solid rgba(230,210,181,.3);color:#E6D2B5;font-size:9px";
+const price = d.free ? "Первый сон бесплатно" : `${d.cost || 75} энергии`;
 document.getElementById("dream-sub").textContent = d.free ? "1 бесплатно" : `${d.cost || 75} энергии`;
+document.getElementById("dream-cost").textContent = price;
 }
-async function openDream() {
-if (tg.HapticFeedback) tg.HapticFeedback.impactOccurred("light");
-const btn = document.getElementById("btn-dream");
+function openDream() { openModal("dream"); track("dream_sheet_open"); }
+async function goDream() {
+const btn = document.getElementById("btn-dream-go");
 btn.disabled = true;
 try {
 const r = await fetch(`${BACKEND}/api/dream/start`, { method:"POST", headers:{ Authorization: initData } });
 const d = await r.json().catch(() => ({}));
-if (!r.ok) { tg.showAlert(d.detail || "Не получилось открыть чат. Напиши боту /dream."); return; }
+if (!r.ok) { toast(d.detail || "Не получилось открыть чат. Напиши боту /dream."); return; }
 tg.openTelegramLink(`https://t.me/${d.bot || BOT_USERNAME}`);
 setTimeout(() => { try { tg.close(); } catch {} }, 600);
-} catch { tg.showAlert("Ошибка соединения."); }
+} catch { toast("Ошибка соединения."); }
 finally { btn.disabled = false; }
 }
 
 // ── Платные разборы: матрица, совместимость, нумерология, прогнозы (релиз 5) ──
 const PAID = {
-matrix: { emoji:"", title:"Матрица судьбы", sub:"Предназначение, деньги, любовь" },
-compat: { emoji:"", title:"Совместимость", sub:"Превью бесплатно" },
-numerology: { emoji:"", title:"Нумерология", sub:"Портрет по имени и дате" },
-month: { emoji:"", title:"Прогноз на месяц", sub:"По неделям" },
-year: { emoji:"", title:"Прогноз на год", sub:"По месяцам" },
+matrix: { title:"Матрица судьбы", sub:"Предназначение, деньги, любовь" },
+compat: { title:"Совместимость", sub:"Превью бесплатно" },
+numerology: { title:"Нумерология", sub:"Портрет по имени и дате" },
+month: { title:"Прогноз на месяц", sub:"По неделям" },
+year: { title:"Прогноз на год", sub:"По месяцам" },
 };
 const PAID_DEFAULT = { matrix:450, compat:300, numerology:300, month:150, year:450 };
 function paidCost(k) { const c = userProfile && userProfile.paid && userProfile.paid.costs; return (c && c[k]) || PAID_DEFAULT[k]; }
-function renderPaidTiles() {
-document.getElementById("paid-grid").innerHTML = Object.keys(PAID).map(k => `
-<button onclick="openPaid('${k}')" class="glass-card tile tap"${k === "year" ? ' style="grid-column:1 / -1"' : ""}>
-<span class="t-ico">${icon(PAID_ICON[k])}</span>
-<span style="display:block;font-size:14px;font-weight:600;color:var(--text);margin-top:2px">${PAID[k].title}</span>
-<span style="display:block;font-size:10px;color:#E6D2B5;margin-top:2px">${PAID[k].sub} · ${paidCost(k)} энергии</span>
-</button>`).join("");
-}
 function paidHeader(k) {
 document.getElementById("paid-emoji").innerHTML = icon(PAID_ICON[k]);
 document.getElementById("paid-title").textContent = PAID[k].title;
@@ -1732,7 +1700,7 @@ async function openPaid(k) {
 track("paid_open", { kind: k });
 if (!userProfile) return;
 if (!userProfile.birth_date) {
-tg.showAlert("Сначала введи дату рождения: по ней считаются все разборы.");
+toast("Сначала введи дату рождения: по ней считаются все разборы.");
 openFate(); return;
 }
 paidHeader(k);
@@ -1803,9 +1771,9 @@ document.getElementById("cp-result").innerHTML = `
 <p class="text-xs font-semibold mb-1" style="color:#E6D2B5">Ты и ${esc(d.partner_name)}: коротко</p>
 <p class="text-sm leading-relaxed">${esc(d.text)}</p></div>
 <p class="text-xs" style="color:rgba(207,201,220,0.80)">В полной версии: знаки, числа судьбы и арканы обоих, общая задача пары, сильные стороны, точки напряжения и советы.</p>
-<button onclick="confirmBuy('compat', { preview_id: ${d.preview_id} }, '${esc(d.partner_name)}')" ${GOLD_BTN}>Полная совместимость · ${d.cost} энергии</button>
+<button onclick="confirmBuy('compat', { preview_id: ${d.preview_id} }, compatLabel)" ${GOLD_BTN}>Полная совместимость · ${d.cost} энергии</button>
 <button onclick="shareCompat('${esc(d.share_link)}')" ${DARK_BTN}>Отправить партнёру</button>
-<p class="text-center" style="font-size:10px;color:rgba(207,201,220,0.78)">Партнёр получит только ссылку на бот, без ваших дат и разбора.</p>`;
+<p class="text-center" style="font-size:10px;color:rgba(207,201,220,0.78)">Партнёр получит только ссылку на бот, без твоих дат и разбора.</p>`;
 } catch { err.textContent = "Ошибка соединения."; err.classList.remove("hidden"); }
 finally { btn.disabled = false; btn.textContent = "Посмотреть совместимость · бесплатно"; }
 }
@@ -1824,6 +1792,7 @@ try { if (crypto.randomUUID) return crypto.randomUUID(); } catch {}
 return "r" + Date.now().toString(36) + Math.random().toString(36).slice(2, 12);
 }
 let pendingBuy = null;
+let compatLabel = "";   // имя партнёра для окна подтверждения (в onclick его не вставляем: апостроф ломал кнопку)
 function confirmBuy(kind, extra, label) {
 const cost = paidCost(kind), bal = (userProfile && userProfile.balance) || 0;
 pendingBuy = { kind, extra: extra || {}, request_id: newRequestId() };
@@ -1850,14 +1819,14 @@ const r = await fetch(`${BACKEND}/api/products/buy`, { method:"POST", headers:{"
 body: JSON.stringify({ kind: pendingBuy.kind, request_id: pendingBuy.request_id, ...pendingBuy.extra }) });
 const d = await r.json().catch(() => ({}));
 if (r.status === 402) { document.getElementById("cf-text").textContent = d.detail || "Не хватает энергии."; pay.classList.add("hidden"); document.getElementById("cf-store").classList.remove("hidden"); return; }
-if (!r.ok) { tg.showAlert(d.detail || "Ошибка"); pay.disabled = false; pay.textContent = `Оплатить · ${paidCost(pendingBuy.kind)} энергии`; return; }
+if (!r.ok) { toast(d.detail || "Ошибка"); pay.disabled = false; pay.textContent = `Оплатить · ${paidCost(pendingBuy.kind)} энергии`; return; }
 if (d.new_balance != null) { userProfile.balance = d.new_balance; updateUI(); }
 if (pendingBuy.kind === "numerology" && pendingBuy.extra.name && userProfile.paid) userProfile.paid.numerology_name = pendingBuy.extra.name;
 pendingBuy = null;
 closeModal("confirm"); closeModal("paid");
 if (tg.HapticFeedback) tg.HapticFeedback.notificationOccurred("success");
 openProduct(d.id);
-} catch { tg.showAlert("Ошибка соединения. Если энергия списалась, разбор появится в «Моих разборах»."); pay.disabled = false; }
+} catch { toast("Ошибка соединения. Если энергия списалась, разбор появится в «Моих разборах»."); pay.disabled = false; }
 }
 // Рисунок матрицы судьбы: ромб (день, месяц, год, низ) и квадрат рода, точки к центру, деньги и отношения
 function r22(n) { while (n > 22) n = String(n).split("").reduce((a, b) => a + +b, 0); return n; }
@@ -1887,7 +1856,7 @@ nodes += circle(bal[0], bal[1], 10, p.balance, "#0F2A1A", "rgba(74,222,128,.7)",
 nodes += circle(money[0], money[1], 9.5, p.money, "#0F2A1A", "rgba(74,222,128,.7)", "#bbf7d0", 9);
 nodes += circle(love[0], love[1], 9.5, p.rel_mid, "#2A0F1F", "rgba(244,114,182,.7)", "#fbcfe8", 9);
 nodes += `<text x="${(money[0] + 13).toFixed(1)}" y="${(money[1] + 4).toFixed(1)}" font-size="12" fill="#4ade80" font-weight="700">$</text>`;
-nodes += `<text x="${(love[0] - 13).toFixed(1)}" y="${(love[1] + 4).toFixed(1)}" text-anchor="end" font-size="12" fill="#f472b6"></text>`;
+nodes += `<text x="${(love[0] - 13).toFixed(1)}" y="${(love[1] + 4).toFixed(1)}" text-anchor="end" font-size="12" fill="#f472b6">\u2665\uFE0E</text>`;
 // внешние точки и центр
 // шкала возраста: точка на каждый год, подписи каждые 10 лет (0 – слева, по часовой стрелке)
 let ring = "";
@@ -1905,7 +1874,7 @@ return `<div class="rounded-2xl p-2" style="background:rgba(255,255,255,.04);bor
 <svg viewBox="-22 -10 384 360" width="100%" style="display:block;max-width:380px;margin:0 auto" role="img" aria-label="Схема матрицы судьбы">
 ${ring}${lines}${nodes}</svg>
 <div class="flex flex-wrap justify-center pb-1" style="column-gap:12px;row-gap:2px;font-size:10px;color:rgba(207,201,220,0.78)">
-<span>Точки по кругу – возраст, от 0 лет слева по часовой стрелке</span><span>Всё внутри круга – темы на всю жизнь</span><span><b style="color:#E6D2B5">●</b> центр – главная энергия</span><span><b style="color:#4ade80">$</b> деньги</span><span><b style="color:#f472b6"></b> отношения</span>
+<span>Точки по кругу – возраст, от 0 лет слева по часовой стрелке</span><span>Всё внутри круга – темы на всю жизнь</span><span><b style="color:#E6D2B5">●</b> центр – главная энергия</span><span><b style="color:#4ade80">$</b> деньги</span><span><b style="color:#f472b6">\u2665\uFE0E</b> отношения</span>
 </div></div>`;
 }
 let productPoll = null;
@@ -1930,7 +1899,7 @@ document.getElementById("pv-date").textContent = fmtDate(d.created_at);
 document.getElementById("pv-chart").innerHTML = d.points ? matrixSvg(d.points) : "";
 document.getElementById("pv-facts").innerHTML = (d.facts || []).map(f => `<div class="rounded-lg" style="padding:6px 8px;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08)"><div style="font-size:10px;color:rgba(207,201,220,0.78)">${esc(f[0])}</div><div style="font-size:12px;font-weight:700;color:#E6D2B5">${esc(f[1])}</div></div>`).join("");
 if (d.status === "pending") {
-document.getElementById("pv-body").innerHTML = `<div class="text-center space-y-2 py-4"><div class="text-3xl"></div><p class="text-sm">Пишем твой разбор…</p><p class="text-xs" style="color:rgba(207,201,220,0.78)">Обычно это занимает до минуты. Можно закрыть окно: разбор появится в «Моих разборах».</p></div>`;
+document.getElementById("pv-body").innerHTML = `<div class="text-center space-y-2 py-4"><p class="text-sm">Пишем твой разбор…</p><p class="text-xs" style="color:rgba(207,201,220,0.78)">Обычно это занимает до минуты. Можно закрыть окно: разбор появится в «Моих разборах».</p></div>`;
 if (Date.now() - started < 4 * 60 * 1000 && !document.getElementById("modal-pview").classList.contains("hidden")) productPoll = setTimeout(load, 3000);
 return;
 }
@@ -1983,7 +1952,6 @@ const parts = [];
 if (homeLunar) parts.push(`${homeLunar}-й лунный день`);
 if (p.streak) parts.push(`серия ${p.streak} ${plural(p.streak, "день", "дня", "дней")}`);
 document.getElementById("home-sub").textContent = parts.join(" · ") || "Послание Таро";
-document.getElementById("profile-deck").textContent = p.deck_opened != null ? `${p.deck_opened} из 78 карт` : "";
 const love = (p.spreads || []).find(x => x.id === "love");
 document.getElementById("row-love").classList.toggle("hidden", !love);
 if (love) document.getElementById("love-price").textContent = love.cost;
@@ -1997,7 +1965,6 @@ document.getElementById("home-retro").textContent = r ? r.label : "Ретрог�
 document.getElementById("home-next").textContent = d.next ? `${d.next.title} ${d.next.countdown}` : "";
 }
 // ── Карта дня на главной: рубашка → переворот → карта с номером и коротким толкованием ──
-function cardImgIndex(name) { return cardIndex(name); }
 function dailyFaceHTML(name, flipped) {
 const i = cardIndex(name);
 const roman = i >= 0 && i < 22 ? `<span class="roman">${ROMAN_N[i]}</span>` : "";
@@ -2038,7 +2005,7 @@ document.getElementById("daily-sub").textContent = "Карта открывае�
 try {
 const r = await fetch(`${BACKEND}/api/user/use-daily-ai-reading`, { method:"POST", headers:{ Authorization: initData } });
 const d = await r.json().catch(() => ({}));
-if (!r.ok) { delete face.dataset.busy; tg.showAlert(d.detail || "Ошибка"); if (r.status === 429) { userProfile.daily_available = false; } updateUI(); return; }
+if (!r.ok) { delete face.dataset.busy; toast(d.detail || "Ошибка"); if (r.status === 429) { userProfile.daily_available = false; } updateUI(); return; }
 const card = (d.cards || [])[0] || {}, name = String(card.name || "").replace("Старший Аркан: ", "");
 userProfile.balance = d.new_balance; userProfile.daily_available = false;
 if (d.reading_id) userProfile.today_daily_id = d.reading_id;
@@ -2053,7 +2020,7 @@ delete face.dataset.busy;
 if (d.streak_reward) await refreshProfile().catch(() => {});
 updateUI();
 if (d.streak_reward) tg.showPopup({ title:"Серия", message: d.streak_reward, buttons:[{type:"ok"}] });
-} catch { delete face.dataset.busy; tg.showAlert("Ошибка соединения."); renderHomeDaily(); }
+} catch { delete face.dataset.busy; toast("Ошибка соединения."); renderHomeDaily(); }
 }
 async function openDailySheet(id) {
 document.getElementById("dr-face").innerHTML = "";
@@ -2067,7 +2034,7 @@ if (!r.ok) { document.getElementById("dr-text").textContent = d.detail || "Не 
 const name = String(((d.cards || [])[0] || {}).name || "").replace("Старший Аркан: ", "");
 document.getElementById("dr-face").innerHTML = frontFace(name);
 document.getElementById("dr-title").textContent = name;
-document.getElementById("dr-text").innerHTML = md(String(d.text || "").replace(/^\*\*Карта Дня[^*]*\*\*\s*/i, ""));
+document.getElementById("dr-text").innerHTML = md(String(d.text || "").replace(/^\*\*Карта дня[^*]*\*\*\s*/i, ""));
 } catch { document.getElementById("dr-text").textContent = "Ошибка соединения."; }
 }
 // ── Разделы и нижнее меню ──
@@ -2101,7 +2068,7 @@ const SUIT_ORDER = ["cups", "wands", "swords", "pentacles"];
 let openSuit = null;
 function deckCell(c) {
 return c.opened
-? `<button class="dcard open tap" onclick="openDeckCard(${c.id})" aria-label="${esc(c.name)}"><img src="cards/${String(c.id).padStart(2, "0")}.webp" alt="" loading="lazy"></button>`
+? `<button class="dcard open tap" onclick="openDeckCard(${c.id})" aria-label="${esc(c.name)}"><img src="cards/thumbs/${String(c.id).padStart(2, "0")}.webp" alt="" loading="lazy" onerror="this.onerror=null;this.src=this.src.replace('/thumbs','')"></button>`
 : `<div class="dcard locked" aria-label="Закрытая карта">${icon("lock", "ico ico-sm")}</div>`;
 }
 async function loadDeck() {
@@ -2202,7 +2169,7 @@ function renderStorePrices() {
 const p = userProfile || {};
 document.getElementById("pay-switch").classList.toggle("hidden", !p.card_enabled);
 const card = payMethod === "card";
-const on = "width:100%;background:#E6D2B5;color:#fff";
+const on = "width:100%;background:#E6D2B5;color:#0B0A10";
 const off = "width:100%;background:transparent;color:rgba(207,201,220,0.78)";
 document.getElementById("pm-stars").style.cssText = card ? off : on;
 document.getElementById("pm-card").style.cssText = card ? on : off;
@@ -2248,7 +2215,7 @@ document.getElementById("spreads").innerHTML = list.map(s => `
 <button onclick="openSpread('${esc(s.id)}')" class="glass-card tile tap">
 <span class="t-ico">${icon("layers")}</span>
 <span style="display:block;font-size:14px;font-weight:600;color:var(--text);margin-top:2px">${esc(s.title)}</span>
-<span style="display:block;font-size:10px;color:#E6D2B5;margin-top:2px">${s.cards} ${s.cards % 10 >= 2 && s.cards % 10 <= 4 && (s.cards % 100 < 12 || s.cards % 100 > 14) ? "карты" : "карт"} · ${s.cost} энергии</span>
+<span style="display:block;font-size:10px;color:#E6D2B5;margin-top:2px">${s.cards} ${plural(s.cards, "карта", "карты", "карт")} · ${s.cost} энергии</span>
 </button>`).join("");
 }
 function openSpread(id) {
@@ -2266,8 +2233,8 @@ openModal("spread");
 function triggerSpread() {
 const s = activeSpread; if (!s) return;
 const q = document.getElementById("sp-q").value.trim();
-if (!q && !s.default_q) { tg.showAlert("Напиши свой вопрос."); return; }
-if (userProfile.balance < s.cost) { closeModal("spread"); openStore(); tg.showAlert(`Нужно ${s.cost} Энергии.`); return; }
+if (!q && !s.default_q) { toast("Напиши свой вопрос."); return; }
+if (userProfile.balance < s.cost) { closeModal("spread"); needEnergy(s.cost, "spread"); return; }
 closeModal("spread"); startSpread(s, q);
 }
 async function startSpread(s, q) {
@@ -2279,13 +2246,13 @@ method:"POST", headers:{"Content-Type":"application/json","Authorization":initDa
 body: JSON.stringify({ spread: s.id, question: q })
 });
 const d = await r.json().catch(() => ({}));
-if (!r.ok) { tg.showAlert(d.detail || "Ошибка"); goBack(); return; }
+if (!r.ok) { toast(d.detail || "Ошибка"); goBack(); return; }
 userProfile.balance = d.new_balance; updateUI();
 document.getElementById("sp-q").value = "";
 setCurrent(d, "sp_" + s.id);
 rateCtx = { kind:"sp_" + s.id, question: q || s.default_q, cards:(d.cards||[]).map(c => c.name || c).join(", ") };
 renderCards(d.cards, d.text);
-} catch { tg.showAlert("Ошибка соединения."); goBack(); }
+} catch { toast("Ошибка соединения."); goBack(); }
 }
 
 // ── Мои расклады ──
@@ -2317,14 +2284,14 @@ toReadingScreen("Расклад");
 try {
 const r = await fetch(`${BACKEND}/api/readings/${id}`, { headers:{ Authorization: initData } });
 const d = await r.json().catch(() => ({}));
-if (!r.ok) { tg.showAlert(d.detail || "Расклад не найден."); goBack(); return; }
+if (!r.ok) { toast(d.detail || "Расклад не найден."); goBack(); return; }
 document.getElementById("r-title").textContent = kindTitle(d.kind);
 document.getElementById("r-sub").textContent = fmtDate(d.created_at) + (d.question ? ` · «${d.question.slice(0, 50)}»` : "");
 currentReading = { id: d.id, kind: d.kind, clarifications: d.clarifications || [], left: d.clarify_left, cost: d.clarify_cost };
 rateCtx = null;
 renderCards(d.cards, d.text, { fast: true, note });
 if (d.kind === "marathon" && /день 7\b/.test(d.question || "")) showMarathonCta(true);
-} catch { tg.showAlert("Ошибка соединения."); goBack(); }
+} catch { toast("Ошибка соединения."); goBack(); }
 }
 // ── Серия Карт Дня: подарок на 3-й день и каждый 7-й – Энергия ──
 function renderStreak() {
@@ -2378,9 +2345,9 @@ try {
 await saveSettings({ push_hour: h, tz_offset_min: TZ_OFFSET });
 userProfile.push_hour = h; userProfile.tz_offset_min = TZ_OFFSET;
 if (tg.HapticFeedback) tg.HapticFeedback.impactOccurred("light");
-} catch { renderPushTime(); tg.showAlert("Не получилось сохранить время. Попробуй ещё раз."); }
+} catch { renderPushTime(); toast("Не получилось сохранить время. Попробуй ещё раз."); }
 }
-// Часовой пояс телефона: по нему считаются сутки Карты Дня и серии. Время рассылки он меняет,
+// Часовой пояс телефона: по нему считаются сутки Карты дня и серии. Время рассылки он меняет,
 // только если человек сам выбрал час (без выбора рассылка по-прежнему в 11:00 по Алматы)
 function syncTimezone() {
 const p = userProfile || {};
@@ -2398,14 +2365,14 @@ userProfile.daily_push = on;
 if (on) { userProfile.push_hour = hour; userProfile.tz_offset_min = TZ_OFFSET; }
 renderPushTime();
 if (tg.HapticFeedback) tg.HapticFeedback.impactOccurred("light");
-if (on) tg.showPopup({ title:"Готово ", message:`Карта Дня будет приходить в бот каждый день в ${String(hour).padStart(2, "0")}:00. Время можно поменять здесь же.`, buttons:[{type:"ok"}] });
-} catch { t.checked = !on; tg.showAlert("Не получилось сохранить. Попробуй ещё раз."); }
+if (on) tg.showPopup({ title:"Готово", message:`Карта дня будет приходить в бот каждый день в ${String(hour).padStart(2, "0")}:00. Время можно поменять здесь же.`, buttons:[{type:"ok"}] });
+} catch { t.checked = !on; toast("Не получилось сохранить. Попробуй ещё раз."); }
 }
 
 function dailyClick() {
 if (userProfile && userProfile.daily_available === false) {
 if (userProfile.today_daily_id) openDailySheet(userProfile.today_daily_id);
-else tg.showAlert("Карта дня уже получена сегодня. Возвращайся завтра.");
+else toast("Карта дня уже получена сегодня. Возвращайся завтра.");
 return;
 }
 flipDaily();
@@ -2418,7 +2385,7 @@ await saveSettings({ daily_push: true, push_hour: hour, tz_offset_min: TZ_OFFSET
 userProfile.daily_push = true; userProfile.push_hour = hour; userProfile.tz_offset_min = TZ_OFFSET;
 document.getElementById("push-toggle").checked = true;
 renderPushTime();
-tg.showPopup({ title:"Готово ", message:`Карта Дня будет приходить в бот каждый день в ${String(hour).padStart(2, "0")}:00. Время и выключение – на главном экране, в карточке «Карта Дня».`, buttons:[{type:"ok"}] });
+tg.showPopup({ title:"Готово", message:`Карта дня будет приходить в бот каждый день в ${String(hour).padStart(2, "0")}:00. Время и выключение – в Профиле.`, buttons:[{type:"ok"}] });
 } catch {}
 }
 
@@ -2430,7 +2397,7 @@ return "https://t.me/share/url?url=" + encodeURIComponent(link) + "&text=" + enc
 }
 function inviteFriend() {
 if (tg.HapticFeedback) tg.HapticFeedback.impactOccurred("light");
-tg.openTelegramLink(shareUrl("🔮 Послание Таро в Telegram: первый расклад бесплатно, Карта Дня – каждый день. Попробуй!"));
+tg.openTelegramLink(shareUrl("🔮 Послание Таро в Telegram: первый расклад бесплатно, Карта дня – каждый день. Попробуй!"));
 }
 function shareReading() {
 let t = "🔮 Мне выпал расклад Таро";
@@ -2450,7 +2417,7 @@ const link = (userProfile && userProfile.ref_link) || `https://t.me/${BOT_USERNA
 const img = new URL("story.jpg", location.href.split("#")[0].split("?")[0]).href;
 track("story_share");
 try { tg.shareToStory(img, { text: `🔮 Мне выпали карты: ${names}. Задай свой вопрос картам: ${link}`.slice(0, 200) }); }
-catch { tg.showAlert("Не удалось открыть сторис."); }
+catch { toast("Не удалось открыть сторис."); }
 }
 
 // ── Init: сервер на Render может просыпаться до минуты – ждём и показываем это ──
@@ -2461,8 +2428,8 @@ try { return await fetch(url, { ...opts, signal: c.signal }); } finally { clearT
 async function initApp() {
 document.getElementById("btn-retry").classList.add("hidden");
 const lt = document.getElementById("loading-text");
-lt.textContent = "Колода тасуется, космические энергии приходят в движение...";
-const slow = setTimeout(() => { lt.textContent = "Карты пробуждаются… ещё несколько секунд "; }, 4000);
+lt.textContent = "Тасуем колоду…";
+const slow = setTimeout(() => { lt.textContent = "Ещё несколько секунд…"; }, 4000);
 for (let attempt = 0; attempt < 4; attempt++) {
 try {
 const r = await fetchWithTimeout(`${BACKEND}/api/user/profile`, { headers:{ Authorization: initData } }, 25000);
@@ -2508,10 +2475,6 @@ function renderFate() {
 const p = userProfile || {}, f = p.fate;
 document.getElementById("fate-badge").classList.toggle("hidden", !!f);
 document.getElementById("fate-card").classList.toggle("card-focus", !f);   // первый шаг для новичка
-document.getElementById("fate-sub").textContent = f
-? `${f.zodiac} · ${f.personality_name} · ${f.arcana_name}`
-: "Знак, число судьбы и аркан по дате рождения";
-document.getElementById("btn-fate").textContent = f ? "Читать" : "Узнать";
 document.getElementById("fate-sub").textContent = f ? `${f.personality_name} · ${f.arcana_name}` : "Знак, число и арканы";
 document.getElementById("fate-form").classList.toggle("hidden", !!f);
 document.getElementById("fate-result").classList.toggle("hidden", !f);
@@ -2647,11 +2610,12 @@ document.getElementById("sky-retro").innerHTML = d.retro.length
 : `<div>Сейчас ретроградных планет нет: хорошее время двигаться вперёд.</div>`;
 const n = d.next;
 document.getElementById("sky-next").innerHTML = n
-? `<div class="font-bold text-white">${n.emoji} ${esc(n.title)} – ${esc(n.countdown)}</div><div style="color:rgba(207,201,220,0.78)">${esc(n.date)}</div>`
+? `<div class="font-bold text-white flex items-center" style="gap:8px">${skyIco(n.title)}<span>${esc(n.title)} – ${esc(n.countdown)}</span></div><div style="color:rgba(207,201,220,0.78)">${esc(n.date)}</div>`
 : `<div>В ближайший месяц больших событий нет.</div>`;
 document.getElementById("sky-events").innerHTML = d.events.slice(1, 6)
-.map(e => `<div>${e.emoji} ${esc(e.title)} · ${esc(e.date)}</div>`).join("");
+.map(e => `<div class="flex items-center" style="gap:8px">${skyIco(e.title)}<span>${esc(e.title)} · ${esc(e.date)}</span></div>`).join("");
 }
+function skyIco(title) { return icon(/луни/i.test(title || "") ? "moon" : "star", "ico ico-sm"); }
 function openSky() {
 openModal("sky");
 track("sky_viewed");
@@ -2671,7 +2635,7 @@ document.getElementById("tile-horo").textContent = k ? signName(k)[0] : "Выб�
 function showSignPicker(current) {
 const p = userProfile || {};
 document.getElementById("horo-signs").innerHTML = (p.signs || [])
-.map(([k, n, e]) => `<button class="sign-btn${k === current ? " on" : ""}" onclick="pickSign('${k}')"><span class="em">${e}</span>${esc(n)}</button>`).join("");
+.map(([k, n, e]) => `<button class="sign-btn${k === current ? " on" : ""}" onclick="pickSign('${k}')"><span class="em">${e}\uFE0E</span>${esc(n)}</button>`).join("");
 document.getElementById("horo-pick").classList.remove("hidden");
 document.getElementById("horo-text").innerHTML = "";
 document.getElementById("btn-horo-other").classList.add("hidden");
@@ -2698,10 +2662,10 @@ document.getElementById("btn-horo-date").classList.toggle("hidden", !!d.has_birt
 document.getElementById("horo-date-hint").classList.toggle("hidden", !!d.has_birth_date);
 if (d.need_sign) { showSignPicker(); return; }
 const [n, e] = signName(d.sign);
-document.getElementById("horo-title").textContent = `${e} ${n}`;
+document.getElementById("horo-title").textContent = n;
 box.innerHTML = d.text
 ? String(d.text).split(/\n\s*\n/).map(t => `<p>${esc(t.trim())}</p>`).join("")
-: `<p>Гороскоп на эту неделю ещё пишется. Загляни через пару минут </p>`;
+: `<p>Гороскоп на эту неделю ещё пишется. Загляни через пару минут.</p>`;
 document.getElementById("btn-horo-other").classList.remove("hidden");
 } catch {
 box.innerHTML = `<p>Не получилось загрузить. Проверь интернет и попробуй ещё раз.</p>`;
@@ -2752,6 +2716,7 @@ if (from === "marathon") track("marathon_cta_clicked", { kind: open, via: "bot" 
 if (from === "fate") track(open === "quick" ? "fate_cta_free" : "fate_cta_paid", { free: ctaFree(open) });
 openModal(open);
 }
+if (hasBack) tg.BackButton.onClick(() => { if (!document.getElementById("s-reading").classList.contains("hidden")) goBack(); });
 initApp();
 
 // ── Покупки ──
@@ -2774,7 +2739,7 @@ if (d.status === "paid") {
 clearInterval(cardPoll); cardPoll = null;
 await refreshProfile();
 afterPaid();
-tg.showPopup({ title:"Готово!", message:"Оплата прошла, энергия зачислена на баланс ", buttons:[{type:"ok"}] });
+tg.showPopup({ title:"Готово!", message:"Оплата прошла, энергия зачислена на баланс.", buttons:[{type:"ok"}] });
 }
 } catch {}
 }, 4000);
@@ -2782,6 +2747,7 @@ tg.showPopup({ title:"Готово!", message:"Оплата прошла, эне
 
 // После оплаты: если пополняли ради уточнения – человек всё ещё на раскладе, кнопка уже ждёт
 function afterPaid() {
+if (pendingAsk) { const k = pendingAsk; pendingAsk = null; openModal(k); return; }
 if (pendingStoreFor && currentReading && currentReading.id === pendingStoreFor) {
 setPending(null);
 showNote("Энергия на балансе, теперь можно вытянуть уточняющую карту.");
@@ -2789,6 +2755,16 @@ showClarify();
 const el = document.getElementById("r-clarify"); if (el) el.scrollIntoView({ behavior:"smooth", block:"center" });
 }
 pendingStoreFor = null;
+}
+let toastT = null;
+function toast(text) {
+const el = document.getElementById("toast");
+if (!el) return;
+el.textContent = String(text || "");
+el.classList.add("on");
+if (tg.HapticFeedback) tg.HapticFeedback.notificationOccurred("warning");
+clearTimeout(toastT);
+toastT = setTimeout(() => el.classList.remove("on"), 4200);
 }
 function showNote(text) {
 const n = document.getElementById("r-note");
@@ -2806,12 +2782,12 @@ body: JSON.stringify({ pack: packId, reading_id: pendingStoreFor })
 });
 document.getElementById("s-loading").classList.add("hidden");
 const d = await r.json().catch(() => ({}));
-if (!r.ok) { tg.showAlert(d.detail || "Ошибка оплаты."); return; }
+if (!r.ok) { toast(d.detail || "Ошибка оплаты."); return; }
 if (d.payment_url) tg.openLink(d.payment_url);
 else if (d.webapp_url) tg.openTelegramLink(d.webapp_url);
-else { tg.showAlert("Не удалось открыть оплату."); return; }
+else { toast("Не удалось открыть оплату."); return; }
 watchCardPayment(d.order_id);
-} catch { document.getElementById("s-loading").classList.add("hidden"); tg.showAlert("Ошибка соединения."); }
+} catch { document.getElementById("s-loading").classList.add("hidden"); toast("Ошибка соединения."); }
 }
 
 async function buyPack(packId) {
@@ -2832,7 +2808,7 @@ const d = await r.json();
 if (d.invoice_link) {
 tg.openInvoice(d.invoice_link, async st => {
 if (st === "paid") {
-tg.showPopup({ title:"Готово!", message: packId === "sub_month" ? "Подписка «Послание+» оформлена " : "Энергия зачислена на твой баланс.", buttons:[{type:"ok"}] });
+tg.showPopup({ title:"Готово!", message: packId === "sub_month" ? "Подписка «Послание+» оформлена." : "Энергия зачислена на твой баланс.", buttons:[{type:"ok"}] });
 document.getElementById("s-loading").classList.remove("hidden");
 // даём боту зачислить платёж; если не успел – ещё пара попыток
 const before = userProfile.balance;
@@ -2845,11 +2821,11 @@ if (userProfile.balance > before) break;
 if (currentReading) { currentReading.cost = clarifyCost(); }
 document.getElementById("s-loading").classList.add("hidden");
 afterPaid();
-} else if (st === "cancelled") { tg.showAlert("Оплата отменена. Энергия не списана."); }
+} else if (st === "cancelled") { toast("Оплата отменена. Энергия не списана."); }
 });
 }
-} else { const e=await r.json(); tg.showAlert(e.detail || "Ошибка биллинга."); }
-} catch { document.getElementById("s-loading").classList.add("hidden"); tg.showAlert("Ошибка соединения."); }
+} else { const e=await r.json(); toast(e.detail || "Ошибка биллинга."); }
+} catch { document.getElementById("s-loading").classList.add("hidden"); toast("Ошибка соединения."); }
 }
 
 // ── Рендер карт ──
@@ -2882,6 +2858,7 @@ document.getElementById("r-text").innerHTML = md(text);
 renderClarifications();
 document.getElementById("r-result").classList.remove("hidden");
 document.getElementById("btn-back").classList.remove("hidden");
+if (hasBack) tg.BackButton.show();
 showRate();
 document.getElementById("btn-share").classList.remove("hidden");
 document.getElementById("btn-story").classList.toggle("hidden", !canStory());
@@ -2889,35 +2866,6 @@ showClarify();
 showNote(opts.note || null);
 if (opts.dailyPrompt) document.getElementById("r-dailypush").classList.remove("hidden");
 }, start + cards.length*step + (opts.fast ? 0 : 400));
-}
-
-// ── Расклад 1: Карта Дня – бесплатно ──
-function triggerDaily() { closeModal("daily"); startDaily(); }
-async function startDaily() {
-toReadingScreen("Карта Дня");
-try {
-const r = await fetch(`${BACKEND}/api/user/use-daily-ai-reading`, {
-method:"POST", headers:{ Authorization: initData }
-});
-if (r.ok) {
-const d = await r.json();
-userProfile.balance = d.new_balance; userProfile.daily_available = false;
-if (d.reading_id) userProfile.today_daily_id = d.reading_id;
-if (d.streak != null) userProfile.streak = d.streak;
-if (d.streak_reward) await refreshProfile().catch(() => {});
-updateUI();
-setCurrent(d, "daily");
-rateCtx = d.repeat ? null : { kind:"daily", question:"", cards:(d.cards||[]).map(c => c.name || c).join(", ") };
-const note = d.streak_reward || ((d.streak || 0) >= 2 && !d.repeat ? `Серия: ${d.streak} дн. подряд` : null);
-renderCards(d.cards, d.text, { fast: !!d.repeat, note, dailyPrompt: !d.repeat && !userProfile.daily_push });
-} else {
-const e = await r.json().catch(() => ({}));
-if (r.status === 429) { userProfile.daily_available = false; updateUI(); }
-// 429 – уже использовал сегодня
-tg.showAlert(e.detail || "Ошибка");
-goBack();
-}
-} catch { tg.showAlert("Ошибка соединения."); goBack(); }
 }
 
 // ── Допродажа после Быстрого ответа ──
@@ -2949,12 +2897,12 @@ function quickCost() { return (userProfile && userProfile.costs && userProfile.c
 function fillQuick(t) { const ta = document.getElementById("quick-q"); ta.value = t; ta.focus(); }
 function triggerQuick() {
 const q = document.getElementById("quick-q").value.trim();
-if (!q) { tg.showAlert("Напиши свой вопрос."); return; }
+if (!q) { toast("Напиши свой вопрос."); return; }
 closeModal("quick"); startQuick(q);
 }
 async function startQuick(q) {
 const cost = quickCost();
-if (!(userProfile.free_readings > 0) && userProfile.balance < cost) { openStore(); tg.showAlert(`Нужно ${cost} Энергии.`); return; }
+if (!(userProfile.free_readings > 0) && userProfile.balance < cost) { needEnergy(cost, "quick"); return; }
 if (document.activeElement) document.activeElement.blur();
 toReadingScreen("Быстрый ответ");
 try {
@@ -2973,8 +2921,8 @@ setCurrent(d, "quick");
 rateCtx = { kind:"quick", question:q, cards:(d.cards||[]).map(c => c.name || c).join(", ") };
 renderCards(d.cards, d.text);
 showUpsell(true);
-} else { const e=await r.json().catch(() => ({})); tg.showAlert(e.detail||"Ошибка"); goBack(); }
-} catch { tg.showAlert("Ошибка соединения."); goBack(); }
+} else { const e=await r.json().catch(() => ({})); toast(e.detail||"Ошибка"); goBack(); }
+} catch { toast("Ошибка соединения."); goBack(); }
 }
 
 // ── Расклад 2: Расклад на ситуацию ──
@@ -2982,7 +2930,8 @@ function triggerPreset() { closeModal("preset"); startPreset(); }
 async function startPreset() {
 const own = (document.getElementById("preset-own").value || "").trim();
 const q = own || document.getElementById("sel-q").value;
-if (!(userProfile.free_preset > 0) && userProfile.balance < 150) { openStore(); tg.showAlert("Нужно 150 Энергии."); return; }
+const cost = (userProfile.costs && userProfile.costs.preset) || 150;
+if (!(userProfile.free_preset > 0) && userProfile.balance < cost) { needEnergy(cost, "preset"); return; }
 if (document.activeElement) document.activeElement.blur();
 toReadingScreen("Расклад на ситуацию");
 try {
@@ -2995,14 +2944,13 @@ const d = await r.json();
 userProfile.balance = d.new_balance;
 if (typeof d.free_readings === "number") userProfile.free_readings = d.free_readings;
 document.getElementById("preset-own").value = "";
-updateUI();
 if (typeof d.free_preset === "number") userProfile.free_preset = d.free_preset;
 updateUI();
 setCurrent(d, "preset");
 rateCtx = { kind:"preset", question:q, cards:(d.cards||[]).map(c => c.name || c).join(", ") };
 renderCards(d.cards, d.text);
-} else { const e=await r.json().catch(() => ({})); tg.showAlert(e.detail||"Ошибка"); goBack(); }
-} catch { tg.showAlert("Ошибка соединения."); goBack(); }
+} else { const e=await r.json().catch(() => ({})); toast(e.detail||"Ошибка"); goBack(); }
+} catch { toast("Ошибка соединения."); goBack(); }
 }
 
 // ── Расклад 3: Индивидуальный разбор ──
@@ -3014,8 +2962,8 @@ setupAsk("sp-q", "btn-sp-run", "Запустить расклад", () => trigge
 function triggerAi() { closeModal("ai"); startAi(); }
 async function startAi() {
 const q = document.getElementById("ai-q").value.trim();
-if (!q) { tg.showAlert("Напиши свой вопрос."); return; }
-if (userProfile.balance < 750) { openStore(); tg.showAlert("Нужно 750 Энергии."); return; }
+if (!q) { toast("Напиши свой вопрос."); return; }
+if (userProfile.balance < aiCost()) { needEnergy(aiCost(), "ai"); return; }
 document.activeElement.blur();
 toReadingScreen("Индивидуальный разбор");
 try {
@@ -3030,9 +2978,10 @@ document.getElementById("ai-q").value = "";
 setCurrent(d, "ai");
 rateCtx = { kind:"ai", question:q, cards:(d.cards||[]).map(c => c.name || c).join(", ") };
 renderCards(d.cards, d.text);
-} else { const e=await r.json().catch(() => ({})); tg.showAlert(e.detail||"Ошибка"); goBack(); }
-} catch { tg.showAlert("Ошибка соединения."); goBack(); }
+} else { const e=await r.json().catch(() => ({})); toast(e.detail||"Ошибка"); goBack(); }
+} catch { toast("Ошибка соединения."); goBack(); }
 }
 </script>
+<div id="toast" role="status" aria-live="polite" onclick="this.classList.remove('on')"></div>
 </body>
 </html>
