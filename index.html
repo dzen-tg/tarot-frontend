@@ -246,6 +246,13 @@ body{font-family:var(--sans);color:var(--text)}
 @supports not ((backdrop-filter:blur(1px)) or (-webkit-backdrop-filter:blur(1px))){.glass-card{background:rgba(23,21,31,.92)}}
 @media (prefers-reduced-motion:reduce){.sheet>.sheet-panel,.card-inner{transition:none!important}}
 @media (max-width:360px){.premium .serif{font-size:18px!important}.app{padding-left:12px;padding-right:12px}.grid3{gap:8px}.tile{padding:12px}.daily-face{width:84px;height:132px}.daily-title{font-size:21px}.big-num{font-size:38px}}
+.skel{display:inline-block;border-radius:8px;background:linear-gradient(90deg,rgba(255,255,255,.05),rgba(255,255,255,.13),rgba(255,255,255,.05));background-size:200% 100%;animation:skel 1.2s linear infinite;vertical-align:middle}
+@keyframes skel{from{background-position:200% 0}to{background-position:-200% 0}}
+body.fresh .full-only{display:none!important}
+body:not(.fresh) .fresh-only{display:none!important}
+.row-free{background:rgba(74,222,128,.08)!important;box-shadow:inset 0 0 0 1px rgba(74,222,128,.45)}
+.price-note{display:block;font-size:10px;color:rgba(207,201,220,.78);margin-top:2px}
+.price-note.ok{color:#4ade80}
 </style>
 </head>
 <body class="min-h-screen flex flex-col overflow-x-hidden"
@@ -276,10 +283,8 @@ style="background:radial-gradient(120% 40% at 50% 0%,#1E1830 0%,#0B0A10 60%) fix
 <!-- a. Шапка -->
 <header class="home-head">
 <div class="flex items-center" style="gap:12px;min-width:0">
-<div id="avatar" class="avatar" aria-hidden="true">И</div>
 <div style="min-width:0">
-<h1 id="disp-name" class="head-name">Искатель</h1>
-<button id="home-sub" class="head-sub tap" onclick="openSky()" data-block="header_sky" style="min-height:24px;text-align:left">Послание Таро</button>
+<button id="home-sub" class="head-sub tap" onclick="openSky()" data-block="header_sky" style="min-height:24px;text-align:left"></button>
 </div>
 </div>
 <button class="bal-btn tap" onclick="openStore()" data-block="balance" aria-label="Баланс энергии, пополнить"><svg class="ico ico-sm" aria-hidden="true"><use href="#i-energy"/></svg><span id="disp-bal">0</span></button>
@@ -300,11 +305,25 @@ style="background:radial-gradient(120% 40% at 50% 0%,#1E1830 0%,#0B0A10 60%) fix
 <p id="streak-text" class="streak-text"></p>
 </div>
 
+<!-- b3. Новичок: одна строка Быстрого ответа вместо всего списка -->
+<button id="home-quick-fresh" class="glass-card tap fresh-only row-free" onclick="openModal('quick')" data-block="quick_fresh" style="display:flex;align-items:center;gap:12px;width:100%;text-align:left;padding:14px 16px">
+<span class="row-ico"><svg class="ico" aria-hidden="true"><use href="#i-bolt"/></svg></span>
+<span class="row-main" style="flex:1"><span id="quick-fresh-title" class="row-title" style="display:block">Быстрый ответ на твой вопрос</span></span>
+<span id="quick-fresh-price" class="price-chip free">Бесплатно</span>
+</button>
+
+<!-- b2. Код судьбы на первом экране -->
+<button id="home-fate" class="glass-card tap" onclick="openFate()" data-block="home_fate" style="display:flex;align-items:center;gap:12px;width:100%;text-align:left;padding:14px 16px">
+<span class="row-ico"><svg class="ico" aria-hidden="true"><use href="#i-key"/></svg></span>
+<span class="row-main" style="flex:1;min-width:0"><span id="home-fate-title" class="row-title" style="display:block">Узнай свой аркан</span><span id="home-fate-sub" class="row-sub" style="display:block">По дате рождения · бесплатно</span></span>
+<svg class="ico ico-sm" aria-hidden="true"><use href="#i-chev"/></svg>
+</button>
+
 <!-- c. Число дня и Небо сегодня -->
-<div id="today-card" class="grid2">
+<div id="today-card" class="grid2 full-only">
 <button class="glass-card tile tap" onclick="openToday('number')" data-block="day_number" aria-label="Число дня">
 <span class="cat-label">Число дня</span>
-<span id="home-num" class="big-num">…</span>
+<span id="home-num" class="big-num"><span class="skel" style="width:34px;height:16px"></span></span>
 <span id="home-num-arc" class="t-title"></span>
 <span id="tile-number" class="t-sub"></span>
 </button>
@@ -317,34 +336,34 @@ style="background:radial-gradient(120% 40% at 50% 0%,#1E1830 0%,#0B0A10 60%) fix
 </div>
 
 <!-- d. Сделать расклад -->
-<div>
+<div class="full-only">
 <p class="cat-label" style="margin-bottom:10px">Сделать расклад</p>
 <div class="glass-card rows" style="overflow:hidden">
-<button class="tap" onclick="openModal('quick')" data-block="quick">
+<button id="row-quick" class="tap" onclick="openModal('quick')" data-block="quick">
 <span class="row-ico"><svg class="ico" aria-hidden="true"><use href="#i-bolt"/></svg></span>
-<span class="row-main"><span class="row-title" style="display:block">Быстрый ответ</span><span class="row-sub" style="display:block">Свой вопрос · 1 карта</span></span>
+<span class="row-main"><span class="row-title" style="display:block">Быстрый ответ</span><span class="row-sub" style="display:block">Свой вопрос · 1 карта</span><span id="note-quick" class="price-note"></span></span>
 <span id="quick-price-badge" class="price-chip">75</span><span id="free-badge" class="hidden price-chip free">Бесплатно</span>
 </button>
 <button class="tap" onclick="openModal('preset')" data-block="preset">
 <span class="row-ico"><svg class="ico" aria-hidden="true"><use href="#i-layers"/></svg></span>
-<span class="row-main"><span class="row-title" style="display:block">Расклад на ситуацию</span><span class="row-sub" style="display:block">3 карты по твоему вопросу</span></span>
+<span class="row-main"><span class="row-title" style="display:block">Расклад на ситуацию</span><span class="row-sub" style="display:block">3 карты по твоему вопросу</span><span id="note-preset" class="price-note"></span></span>
 <span id="preset-price-badge" class="price-chip">150</span><span id="preset-free-badge" class="hidden price-chip free">Бесплатно</span>
 </button>
 <button id="row-love" class="tap" onclick="openSpread('love')" data-block="love">
 <span class="row-ico"><svg class="ico" aria-hidden="true"><use href="#i-heart"/></svg></span>
-<span class="row-main"><span class="row-title" style="display:block">Отношения</span><span class="row-sub" style="display:block">Ты, партнёр, связь и перспектива</span></span>
+<span class="row-main"><span class="row-title" style="display:block">Отношения</span><span class="row-sub" style="display:block">Ты, партнёр, связь и перспектива</span><span id="note-love" class="price-note"></span></span>
 <span id="love-price" class="price-chip">300</span>
 </button>
 </div>
 <button class="premium tap w-full flex items-center" style="gap:12px;min-height:76px;padding:14px 16px;margin-top:10px;text-align:left;color:var(--text)" onclick="openModal('ai')" data-block="big_spread">
 <span class="row-ico" style="background:rgba(230,210,181,.2)"><svg class="ico" aria-hidden="true"><use href="#i-sparkle"/></svg></span>
-<span class="row-main"><span class="serif" style="display:block;font-size:20px;font-weight:600;color:var(--gold)">Индивидуальный разбор</span><span class="row-sub" style="display:block">Глубокий разбор · 6–10 карт</span></span>
-<span class="price-plaque">750</span>
+<span class="row-main"><span class="serif" style="display:block;font-size:20px;font-weight:600;color:var(--gold)">Индивидуальный разбор</span><span class="row-sub" style="display:block">Глубокий разбор · 6–10 карт</span><span id="note-ai" class="price-note"></span></span>
+<span id="ai-price-badge" class="price-plaque">750</span>
 </button>
 </div>
 
 <!-- e. Для тебя сегодня -->
-<div>
+<div class="full-only">
 <p class="cat-label" style="margin-bottom:10px">Для тебя сегодня</p>
 <div class="grid3">
 <button class="glass-card tile tap" onclick="openHoro()" data-block="horoscope"><span class="t-ico"><svg class="ico" aria-hidden="true"><use href="#i-star"/></svg></span><span class="t-title">Гороскоп</span><span id="tile-horo" class="t-sub">Выбери знак</span></button>
@@ -354,7 +373,7 @@ style="background:radial-gradient(120% 40% at 50% 0%,#1E1830 0%,#0B0A10 60%) fix
 </div>
 
 <!-- f. Ещё о тебе -->
-<div>
+<div class="full-only">
 <p class="cat-label" style="margin-bottom:10px">Ещё о тебе</p>
 <div class="grid2">
 <button id="fate-card" class="glass-card tile tap" onclick="openFate()" data-block="fate"><span class="flex items-center justify-between w-full"><span class="t-ico"><svg class="ico" aria-hidden="true"><use href="#i-key"/></svg></span><span id="fate-badge" class="price-chip free" style="min-height:22px;font-size:10px">Начни здесь</span></span><span class="t-title">Код судьбы</span><span id="fate-sub" class="t-sub">Знак, число и арканы</span></button>
@@ -366,7 +385,7 @@ style="background:radial-gradient(120% 40% at 50% 0%,#1E1830 0%,#0B0A10 60%) fix
 </div>
 
 <!-- g. Личный расклад от таролога -->
-<button class="glass-card w-full flex items-center tap" style="gap:12px;min-height:72px;padding:14px 16px;text-align:left;color:var(--text)" onclick="openTarologist()" data-block="tarologist">
+<button data-fresh="hide" class="full-only glass-card w-full flex items-center tap" style="gap:12px;min-height:72px;padding:14px 16px;text-align:left;color:var(--text)" onclick="openTarologist()" data-block="tarologist">
 <span class="row-ico"><svg class="ico" aria-hidden="true"><use href="#i-tarologist"/></svg></span>
 <span class="row-main"><span class="row-title" style="display:block">Личный расклад от таролога</span><span class="row-sub" style="display:block">Живой разбор твоей ситуации</span></span>
 <span class="chev"><svg class="ico ico-sm" aria-hidden="true"><use href="#i-chev"/></svg></span>
@@ -458,6 +477,10 @@ style="background:radial-gradient(120% 40% at 50% 0%,#1E1830 0%,#0B0A10 60%) fix
 <div class="flex justify-center"><div id="dr-face" style="width:140px;height:220px"></div></div>
 <h3 id="dr-title" class="serif text-center" style="font-size:28px;font-weight:600;color:var(--gold)"></h3>
 <div id="dr-text" class="reading-body" style="font-size:14px;line-height:1.6;color:var(--text-2)"></div>
+<div class="grid2" style="gap:8px">
+<button onclick="closeModal('dailyread');openModal('quick')" class="font-bold py-3 rounded-xl text-xs active:scale-95 text-black" style="background:#E6D2B5">Спросить карты о своём</button>
+<button onclick="shareImage('daily', drId)" class="font-bold py-3 rounded-xl text-xs active:scale-95" style="background:rgba(255,255,255,.04);border:1px solid rgba(230,210,181,.35);color:#E6D2B5">Поделиться картой</button>
+</div>
 </div>
 </div>
 
@@ -617,7 +640,7 @@ style="background:radial-gradient(120% 40% at 50% 0%,#1E1830 0%,#0B0A10 60%) fix
 <div class="absolute inset-0" onclick="chooseSource('skip')"></div>
 <div class="relative z-10 w-full rounded-t-3xl p-6 space-y-4 shadow-2xl" style="max-width:420px;background:#14121C;border-top:1px solid rgba(230,210,181,.3)">
 <div>
-<h3 class="serif text-xl font-bold" style="color:#E6D2B5">Откуда ты о нас узнал(а)?</h3>
+<h3 class="serif text-xl font-bold" style="color:#E6D2B5">Откуда ты о нас знаешь?</h3>
 <p class="text-xs mt-1" style="color:rgba(207,201,220,0.78)">Один вопрос, чтобы мы понимали, где рассказывать о Послании Таро.</p>
 </div>
 <div id="source-list" class="space-y-2"></div>
@@ -675,6 +698,7 @@ class="w-full rounded-xl p-3 text-sm text-white focus:outline-none" style="backg
 <p id="fate-same" class="hidden text-xs text-center" style="color:rgba(230,210,181,.85)">Оба аркана совпали: одна и та же энергия у тебя и в характере, и в главной задаче.</p>
 <div id="fate-text" class="space-y-3 text-sm leading-relaxed" style="color:rgba(242,237,228,.9)"></div>
 <p id="fate-born" class="text-xs" style="color:rgba(207,201,220,0.78)"></p>
+<button onclick="shareImage('fate')" class="w-full font-bold py-3 rounded-xl text-xs tracking-wider uppercase active:scale-95" style="background:rgba(255,255,255,.04);border:1px solid rgba(230,210,181,.35);color:#E6D2B5">Поделиться арканом</button>
 <button id="btn-fate-quick" onclick="fateCta('quick')" class="w-full font-bold py-3.5 rounded-xl text-xs tracking-wider uppercase active:scale-95 text-black" style="background:#E6D2B5"></button>
 <button id="btn-fate-preset" onclick="fateCta('preset')" class="w-full font-bold py-3 rounded-xl text-xs tracking-wider uppercase active:scale-95 text-white" style="background:#1A1824;border:1px solid rgba(230,210,181,.3)"></button>
 </div>
@@ -992,7 +1016,7 @@ style="background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08)">
 <!-- Финал марафона: разобрать главный вопрос -->
 <div id="r-marathon-cta" class="hidden rounded-2xl p-4 mb-4 space-y-3" style="background:linear-gradient(135deg,rgba(230,210,181,.16),rgba(168,150,199,.14));border:1px solid rgba(230,210,181,.3)">
 <p class="serif text-sm font-bold" style="color:#E6D2B5">Марафон пройден</p>
-<p class="text-xs leading-relaxed" style="color:rgba(242,237,228,.85)">За неделю ты многое заметил(а). Хочешь разобрать главный вопрос с картами?</p>
+<p class="text-xs leading-relaxed" style="color:rgba(242,237,228,.85)">За неделю набралось много наблюдений. Хочешь разобрать главный вопрос с картами?</p>
 <button onclick="marathonCta('quick')" class="w-full flex items-center justify-between font-bold rounded-xl px-4 py-3 text-xs active:scale-95 text-black" style="background:#E6D2B5">
 <span>Быстрый ответ · 1 карта</span><span id="mcta-quick-price">75 энергии</span>
 </button>
@@ -1040,8 +1064,8 @@ style="background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08)">
 <!-- Способ оплаты -->
 <div id="pay-switch" class="hidden p-1 rounded-2xl" style="background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08)">
 <div style="display:grid;grid-template-columns:1fr 1fr;gap:4px">
-<button id="pm-stars" onclick="setPayMethod('stars')" class="py-2 rounded-xl text-xs font-bold transition-all">Звёздами</button>
 <button id="pm-card" onclick="setPayMethod('card')" class="py-2 rounded-xl text-xs font-bold transition-all">Картой</button>
+<button id="pm-stars" onclick="setPayMethod('stars')" class="py-2 rounded-xl text-xs font-bold transition-all">Звёздами</button>
 </div>
 </div>
 
@@ -1170,6 +1194,7 @@ style="background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08)">
 </div>
 </div>
 
+<script src="texts.js"></script>
 <script>
 const BACKEND = "https://tarot-backend-136l.onrender.com";
 const BOT_USERNAME = "Poslanie_tarobot";
@@ -1324,7 +1349,7 @@ b.style.border = on ? "1px solid rgba(230,210,181,.6)" : "1px solid rgba(255,255
 b.style.color = on ? "#E6D2B5" : "rgba(207,201,220,0.78)";
 });
 document.getElementById("fb-stars").style.display = k === "review" ? "flex" : "none";
-const ph = { review: "Что понравилось, а что можно улучшить?", idea: "Какой функции или расклада не хватает?", bug: "Что пошло не так? Опиши, что ты нажимал(а)." };
+const ph = { review: "Что понравилось, а что можно улучшить?", idea: "Какой функции или расклада не хватает?", bug: "Что пошло не так? Опиши, какие кнопки были нажаты." };
 document.getElementById("fb-text").placeholder = ph[k];
 }
 function fbRate(v) {
@@ -1437,14 +1462,38 @@ window.visualViewport.addEventListener("scroll", lift);
 }
 let pendingAsk = null;   // окно вопроса, к которому вернём после пополнения
 function aiCost() { return (userProfile && userProfile.costs && userProfile.costs.ai) || 750; }
+// Не хватает Энергии: сразу оплата самого маленького подходящего пакета тем способом, что открыт по умолчанию,
+// без общего экрана пополнения. После оплаты вернём к тому же вопросу (pendingAsk).
 function needEnergy(cost, modal) {
-openStore();
+const bal = (userProfile && userProfile.balance) || 0;
+track("paywall_shown", { cost, balance: bal, modal: modal || null });
+if (userProfile && userProfile.minor) { toast(t("minor")); return; }
+const pk = packFor(cost - bal);
+if (!pk) { openStore(); return; }
+ensureAdult(() => {
 pendingAsk = modal || null;
-const n = document.getElementById("store-need");
-n.textContent = `Нужно ${cost} энергии, у тебя ${userProfile.balance}.` + (modal ? " После оплаты вернём тебя к вопросу." : "");
-n.classList.remove("hidden");
+toast(t("pay_missing", { missing: cost - bal, energy: pk.energy }));
+payMethod = pk.method;
+buyPack(pk.id, true);
+});
+}
+// Перед первой оплатой – «Мне есть 18 лет»
+function ensureAdult(next) {
+const p = userProfile || {};
+if (p.minor) { toast(t("minor")); return; }
+if (p.adult_confirmed) { next(); return; }
+const go = async () => {
+try { await fetch(`${BACKEND}/api/user/adult`, { method:"POST", headers:{ Authorization: initData } }); } catch {}
+p.adult_confirmed = true; track("adult_confirmed"); next();
+};
+try {
+tg.showPopup({ title: t("adult_title"), message: t("adult_text"),
+buttons: [{ id: "ok", type: "default", text: t("adult_ok") }, { id: "no", type: "cancel", text: t("adult_cancel") }] },
+id => { if (id === "ok") go(); });
+} catch { if (confirm(t("adult_text"))) go(); }
 }
 function openStore() {
+if (userProfile && userProfile.minor) { toast(t("minor")); return; }
 pendingAsk = null;
 document.getElementById("store-need").classList.add("hidden");
 document.getElementById("store-pending").classList.toggle("hidden", !pendingStoreFor);
@@ -1456,6 +1505,7 @@ function showErr(msg) { document.getElementById("s-loading").classList.remove("h
 
 function goBack() {
 stopShuf();
+if (fullReadObs) { fullReadObs.disconnect(); fullReadObs = null; }
 if (hasBack) tg.BackButton.hide();
 if (pendingStoreFor) { pendingStoreFor = null; setPending(null); }
 document.getElementById("s-reading").classList.add("hidden");
@@ -1481,6 +1531,32 @@ window.scrollTo(0, 0);
 startShuf();
 }
 
+// Карта дня в шторке: дочитал до конца
+function watchDailyRead() {
+if (!("IntersectionObserver" in window)) return;
+const box = document.getElementById("dr-text"), last = box.lastElementChild || box, id = drId;
+const obs = new IntersectionObserver(es => {
+if (!es.some(e => e.isIntersecting)) return;
+track("card_full_read", { kind: "daily", reading: id }); obs.disconnect();
+}, { threshold: 0.9 });
+obs.observe(last);
+}
+// ── Дочитал расклад до конца: последний абзац показался на экране (один раз за открытие) ──
+let fullReadObs = null;
+function watchFullRead() {
+if (fullReadObs) { fullReadObs.disconnect(); fullReadObs = null; }
+if (!("IntersectionObserver" in window)) return;
+const box = document.getElementById("r-text");
+const last = box.lastElementChild || box;
+const info = { kind: (currentReading && currentReading.kind) || null, reading: (currentReading && currentReading.id) || null };
+fullReadObs = new IntersectionObserver(es => {
+if (!es.some(e => e.isIntersecting)) return;
+track("card_full_read", info);
+fullReadObs.disconnect(); fullReadObs = null;
+}, { threshold: 0.9 });
+fullReadObs.observe(last);
+}
+
 // ── События воронки (сервер принимает только известные имена) ──
 function track(name, props) {
 try { fetch(`${BACKEND}/api/event`, { method:"POST", headers:{"Content-Type":"application/json","Authorization":initData}, body: JSON.stringify({ name, props: props || null }) }); } catch {}
@@ -1499,7 +1575,10 @@ currentReading = d.reading_id ? { id: d.reading_id, kind, clarifications: d.clar
 left: d.clarify_left != null ? d.clarify_left : ((userProfile && userProfile.max_clarify) || 3),
 cost: d.clarify_cost != null ? d.clarify_cost : clarifyCost() } : null;
 }
-function clarifyCost() { const c = userProfile && userProfile.costs; return c && c.clarify != null ? c.clarify : 25; }
+function clarifyCost() {
+if (userProfile && userProfile.free_clarify > 0) return 0;   // подарок серии – бесплатное уточнение
+const c = userProfile && userProfile.costs; return c && c.clarify != null ? c.clarify : 25;
+}
 function renderClarifications() {
 const box = document.getElementById("r-clar");
 const list = (currentReading && currentReading.clarifications) || [];
@@ -1552,6 +1631,7 @@ const r = await fetch(`${BACKEND}/api/readings/${currentReading.id}/clarify`, { 
 const d = await r.json().catch(() => ({}));
 if (!r.ok) { toast(d.detail || "Ошибка"); return; }
 setPending(null);
+if (d.free_clarify != null) userProfile.free_clarify = d.free_clarify;
 userProfile.balance = d.new_balance; updateUI();
 currentReading.clarifications.push(d.clarification);
 currentReading.left = d.clarify_left;
@@ -1575,7 +1655,7 @@ function updateUI() {
 if (!userProfile) return;
 const p = userProfile;
 renderFate();
-document.getElementById("disp-name").textContent = p.name || "Искатель";
+document.body.classList.toggle("fresh", !!p.fresh);   // новичок до первого действия – упрощённый экран
 document.getElementById("disp-bal").textContent = p.balance;
 const free = (p.free_readings || 0) > 0;   // подарок – первый Быстрый ответ
 document.getElementById("free-badge").classList.toggle("hidden", !free);
@@ -1596,7 +1676,19 @@ document.getElementById("upsell-ai-price").textContent = aiCost() + " энерг
 document.getElementById("ai-cost").textContent = aiCost() + " энергии";
 renderSpreads();
 const qc = quickCost();
-document.getElementById("quick-price-badge").textContent = qc;
+document.getElementById("quick-price-badge").innerHTML = energyPrice(qc);
+document.getElementById("row-quick").classList.toggle("row-free", free);
+document.getElementById("quick-fresh-price").textContent = free ? "Бесплатно" : "";
+document.getElementById("quick-fresh-price").innerHTML = free ? "Бесплатно" : energyPrice(qc);
+const pc = (p.costs && p.costs.preset) || 150;
+document.getElementById("preset-price-badge").innerHTML = energyPrice(pc);
+document.getElementById("ai-price-badge").innerHTML = energyPrice(aiCost());
+priceNote("note-quick", qc, free);
+priceNote("note-preset", pc, freePreset);
+priceNote("note-ai", aiCost(), false);
+const loveSp = (p.spreads || []).find(x => x.id === "love");
+if (loveSp) priceNote("note-love", loveSp.cost, false);
+if (!payMethodChosen) payMethod = defaultMethod();
 document.getElementById("quick-price-badge").classList.toggle("hidden", free);
 document.getElementById("quick-cost").textContent = free ? "Бесплатно (подарок)" : qc + " энергии";
 document.getElementById("quick-cost").style.color = free ? "#4ade80" : "#E6D2B5";
@@ -1740,7 +1832,7 @@ return;
 }
 if (k === "numerology") {
 body.innerHTML = `<p>Нумерологический портрет по пифагорейской системе: число судьбы, имени, души и личности, кармические числа и твой личный год.</p>
-<p class="text-xs" style="color:rgba(207,201,220,0.78)">Напиши имя так, как пишешь его сам(а): имя или имя и фамилию, русскими буквами.</p>
+<p class="text-xs" style="color:rgba(207,201,220,0.78)">Напиши имя так, как привычно его писать: имя или имя и фамилию, русскими буквами.</p>
 <input id="nm-name" type="text" maxlength="60" placeholder="Например, Анна Петрова" value="${esc(pd.numerology_name || "")}" ${INPUT}>
 <p id="nm-err" class="hidden text-xs" style="color:#f87171"></p>
 <button onclick="numerologyBuy()" ${GOLD_BTN}>Получить портрет · ${cost} энергии</button>`;
@@ -1778,8 +1870,8 @@ document.getElementById("cp-result").innerHTML = `
 finally { btn.disabled = false; btn.textContent = "Посмотреть совместимость · бесплатно"; }
 }
 function shareCompat(link) {
-track("compat_shared");
-tg.openTelegramLink("https://t.me/share/url?url=" + encodeURIComponent(link) + "&text=" + encodeURIComponent("💞 Я посчитал(а) нашу совместимость в «Послании Таро». Посмотри свою матрицу:"));
+track("share_clicked", { what: "compat" });
+tg.openTelegramLink("https://t.me/share/url?url=" + encodeURIComponent(link) + "&text=" + encodeURIComponent("💞 Здесь можно посчитать нашу совместимость в «Послании Таро». Посмотри свою матрицу:"));
 }
 function numerologyBuy() {
 const name = document.getElementById("nm-name").value.trim(), err = document.getElementById("nm-err");
@@ -1944,17 +2036,16 @@ let homeLunar = null;
 function renderHomeHead() {
 const p = userProfile || {};
 const name = p.name || "Искатель", letter = (name.trim()[0] || "И").toUpperCase();
-document.getElementById("avatar").textContent = letter;
 document.getElementById("avatar-2").textContent = letter;
 document.getElementById("profile-name").textContent = name;
 document.getElementById("profile-bal").textContent = p.balance != null ? p.balance : 0;
 const parts = [];
 if (homeLunar) parts.push(`${homeLunar}-й лунный день`);
 if (p.streak) parts.push(`серия ${p.streak} ${plural(p.streak, "день", "дня", "дней")}`);
-document.getElementById("home-sub").textContent = parts.join(" · ") || "Послание Таро";
+document.getElementById("home-sub").innerHTML = parts.length ? esc(parts.join(" · ")) : `<span class="skel" style="width:120px;height:14px"></span>`;
 const love = (p.spreads || []).find(x => x.id === "love");
 document.getElementById("row-love").classList.toggle("hidden", !love);
-if (love) document.getElementById("love-price").textContent = love.cost;
+if (love) document.getElementById("love-price").innerHTML = energyPrice(love.cost);
 document.querySelectorAll("[data-cost]").forEach(el => { el.textContent = paidCost(el.dataset.cost) + (el.dataset.suffix || ""); });
 }
 function renderHomeSky() {
@@ -2009,7 +2100,8 @@ if (!r.ok) { delete face.dataset.busy; toast(d.detail || "Ошибка"); if (r.
 const card = (d.cards || [])[0] || {}, name = String(card.name || "").replace("Старший Аркан: ", "");
 userProfile.balance = d.new_balance; userProfile.daily_available = false;
 if (d.reading_id) userProfile.today_daily_id = d.reading_id;
-userProfile.today_daily = { id: d.reading_id, name, short: shortOf(d.text) };
+userProfile.today_daily = { id: d.reading_id, name, short: d.message || shortOf(d.text) };
+userProfile.fresh = false; document.body.classList.remove("fresh");
 if (d.streak != null) userProfile.streak = d.streak;
 face.innerHTML = dailyFaceHTML(name, false);
 await new Promise(res => setTimeout(res, 60));
@@ -2022,7 +2114,19 @@ updateUI();
 if (d.streak_reward) tg.showPopup({ title:"Серия", message: d.streak_reward, buttons:[{type:"ok"}] });
 } catch { delete face.dataset.busy; toast("Ошибка соединения."); renderHomeDaily(); }
 }
+let drId = null;
+// «Поделиться»: бот присылает в чат картинку с картой, посланием и ссылкой – её пересылают сами
+async function shareImage(kind, id) {
+if (tg.HapticFeedback) tg.HapticFeedback.impactOccurred("light");
+try {
+const r = await fetch(`${BACKEND}/api/share`, { method:"POST", headers:{"Content-Type":"application/json","Authorization":initData},
+body: JSON.stringify({ kind, reading_id: id || null }) });
+toast(r.ok ? t("share_sent") : t("share_fail"));
+if (r.ok) track("share_clicked", { what: kind, via: "app" });
+} catch { toast(t("share_fail")); }
+}
 async function openDailySheet(id) {
+drId = id;
 document.getElementById("dr-face").innerHTML = "";
 document.getElementById("dr-title").textContent = "";
 document.getElementById("dr-text").innerHTML = `<p style="color:var(--muted)">Загружаем…</p>`;
@@ -2035,6 +2139,8 @@ const name = String(((d.cards || [])[0] || {}).name || "").replace("Старши
 document.getElementById("dr-face").innerHTML = frontFace(name);
 document.getElementById("dr-title").textContent = name;
 document.getElementById("dr-text").innerHTML = md(String(d.text || "").replace(/^\*\*Карта дня[^*]*\*\*\s*/i, ""));
+watchDailyRead();
+if (d.streak_reward) { refreshProfile().catch(() => {}); tg.showPopup({ title:"Серия", message: d.streak_reward, buttons:[{type:"ok"}] }); }
 } catch { document.getElementById("dr-text").textContent = "Ошибка соединения."; }
 }
 // ── Разделы и нижнее меню ──
@@ -2160,8 +2266,9 @@ m._t = setTimeout(() => { if (!m.classList.contains("open")) m.classList.add("hi
 }
 
 // ── Способ оплаты: Stars / карта (Tribute) ──
-let payMethod = "stars";
+let payMethod = "stars", payMethodChosen = false;   // по умолчанию – картой, если она подключена
 function setPayMethod(m) {
+payMethodChosen = true;
 payMethod = (m === "card" && userProfile && userProfile.card_enabled) ? "card" : "stars";
 renderStorePrices();
 }
@@ -2215,8 +2322,10 @@ document.getElementById("spreads").innerHTML = list.map(s => `
 <button onclick="openSpread('${esc(s.id)}')" class="glass-card tile tap">
 <span class="t-ico">${icon("layers")}</span>
 <span style="display:block;font-size:14px;font-weight:600;color:var(--text);margin-top:2px">${esc(s.title)}</span>
-<span style="display:block;font-size:10px;color:#E6D2B5;margin-top:2px">${s.cards} ${plural(s.cards, "карта", "карты", "карт")} · ${s.cost} энергии</span>
+<span style="display:block;font-size:10px;color:#E6D2B5;margin-top:2px">${s.cards} ${plural(s.cards, "карта", "карты", "карт")} · ${energyPrice(s.cost)}</span>
+<span id="note-sp-${esc(s.id)}" class="price-note"></span>
 </button>`).join("");
+list.forEach(s => priceNote(`note-sp-${s.id}`, s.cost, false));
 }
 function openSpread(id) {
 const s = spreadById(id); if (!s) return;
@@ -2274,7 +2383,7 @@ box.innerHTML = d.readings.map(x => `
 <button onclick="closeModal('history');openReading(${x.id})" class="w-full text-left rounded-xl p-3 active:scale-95" style="background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08)">
 <span style="display:flex;justify-content:space-between;font-size:11px;color:#E6D2B5;font-weight:700"><span>${esc(x.title)}</span><span style="color:rgba(207,201,220,0.78);font-weight:400">${fmtDate(x.created_at)}</span></span>
 ${x.question ? `<span style="display:block;font-size:12px;color:#fff;margin-top:3px">«${esc(x.question.slice(0, 90))}»</span>` : ""}
-<span style="display:block;font-size:10px;color:rgba(207,201,220,0.78);margin-top:3px">${esc(x.cards.slice(0, 4).join(", "))}${x.cards.length > 4 ? "…" : ""}${x.clarifications ? ` · ${x.clarifications}` : ""}</span>
+<span style="display:block;font-size:10px;color:rgba(207,201,220,0.78);margin-top:3px">${esc(x.cards.slice(0, 4).join(", "))}${x.cards.length > 4 ? "…" : ""}${x.clarifications ? ` · ${x.clarifications}` : ""}${x.mark ? ` · <span style="color:#E6D2B5">${esc(t("mark_" + x.mark))}</span>` : ""}</span>
 </button>`).join("");
 } catch { box.innerHTML = `<p class="text-xs text-center" style="color:#f87171">Не удалось загрузить. Попробуй ещё раз.</p>`; }
 }
@@ -2295,21 +2404,21 @@ if (d.kind === "marathon" && /день 7\b/.test(d.question || "")) showMarathon
 }
 // ── Серия Карт Дня: подарок на 3-й день и каждый 7-й – Энергия ──
 function renderStreak() {
-const p = userProfile || {}, r = p.streak_rules || { energy_day:3, energy:25, quick_every:7, week_energy:75 };
+const p = userProfile || {}, r = p.streak_rules || { clarify_day:3, quick_every:7 };
 const s = p.streak || 0, taken = p.daily_available === false;
-const target = s < r.energy_day ? r.energy_day : (Math.floor(s / r.quick_every) + 1) * r.quick_every;
-const gift = `+${target === r.energy_day ? r.energy : r.week_energy} энергии`;
+const target = s < r.clarify_day ? r.clarify_day : (Math.floor(s / r.quick_every) + 1) * r.quick_every;
+const gift = target === r.clarify_day ? t("gift_clarify") : t("gift_quick");
 const left = target - s;
 const pos = s === 0 ? 0 : ((s - 1) % r.quick_every) + 1;     // день внутри текущей недели
 const dots = [];
 for (let d = 1; d <= r.quick_every; d++) dots.push(`<i class="${d <= pos ? "on" : (!taken && d === pos + 1 ? "today" : "")}"></i>`);
 document.getElementById("streak-dots").innerHTML = dots.join("");
-const justGot = taken && (s === r.energy_day || (s > 0 && s % r.quick_every === 0));
+const justGot = taken && (s === r.clarify_day || (s > 0 && s % r.quick_every === 0));
 const dn = n => `${n} ${plural(n, "день", "дня", "дней")}`;
 document.getElementById("streak-text").textContent = s === 0
-? `Открывай карту каждый день: на ${r.energy_day}-й день +${r.energy}, на ${r.quick_every}-й +${r.week_energy} энергии`
-: justGot ? `Серия ${pos} из ${r.quick_every} · бонус получен, следующий через ${dn(left)}`
-: `Серия ${pos} из ${r.quick_every} · до бонуса ${dn(left)}`;
+? t("streak_intro", { clarify_day: r.clarify_day, quick_every: r.quick_every })
+: justGot ? t("streak_got", { days: dn(left), gift })
+: t("streak_next", { days: dn(left), gift });
 renderHomeDaily();
 renderHomeHead();
 }
@@ -2405,7 +2514,7 @@ if (lastReading && lastReading.cards && lastReading.cards.length) {
 t += ": " + lastReading.cards.slice(0, 3).map(c => c.name.replace("Старший Аркан: ", "")).join(", ");
 }
 t += ". Сделай свой – первый расклад бесплатно 👇";
-track("share_click");
+track("share_clicked", { what: "link", kind: (currentReading && currentReading.kind) || null });
 tg.openTelegramLink(shareUrl(t));
 }
 // Сторис: картинка лежит рядом с мини-аппом, текст с картами и реф-ссылкой
@@ -2415,7 +2524,7 @@ if (!canStory()) return;
 const names = (lastReading && lastReading.cards || []).slice(0, 3).map(c => c.name.replace("Старший Аркан: ", "")).join(", ");
 const link = (userProfile && userProfile.ref_link) || `https://t.me/${BOT_USERNAME}`;
 const img = new URL("story.jpg", location.href.split("#")[0].split("?")[0]).href;
-track("story_share");
+track("share_clicked", { what: "story", kind: (currentReading && currentReading.kind) || null });
 try { tg.shareToStory(img, { text: `🔮 Мне выпали карты: ${names}. Задай свой вопрос картам: ${link}`.slice(0, 200) }); }
 catch { toast("Не удалось открыть сторис."); }
 }
@@ -2468,11 +2577,13 @@ if (pending && String(pending) === String(id)) fromPay = true;
 if (pending) setPending(null);   // возвращаем один раз
 // Оплату бросили – не выдёргиваем человека с главного экрана при каждом запуске
 if (fromPay && id === pending && userProfile.balance < clarifyCost()) return;
-openReading(+id, fromPay ? "Энергия на балансе. Вытяни уточняющую карту, когда будешь готов(а)." : null);
+openReading(+id, fromPay ? t("energy_ready") : null);
 }
 // ── Код судьбы ──
 function renderFate() {
 const p = userProfile || {}, f = p.fate;
+document.getElementById("home-fate-title").textContent = f ? t("fate_home_done", { arcana: f.personality_name }) : t("fate_home_new");
+document.getElementById("home-fate-sub").textContent = f ? t("fate_home_done_sub") : t("fate_home_new_sub");
 document.getElementById("fate-badge").classList.toggle("hidden", !!f);
 document.getElementById("fate-card").classList.toggle("card-focus", !f);   // первый шаг для новичка
 document.getElementById("fate-sub").textContent = f ? `${f.personality_name} · ${f.arcana_name}` : "Знак, число и арканы";
@@ -2484,8 +2595,10 @@ document.getElementById("fate-life").textContent = f.life_path;
 document.getElementById("fate-personality").textContent = `${f.personality_roman} ${f.personality_name}`;
 document.getElementById("fate-arcana").textContent = `${f.arcana_roman} ${f.arcana_name}`;
 document.getElementById("fate-same").classList.toggle("hidden", !f.same);
-document.getElementById("fate-text").innerHTML = f.stale
-? `<p style="color:rgba(207,201,220,0.78)">Обновляем твой Код судьбы: теперь в нём два аркана. Это до 20 секунд…</p>`
+document.getElementById("fate-text").innerHTML = f.pending
+? `<p style="color:rgba(207,201,220,0.78)">${esc(t("fate_pending"))}</p>`
+: f.stale
+? `<p style="color:rgba(207,201,220,0.78)">Обновляем твой Код судьбы. Это до 20 секунд…</p>`
 : String(f.text).split(/\n\s*\n/).map(t => `<p>${esc(t.trim())}</p>`).join("");
 document.getElementById("fate-born").textContent = p.birth_date ? `Дата рождения: ${p.birth_date}` : "";
 const freeQ = (p.free_readings || 0) > 0, freeP = (p.free_preset || 0) > 0;
@@ -2563,11 +2676,12 @@ todayLoading = fetchWithTimeout(`${BACKEND}/api/user/today`, { headers:{ Authori
 return todayLoading;
 }
 function renderToday() {
-const d = todayData, n = d && d.number, m = d && d.moon, wait = todayFailed ? "—" : "…";
-document.getElementById("tile-number").textContent = n ? n.word : "";
-document.getElementById("home-num").textContent = n ? n.value : wait;
+const d = todayData, n = d && d.number, m = d && d.moon;
+const skel = w => todayFailed ? "—" : `<span class="skel" style="width:${w}px;height:16px"></span>`;
+document.getElementById("tile-number").innerHTML = n ? esc(n.word) : skel(70);
+document.getElementById("home-num").innerHTML = n ? esc(n.value) : skel(34);
 document.getElementById("home-num-arc").textContent = n && ARCANA_NAMES[n.value] ? ARCANA_NAMES[n.value] : "";
-document.getElementById("tile-moon").textContent = m ? m.name : wait;
+document.getElementById("tile-moon").innerHTML = m ? esc(m.name) : skel(90);
 if (m && m.lunar_day) { homeLunar = m.lunar_day; renderHomeHead(); }
 document.getElementById("today-err").classList.toggle("hidden", !todayFailed || !!d);
 if (!d) return;
@@ -2703,6 +2817,8 @@ if (key !== "skip" && tg.HapticFeedback) tg.HapticFeedback.notificationOccurred(
 function openDeepLinkedAction() {
 let open = null, from = null;
 try { const q = new URLSearchParams(location.search); open = q.get("open"); from = q.get("from"); } catch {}
+if (from && from.startsWith("push_")) track("push_clicked", { kind: from.slice(5) });
+else if (from === "broadcast") track("push_clicked", { kind: "weekly", open: open || null });
 if (open === "horoscope") {
 let sign = null;
 try { sign = new URLSearchParams(location.search).get("sign"); } catch {}
@@ -2710,7 +2826,17 @@ if (from === "broadcast") track("horoscope_from_broadcast", { sign: sign || null
 openHoro(sign);
 return;
 }
-if (open === "store") { openStore(); return; }
+if (open === "store") {
+openStore();
+const need = +(new URLSearchParams(location.search).get("need") || 0);
+if (need && userProfile && userProfile.balance < need) {
+const n = document.getElementById("store-need");
+n.textContent = `Нужно ${need} энергии, у тебя ${userProfile.balance}.`; n.classList.remove("hidden");
+}
+return;
+}
+if (open === "daily") { switchTab("home"); dailyClick(); return; }
+if (open === "spreads") { switchTab("more"); return; }
 if (open !== "quick" && open !== "preset") return;
 if (from === "marathon") track("marathon_cta_clicked", { kind: open, via: "bot" });
 if (from === "fate") track(open === "quick" ? "fate_cta_free" : "fate_cta_paid", { free: ctaFree(open) });
@@ -2774,7 +2900,7 @@ n.textContent = text; n.classList.remove("hidden");
 async function buyPackCard(packId) {
 document.getElementById("s-loading").classList.remove("hidden");
 document.getElementById("loading-text").textContent = "Подготовка оплаты...";
-track("pay_start", { pack: packId, method: "card" });
+track("payment_started", { pack: packId, method: "card" });
 try {
 const r = await fetch(`${BACKEND}/api/payment/tribute-order`, {
 method:"POST", headers:{"Content-Type":"application/json","Authorization":initData},
@@ -2790,13 +2916,16 @@ watchCardPayment(d.order_id);
 } catch { document.getElementById("s-loading").classList.add("hidden"); toast("Ошибка соединения."); }
 }
 
-async function buyPack(packId) {
+async function buyPack(packId, direct) {
+if (!direct && !(userProfile && userProfile.adult_confirmed)) { ensureAdult(() => buyPack(packId, true)); return; }
+const keepAsk = pendingAsk;
 closeStore();
+pendingAsk = keepAsk;
 if (packId === "sub_month") track("sub_click");
 if (payMethod === "card" && packId !== "sub_month") return buyPackCard(packId);
 document.getElementById("s-loading").classList.remove("hidden");
 document.getElementById("loading-text").textContent = "Подготовка счёта...";
-track("pay_start", { pack: packId, method: "stars" });
+track("payment_started", { pack: packId, method: "stars" });
 try {
 const r = await fetch(`${BACKEND}/api/payment/stars-invoice`, {
 method:"POST", headers:{"Content-Type":"application/json","Authorization":initData},
@@ -2855,8 +2984,10 @@ setTimeout(() => { el.querySelector(".card-inner").classList.add("card-flipped")
 ((currentReading && currentReading.clarifications) || []).forEach(c => appendClarCard(c.card));
 setTimeout(() => {
 document.getElementById("r-text").innerHTML = md(text);
+if (userProfile && userProfile.fresh) { userProfile.fresh = false; document.body.classList.remove("fresh"); }
 renderClarifications();
 document.getElementById("r-result").classList.remove("hidden");
+watchFullRead();
 document.getElementById("btn-back").classList.remove("hidden");
 if (hasBack) tg.BackButton.show();
 showRate();
@@ -2894,6 +3025,31 @@ openModal("ai");
 
 // ── Расклад 1б: Быстрый ответ ──
 function quickCost() { return (userProfile && userProfile.costs && userProfile.costs.quick) || 75; }
+// Цена со значком Энергии
+function energyPrice(cost) { return `${icon("energy", "ico ico-sm")}${cost}`; }
+// Способ оплаты по умолчанию: картой, если подключена, иначе звёздами
+function defaultMethod() { return userProfile && userProfile.card_enabled ? "card" : "stars"; }
+// Самый маленький пакет, которого хватит на недостающую Энергию, тем способом, что открыт по умолчанию
+function packFor(missing) {
+const p = userProfile || {}, method = payMethod || defaultMethod();
+const packs = (p.packs || []).filter(x => method === "card" ? (p.card_prices || {})[x.id] != null : (p.prices || {})[x.id] != null)
+.sort((a, b) => a.energy - b.energy);
+const pack = packs.find(x => x.energy >= missing) || packs[packs.length - 1];
+if (!pack) return null;
+const price = method === "card" ? `${p.card_prices[pack.id]} ${p.card_currency || "₽"}` : `${p.prices[pack.id]} ⭐`;
+return { id: pack.id, energy: pack.energy, price, method };
+}
+// Подпись под ценой: «хватает твоей Энергии» или «+150 ⚡ за 99 ₽»
+function priceNote(id, cost, free) {
+const el = document.getElementById(id);
+if (!el) return;
+const bal = (userProfile && userProfile.balance) || 0;
+if (free || userProfile && userProfile.minor) { el.textContent = ""; el.className = "price-note"; return; }
+if (bal >= cost) { el.textContent = t("energy_enough"); el.className = "price-note ok"; return; }
+const pk = packFor(cost - bal);
+el.textContent = pk ? t("energy_pack", { energy: pk.energy, price: pk.price }) : "";
+el.className = "price-note";
+}
 function fillQuick(t) { const ta = document.getElementById("quick-q"); ta.value = t; ta.focus(); }
 function triggerQuick() {
 const q = document.getElementById("quick-q").value.trim();
