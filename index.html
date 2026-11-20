@@ -470,6 +470,18 @@ style="background:radial-gradient(120% 40% at 50% 0%,#1E1830 0%,#0B0A10 60%) fix
 
 
 <!-- ══ ШТОРКА: КАРТА ДНЯ ПОЛНОСТЬЮ ══ -->
+<div id="modal-exchange" class="hidden fixed inset-0 z-40 flex items-end justify-center" style="background:rgba(0,0,0,.8)">
+<div class="absolute inset-0" onclick="exchangeLater()"></div>
+<div class="relative z-10 w-full rounded-t-3xl p-6 space-y-4 shadow-2xl" style="max-width:440px">
+<p class="cat-label text-center">Энергообмен</p>
+<h3 class="serif text-center" style="font-size:24px;font-weight:600;color:var(--gold)">Бесплатные расклады закончились</h3>
+<p id="ex-text" class="text-sm leading-relaxed text-center" style="color:var(--text-2)"></p>
+<button id="ex-pay" onclick="exchangePay()" class="w-full font-bold py-3.5 rounded-xl text-sm active:scale-95 text-black" style="background:#E6D2B5"></button>
+<button onclick="exchangeShare()" class="w-full font-bold py-3 rounded-xl text-sm active:scale-95" style="background:rgba(255,255,255,.04);border:1px solid rgba(230,210,181,.35);color:#E6D2B5">💌 Поделиться с другом</button>
+<button onclick="exchangeLater()" class="w-full py-2 text-xs" style="color:rgba(207,201,220,0.78)">Позже</button>
+</div>
+</div>
+
 <div id="modal-dailyread" class="hidden fixed inset-0 z-40 flex items-end justify-center" style="background:rgba(0,0,0,.8)">
 <div class="absolute inset-0" onclick="closeModal('dailyread')"></div>
 <div class="relative z-10 w-full rounded-t-3xl p-6 space-y-4 shadow-2xl overflow-y-auto" style="max-width:440px">
@@ -1505,6 +1517,7 @@ function showErr(msg) { document.getElementById("s-loading").classList.remove("h
 
 function goBack() {
 stopShuf();
+exchangeShow();
 if (fullReadObs) { fullReadObs.disconnect(); fullReadObs = null; }
 if (hasBack) tg.BackButton.hide();
 if (pendingStoreFor) { pendingStoreFor = null; setPending(null); }
@@ -1553,6 +1566,7 @@ fullReadObs = new IntersectionObserver(es => {
 if (!es.some(e => e.isIntersecting)) return;
 track("card_full_read", info);
 fullReadObs.disconnect(); fullReadObs = null;
+setTimeout(exchangeShow, 1500);
 }, { threshold: 0.9 });
 fullReadObs.observe(last);
 }
@@ -2498,6 +2512,42 @@ tg.showPopup({ title:"Готово", message:`Карта дня будет пр�
 } catch {}
 }
 
+// ── Энергообмен: после последнего бесплатного расклада – один раз ──
+let exchangeDue = false;
+function exchangeCheck(d) {
+const p = userProfile || {};
+exchangeDue = !!(d && d.used_free) && !(p.free_readings > 0) && !(p.free_preset > 0)
+&& p.first_purchase && !p.minor && !p.exchange_shown;
+}
+function exchangePack() {
+const p = userProfile || {}, method = payMethod || defaultMethod();
+const id = (method === "card" ? p.card_prices : p.prices) && (method === "card" ? p.card_prices : p.prices).pack_150 != null ? "pack_150" : null;
+if (!id) return null;
+const price = method === "card" ? `${p.card_prices.pack_150} ${p.card_currency || "₽"}` : `${p.prices.pack_150} ⭐`;
+return { id, price, method };
+}
+function exchangeShow() {
+if (!exchangeDue) return;
+exchangeDue = false;
+const p = userProfile || {};
+p.exchange_shown = true;
+document.getElementById("ex-text").textContent = t("exchange_text", { bonus: p.ref_bonus || 150 });
+const pk = exchangePack();
+const btn = document.getElementById("ex-pay");
+btn.textContent = pk ? t("exchange_pay", { price: pk.price }) : t("exchange_pay_store");
+track("exchange_shown", { via: "app" });
+setTimeout(() => openModal("exchange"), 700);
+}
+function exchangePay() {
+closeModal("exchange");
+track("exchange_pay");
+const pk = exchangePack();
+if (!pk) { openStore(); return; }
+ensureAdult(() => { payMethod = pk.method; buyPack(pk.id, true); });
+}
+function exchangeShare() { closeModal("exchange"); track("exchange_share"); inviteFriend(); }
+function exchangeLater() { closeModal("exchange"); track("exchange_later"); }
+
 // ── Поделиться / пригласить ──
 let lastReading = null;
 function shareUrl(text) {
@@ -3071,6 +3121,7 @@ const d = await r.json();
 userProfile.balance = d.new_balance;
 if (typeof d.free_readings === "number") userProfile.free_readings = d.free_readings;
 updateUI();
+exchangeCheck(d);
 document.getElementById("quick-q").value = "";
 lastQuickQuestion = q;
 setCurrent(d, "quick");
@@ -3102,6 +3153,7 @@ if (typeof d.free_readings === "number") userProfile.free_readings = d.free_read
 document.getElementById("preset-own").value = "";
 if (typeof d.free_preset === "number") userProfile.free_preset = d.free_preset;
 updateUI();
+exchangeCheck(d);
 setCurrent(d, "preset");
 rateCtx = { kind:"preset", question:q, cards:(d.cards||[]).map(c => c.name || c).join(", ") };
 renderCards(d.cards, d.text);
