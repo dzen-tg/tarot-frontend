@@ -41,7 +41,9 @@ window.TEXTS = {
 window.t = function (key, vars) {
   const lang = window.__lang || "ru";   // язык интерфейса; пока приложение целиком на русском
   const item = (window.TEXTS || {})[key] || {};
-  let s = item[lang] || item.ru || key;
+  // перевод – в словарях i18n/ по русской фразе; поле en здесь – запасной вариант
+  let s = item.ru ? L(item.ru) : key;
+  if (s === item.ru && lang !== "ru" && item.en) s = item.en;
   if (vars) for (const k in vars) s = s.split("{" + k + "}").join(vars[k]);
   return s;
 };
