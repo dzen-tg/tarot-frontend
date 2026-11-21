@@ -719,5 +719,8 @@ window.I18N = {
 "({})); toast(e.detail||L(\"Ошибка\")); goBack(); }\n} catch { toast(L(\"Ошибка соединения.\")); goBack(); }\n}": "({})); toast(e.detail||L(\"Fehler\")); goBack(); }\n} catch { toast(L(\"Verbindungsfehler.\")); goBack(); }\n}",
 "Оплата картой": "Kartenzahlung",
 "Перейти к оплате": "Zur Zahlung",
-"Откроется страница оплаты Tribute. Войди через Telegram, а после входа вернись в браузер для завершения оплаты.": "Die Zahlungsseite von Tribute öffnet sich. Melde dich mit Telegram an und kehre danach zum Browser zurück, um die Zahlung abzuschließen."
+"Откроется страница оплаты Tribute. Войди через Telegram, а после входа вернись в браузер для завершения оплаты.": "Die Zahlungsseite von Tribute öffnet sich. Melde dich mit Telegram an und kehre danach zum Browser zurück, um die Zahlung abzuschließen.",
+"Язык приложения": "App-Sprache",
+"На этом языке будут приложение, расклады и сообщения бота.": "App, Legungen und Bot-Nachrichten erscheinen in dieser Sprache.",
+"Пополнить энергию": "Energie aufladen"
 };

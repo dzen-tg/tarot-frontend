@@ -186,14 +186,20 @@ body{font-family:var(--sans);color:var(--text)}
 .app{position:relative;z-index:10;width:100%;max-width:440px;margin:0 auto;padding:12px 16px calc(96px + var(--safe-b))}
 .tab>*+*{margin-top:22px}
 .bottom-nav{position:fixed;left:0;right:0;bottom:0;z-index:30;display:flex;justify-content:center;padding:0 12px var(--safe-b);background:linear-gradient(to top,rgba(11,10,16,.98) 60%,rgba(11,10,16,0))}
-.bottom-nav .bar{display:grid;grid-template-columns:repeat(4,1fr);width:100%;max-width:440px;margin:8px 0;border-radius:22px;background:rgba(23,21,31,.92);border:1px solid var(--line);-webkit-backdrop-filter:blur(20px);backdrop-filter:blur(20px)}
-.bottom-nav button{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;min-height:58px;font-size:11px;font-weight:500;color:var(--muted)}
-.bottom-nav button.on{color:var(--gold)}
+.bottom-nav .bar{display:grid;grid-template-columns:repeat(4,1fr);gap:4px;padding:5px;width:100%;max-width:440px;margin:8px 0;border-radius:24px;background:rgba(34,30,46,.97);border:1px solid var(--gold-30);box-shadow:0 -4px 24px rgba(230,210,181,.10),0 10px 30px rgba(0,0,0,.55);-webkit-backdrop-filter:blur(20px);backdrop-filter:blur(20px)}
+.bottom-nav button{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;min-height:54px;border-radius:18px;font-size:11px;font-weight:600;color:rgba(222,216,235,.82);transition:background .2s,color .2s}
+.bottom-nav button.on{color:#0B0A10;background:var(--gold);font-weight:700}
 /* Шапка */
 .home-head{display:flex;align-items:center;justify-content:space-between;gap:12px;min-height:56px}
 .avatar{width:44px;height:44px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-family:var(--serif);font-size:22px;font-weight:600;color:#0B0A10;background:var(--gold);flex-shrink:0}
 .head-name{font-size:16px;font-weight:600;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .head-sub{font-size:12px;color:var(--text-2)}
+.head-r{display:flex;flex-direction:column;align-items:flex-end;gap:2px;flex-shrink:0}
+.head-row{display:flex;align-items:center;gap:8px}
+.lang-btn{display:inline-flex;align-items:center;gap:5px;min-height:44px;padding:0 12px;border-radius:18px;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.12);color:rgba(207,201,220,.9);font-weight:600;font-size:13px;flex-shrink:0}
+.topup-link{display:inline-flex;align-items:center;gap:4px;min-height:30px;padding:0 4px;color:var(--gold);font-weight:600;font-size:12px;text-decoration:underline;text-underline-offset:3px;text-decoration-color:var(--gold-30)}
+.lang-item{display:flex;align-items:center;justify-content:space-between;width:100%;min-height:48px;padding:0 16px;border-radius:14px;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);color:#E8E4F0;font-size:15px;text-align:start}
+.lang-item.on{background:var(--gold-12);border-color:var(--gold-30);color:var(--gold);font-weight:700}
 .bal-btn{display:inline-flex;align-items:center;gap:6px;min-height:44px;padding:0 14px;border-radius:18px;background:var(--gold-12);border:1px solid var(--gold-30);color:var(--gold);font-weight:700;font-size:15px;flex-shrink:0}
 /* Карта дня */
 .daily{padding:18px;border-color:rgba(230,210,181,.45);box-shadow:0 0 32px rgba(230,210,181,.06)}
@@ -259,7 +265,7 @@ body:not(.fresh) .fresh-only{display:none!important}
 <body class="min-h-screen flex flex-col overflow-x-hidden"
 style="background:radial-gradient(120% 40% at 50% 0%,#1E1830 0%,#0B0A10 60%) fixed,#0B0A10">
 
-<svg width="0" height="0" style="position:absolute" aria-hidden="true"><symbol id="i-cards" viewBox="0 0 24 24"><rect x="4" y="5" width="11" height="16" rx="2"/><path d="M9 3h9a2 2 0 0 1 2 2v13"/></symbol><symbol id="i-bolt" viewBox="0 0 24 24"><path d="M13 3 5 13.5h6L10 21l8-10.5h-6L13 3z"/></symbol><symbol id="i-layers" viewBox="0 0 24 24"><path d="m12 3 9 5-9 5-9-5 9-5z"/><path d="m3 13 9 5 9-5"/></symbol><symbol id="i-heart" viewBox="0 0 24 24"><path d="M12 20s-7-4.4-7-10a4 4 0 0 1 7-2.6A4 4 0 0 1 19 10c0 5.6-7 10-7 10z"/></symbol><symbol id="i-sparkle" viewBox="0 0 24 24"><path d="M12 3c.6 4.2 2.8 6.4 7 7-4.2.6-6.4 2.8-7 7-.6-4.2-2.8-6.4-7-7 4.2-.6 6.4-2.8 7-7z"/></symbol><symbol id="i-moon" viewBox="0 0 24 24"><path d="M20 14.5A8 8 0 1 1 9.5 4 6.5 6.5 0 0 0 20 14.5z"/></symbol><symbol id="i-star" viewBox="0 0 24 24"><path d="m12 3.5 2.6 5.3 5.9.9-4.3 4.1 1 5.8L12 16.9l-5.2 2.7 1-5.8-4.3-4.1 5.9-.9L12 3.5z"/></symbol><symbol id="i-dream" viewBox="0 0 24 24"><path d="M7 18h10a4 4 0 0 0 .5-8A6 6 0 0 0 6 11a3.5 3.5 0 0 0 1 7z"/><path d="M15 4.5a3 3 0 0 0 3.5 3.5"/></symbol><symbol id="i-calendar" viewBox="0 0 24 24"><rect x="4" y="5" width="16" height="15" rx="3"/><path d="M8 3v4M16 3v4M4 10h16"/></symbol><symbol id="i-hash" viewBox="0 0 24 24"><path d="M9 4 7 20M17 4l-2 16M5 9h15M4 15h15"/></symbol><symbol id="i-matrix" viewBox="0 0 24 24"><rect x="5" y="5" width="14" height="14" rx="1"/><path d="m12 2.5 9.5 9.5-9.5 9.5L2.5 12 12 2.5z"/></symbol><symbol id="i-rings" viewBox="0 0 24 24"><circle cx="9" cy="12" r="5.5"/><circle cx="15" cy="12" r="5.5"/></symbol><symbol id="i-abc" viewBox="0 0 24 24"><path d="M4 18 8 6l4 12M5.5 14h5"/><path d="M15 6v12M15 6h3a3 3 0 0 1 0 6h-3h3.5a3 3 0 0 1 0 6H15"/></symbol><symbol id="i-natal" viewBox="0 0 24 24"><circle cx="12" cy="12" r="8.5"/><circle cx="12" cy="12" r="3"/><path d="M12 3.5v5.5M12 15v5.5M3.5 12H9M15 12h5.5"/></symbol><symbol id="i-chart" viewBox="0 0 24 24"><path d="M4 19h16"/><path d="m5 15 4-4 3 3 7-7"/><path d="M15 7h4v4"/></symbol><symbol id="i-key" viewBox="0 0 24 24"><circle cx="8" cy="12" r="4"/><path d="M12 12h9M18 12v3M21 12v2"/></symbol><symbol id="i-deck" viewBox="0 0 24 24"><rect x="3" y="4" width="7" height="10" rx="1.5"/><rect x="14" y="4" width="7" height="10" rx="1.5"/><path d="M3 18h18M3 21h18"/></symbol><symbol id="i-more" viewBox="0 0 24 24"><circle cx="7" cy="7" r="2.5"/><circle cx="17" cy="7" r="2.5"/><circle cx="7" cy="17" r="2.5"/><circle cx="17" cy="17" r="2.5"/></symbol><symbol id="i-user" viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4 21c1.5-4 4.5-6 8-6s6.5 2 8 6"/></symbol><symbol id="i-energy" viewBox="0 0 24 24"><path d="M12 2.5c.5 3.6 2.4 5.5 6 6-3.6.5-5.5 2.4-6 6-.5-3.6-2.4-5.5-6-6 3.6-.5 5.5-2.4 6-6z"/><path d="M18.5 15c.2 1.6 1 2.4 2.5 2.5-1.5.2-2.3 1-2.5 2.5-.2-1.5-1-2.3-2.5-2.5 1.5-.1 2.3-.9 2.5-2.5z"/></symbol><symbol id="i-lock" viewBox="0 0 24 24"><rect x="5" y="11" width="14" height="10" rx="2.5"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></symbol><symbol id="i-chev" viewBox="0 0 24 24"><path d="m9 5 7 7-7 7"/></symbol><symbol id="i-gift" viewBox="0 0 24 24"><rect x="4" y="9" width="16" height="11" rx="2"/><path d="M12 9v11M4 13h16M12 9c-2-4-6-4-6-1.5S10 9 12 9c2 0 6 0 6-1.5S14 5 12 9z"/></symbol><symbol id="i-chat" viewBox="0 0 24 24"><path d="M5 18.5 4 21l3.5-1.5A8.5 8.5 0 1 0 5 18.5z"/></symbol><symbol id="i-scroll" viewBox="0 0 24 24"><path d="M7 4h11a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H8a3 3 0 0 1-3-3V6"/><path d="M5 6a2 2 0 1 1 4 0v11a3 3 0 0 1-3 3M10 9h6M10 13h6"/></symbol><symbol id="i-book" viewBox="0 0 24 24"><path d="M4 5.5A2.5 2.5 0 0 1 6.5 3H20v15H6.5A2.5 2.5 0 0 0 4 20.5v-15z"/><path d="M4 20.5A2.5 2.5 0 0 0 6.5 23H20v-5"/></symbol><symbol id="i-bell" viewBox="0 0 24 24"><path d="M6 16V11a6 6 0 0 1 12 0v5l1.5 2h-15L6 16z"/><path d="M10 20a2 2 0 0 0 4 0"/></symbol><symbol id="i-tarologist" viewBox="0 0 24 24"><circle cx="10" cy="8" r="4"/><path d="M3 21c1.2-3.6 3.8-5.5 7-5.5 1.6 0 3 .4 4.2 1.3"/><path d="M18 13c.3 2 1.2 2.9 3 3.2-1.8.3-2.7 1.2-3 3.2-.3-2-1.2-2.9-3-3.2 1.8-.3 2.7-1.2 3-3.2z"/></symbol><symbol id="i-sun" viewBox="0 0 24 24"><circle cx="12" cy="12" r="4"/><path d="M12 2.5v2.5M12 19v2.5M2.5 12H5M19 12h2.5M5.3 5.3l1.8 1.8M16.9 16.9l1.8 1.8M5.3 18.7l1.8-1.8M16.9 7.1l1.8-1.8"/></symbol><symbol id="i-plus" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></symbol><symbol id="i-up" viewBox="0 0 24 24"><path d="M7 21H4V10h3M7 10l4-7a2.5 2.5 0 0 1 3 2.6L13.5 9H19a2 2 0 0 1 2 2.3l-1.3 7.5A2.5 2.5 0 0 1 17.2 21H7V10z"/></symbol><symbol id="i-down" viewBox="0 0 24 24"><path d="M17 3h3v11h-3M17 14l-4 7a2.5 2.5 0 0 1-3-2.6l.5-3.4H5a2 2 0 0 1-2-2.3l1.3-7.5A2.5 2.5 0 0 1 6.8 3H17v11z"/></symbol><symbol id="i-close" viewBox="0 0 24 24"><path d="M6 6l12 12M18 6 6 18"/></symbol></svg>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true"><symbol id="i-cards" viewBox="0 0 24 24"><rect x="4" y="5" width="11" height="16" rx="2"/><path d="M9 3h9a2 2 0 0 1 2 2v13"/></symbol><symbol id="i-bolt" viewBox="0 0 24 24"><path d="M13 3 5 13.5h6L10 21l8-10.5h-6L13 3z"/></symbol><symbol id="i-layers" viewBox="0 0 24 24"><path d="m12 3 9 5-9 5-9-5 9-5z"/><path d="m3 13 9 5 9-5"/></symbol><symbol id="i-heart" viewBox="0 0 24 24"><path d="M12 20s-7-4.4-7-10a4 4 0 0 1 7-2.6A4 4 0 0 1 19 10c0 5.6-7 10-7 10z"/></symbol><symbol id="i-sparkle" viewBox="0 0 24 24"><path d="M12 3c.6 4.2 2.8 6.4 7 7-4.2.6-6.4 2.8-7 7-.6-4.2-2.8-6.4-7-7 4.2-.6 6.4-2.8 7-7z"/></symbol><symbol id="i-moon" viewBox="0 0 24 24"><path d="M20 14.5A8 8 0 1 1 9.5 4 6.5 6.5 0 0 0 20 14.5z"/></symbol><symbol id="i-star" viewBox="0 0 24 24"><path d="m12 3.5 2.6 5.3 5.9.9-4.3 4.1 1 5.8L12 16.9l-5.2 2.7 1-5.8-4.3-4.1 5.9-.9L12 3.5z"/></symbol><symbol id="i-dream" viewBox="0 0 24 24"><path d="M7 18h10a4 4 0 0 0 .5-8A6 6 0 0 0 6 11a3.5 3.5 0 0 0 1 7z"/><path d="M15 4.5a3 3 0 0 0 3.5 3.5"/></symbol><symbol id="i-calendar" viewBox="0 0 24 24"><rect x="4" y="5" width="16" height="15" rx="3"/><path d="M8 3v4M16 3v4M4 10h16"/></symbol><symbol id="i-hash" viewBox="0 0 24 24"><path d="M9 4 7 20M17 4l-2 16M5 9h15M4 15h15"/></symbol><symbol id="i-matrix" viewBox="0 0 24 24"><rect x="5" y="5" width="14" height="14" rx="1"/><path d="m12 2.5 9.5 9.5-9.5 9.5L2.5 12 12 2.5z"/></symbol><symbol id="i-rings" viewBox="0 0 24 24"><circle cx="9" cy="12" r="5.5"/><circle cx="15" cy="12" r="5.5"/></symbol><symbol id="i-abc" viewBox="0 0 24 24"><path d="M4 18 8 6l4 12M5.5 14h5"/><path d="M15 6v12M15 6h3a3 3 0 0 1 0 6h-3h3.5a3 3 0 0 1 0 6H15"/></symbol><symbol id="i-natal" viewBox="0 0 24 24"><circle cx="12" cy="12" r="8.5"/><circle cx="12" cy="12" r="3"/><path d="M12 3.5v5.5M12 15v5.5M3.5 12H9M15 12h5.5"/></symbol><symbol id="i-chart" viewBox="0 0 24 24"><path d="M4 19h16"/><path d="m5 15 4-4 3 3 7-7"/><path d="M15 7h4v4"/></symbol><symbol id="i-key" viewBox="0 0 24 24"><circle cx="8" cy="12" r="4"/><path d="M12 12h9M18 12v3M21 12v2"/></symbol><symbol id="i-deck" viewBox="0 0 24 24"><rect x="3" y="4" width="7" height="10" rx="1.5"/><rect x="14" y="4" width="7" height="10" rx="1.5"/><path d="M3 18h18M3 21h18"/></symbol><symbol id="i-more" viewBox="0 0 24 24"><circle cx="7" cy="7" r="2.5"/><circle cx="17" cy="7" r="2.5"/><circle cx="7" cy="17" r="2.5"/><circle cx="17" cy="17" r="2.5"/></symbol><symbol id="i-user" viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4 21c1.5-4 4.5-6 8-6s6.5 2 8 6"/></symbol><symbol id="i-energy" viewBox="0 0 24 24"><path d="M12 2.5c.5 3.6 2.4 5.5 6 6-3.6.5-5.5 2.4-6 6-.5-3.6-2.4-5.5-6-6 3.6-.5 5.5-2.4 6-6z"/><path d="M18.5 15c.2 1.6 1 2.4 2.5 2.5-1.5.2-2.3 1-2.5 2.5-.2-1.5-1-2.3-2.5-2.5 1.5-.1 2.3-.9 2.5-2.5z"/></symbol><symbol id="i-lock" viewBox="0 0 24 24"><rect x="5" y="11" width="14" height="10" rx="2.5"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></symbol><symbol id="i-chev" viewBox="0 0 24 24"><path d="m9 5 7 7-7 7"/></symbol><symbol id="i-gift" viewBox="0 0 24 24"><rect x="4" y="9" width="16" height="11" rx="2"/><path d="M12 9v11M4 13h16M12 9c-2-4-6-4-6-1.5S10 9 12 9c2 0 6 0 6-1.5S14 5 12 9z"/></symbol><symbol id="i-chat" viewBox="0 0 24 24"><path d="M5 18.5 4 21l3.5-1.5A8.5 8.5 0 1 0 5 18.5z"/></symbol><symbol id="i-scroll" viewBox="0 0 24 24"><path d="M7 4h11a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H8a3 3 0 0 1-3-3V6"/><path d="M5 6a2 2 0 1 1 4 0v11a3 3 0 0 1-3 3M10 9h6M10 13h6"/></symbol><symbol id="i-book" viewBox="0 0 24 24"><path d="M4 5.5A2.5 2.5 0 0 1 6.5 3H20v15H6.5A2.5 2.5 0 0 0 4 20.5v-15z"/><path d="M4 20.5A2.5 2.5 0 0 0 6.5 23H20v-5"/></symbol><symbol id="i-bell" viewBox="0 0 24 24"><path d="M6 16V11a6 6 0 0 1 12 0v5l1.5 2h-15L6 16z"/><path d="M10 20a2 2 0 0 0 4 0"/></symbol><symbol id="i-tarologist" viewBox="0 0 24 24"><circle cx="10" cy="8" r="4"/><path d="M3 21c1.2-3.6 3.8-5.5 7-5.5 1.6 0 3 .4 4.2 1.3"/><path d="M18 13c.3 2 1.2 2.9 3 3.2-1.8.3-2.7 1.2-3 3.2-.3-2-1.2-2.9-3-3.2 1.8-.3 2.7-1.2 3-3.2z"/></symbol><symbol id="i-sun" viewBox="0 0 24 24"><circle cx="12" cy="12" r="4"/><path d="M12 2.5v2.5M12 19v2.5M2.5 12H5M19 12h2.5M5.3 5.3l1.8 1.8M16.9 16.9l1.8 1.8M5.3 18.7l1.8-1.8M16.9 7.1l1.8-1.8"/></symbol><symbol id="i-plus" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></symbol><symbol id="i-up" viewBox="0 0 24 24"><path d="M7 21H4V10h3M7 10l4-7a2.5 2.5 0 0 1 3 2.6L13.5 9H19a2 2 0 0 1 2 2.3l-1.3 7.5A2.5 2.5 0 0 1 17.2 21H7V10z"/></symbol><symbol id="i-down" viewBox="0 0 24 24"><path d="M17 3h3v11h-3M17 14l-4 7a2.5 2.5 0 0 1-3-2.6l.5-3.4H5a2 2 0 0 1-2-2.3l1.3-7.5A2.5 2.5 0 0 1 6.8 3H17v11z"/></symbol><symbol id="i-close" viewBox="0 0 24 24"><path d="M6 6l12 12M18 6 6 18"/></symbol><symbol id="i-globe" viewBox="0 0 24 24"><circle cx="12" cy="12" r="8.5"/><path d="M3.5 12h17M12 3.5c2.4 2.4 3.5 5.2 3.5 8.5s-1.1 6.1-3.5 8.5c-2.4-2.4-3.5-5.2-3.5-8.5S9.6 5.9 12 3.5z"/></symbol></svg>
 <!-- ══ ЗАГРУЗКА ══ -->
 <div id="s-loading" class="fixed inset-0 z-50 flex flex-col items-center justify-center px-6 text-center" style="background:#0F0E15">
 <div class="relative mb-8">
@@ -288,7 +294,13 @@ style="background:radial-gradient(120% 40% at 50% 0%,#1E1830 0%,#0B0A10 60%) fix
 <button id="home-sub" class="head-sub tap" onclick="openSky()" data-block="header_sky" style="min-height:24px;text-align:left"></button>
 </div>
 </div>
+<div class="head-r">
+<div class="head-row">
+<button id="lang-btn" class="lang-btn tap" onclick="openLang()" aria-label="Язык приложения"><svg class="ico ico-sm" aria-hidden="true"><use href="#i-globe"/></svg><span id="lang-code">RU</span></button>
 <button class="bal-btn tap" onclick="openStore()" data-block="balance" aria-label="Баланс энергии, пополнить"><svg class="ico ico-sm" aria-hidden="true"><use href="#i-energy"/></svg><span id="disp-bal">0</span></button>
+</div>
+<button class="topup-link tap" onclick="openStore()" data-block="topup"><svg class="ico ico-sm" aria-hidden="true"><use href="#i-plus"/></svg>Пополнить энергию</button>
+</div>
 </header>
 
 <!-- b. Карта дня -->
@@ -884,6 +896,17 @@ style="background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08)">
 </div>
 
 <!-- ══ МОДАЛКА: МОИ РАСКЛАДЫ ══ -->
+<div id="modal-lang" class="hidden fixed inset-0 z-40 flex items-end justify-center" style="background:rgba(0,0,0,.8);backdrop-filter:blur(10px)">
+<div class="absolute inset-0" onclick="closeModal('lang')"></div>
+<div class="relative z-10 w-full rounded-t-3xl p-6 space-y-4 shadow-2xl overflow-y-auto" style="max-width:420px;max-height:85vh;background:#14121C;border-top:1px solid rgba(230,210,181,.3)">
+<div>
+<h3 class="serif text-xl font-bold" style="color:#E6D2B5">Язык приложения</h3>
+<p class="text-xs mt-1" style="color:rgba(207,201,220,0.78)">На этом языке будут приложение, расклады и сообщения бота.</p>
+</div>
+<div id="lang-list" class="space-y-2"></div>
+</div>
+</div>
+
 <div id="modal-history" class="hidden fixed inset-0 z-40 flex items-end justify-center" style="background:rgba(0,0,0,.8);backdrop-filter:blur(10px)">
 <div class="absolute inset-0" onclick="closeModal('history')"></div>
 <div class="relative z-10 w-full rounded-t-3xl p-6 space-y-4 shadow-2xl overflow-y-auto" style="max-width:420px;max-height:85vh;background:#14121C;border-top:1px solid rgba(230,210,181,.3)">
@@ -2599,6 +2622,8 @@ if (r.status === 401) { clearTimeout(slow); showErr(Lf("Открой Посла�
 if (!r.ok) throw new Error(r.status);
 userProfile = await r.json();
 clearTimeout(slow);
+if (syncLang(userProfile)) return;
+renderLangBtn();
 updateUI();
 document.getElementById("s-loading").classList.add("hidden");
 document.getElementById("s-dashboard").classList.remove("hidden");
@@ -2899,6 +2924,35 @@ if (hasBack) tg.BackButton.onClick(() => { if (!document.getElementById("s-readi
 initApp();
 
 // ── Покупки ──
+// ── Язык приложения: выбор вручную (сохраняется на сервере и в этом телефоне) ──
+const LANG_NAMES = [["ru","Русский"],["en","English"],["kk","Қазақша"],["uk","Українська"],["uz","Oʻzbekcha"],["tr","Türkçe"],["es","Español"],["pt","Português"],["de","Deutsch"],["fr","Français"],["ar","العربية"]];
+function curLang() { return window.__lang || "ru"; }
+function renderLangBtn() { const el = document.getElementById("lang-code"); if (el) el.textContent = curLang().toUpperCase(); }
+function openLang() {
+document.getElementById("lang-list").innerHTML = LANG_NAMES.map(([c, n]) =>
+`<button class="lang-item tap${c === curLang() ? " on" : ""}" onclick="chooseLang('${c}')"><span>${n}</span>${c === curLang() ? "<span>✓</span>" : ""}</button>`).join("");
+openModal("lang");
+}
+async function chooseLang(code) {
+if (code === curLang()) { closeModal("lang"); return; }
+try {
+const r = await fetch(`${BACKEND}/api/user/settings`, { method:"POST", headers:{"Content-Type":"application/json","Authorization":initData}, body: JSON.stringify({ lang: code }) });
+if (!r.ok) throw new Error(r.status);
+} catch { toast(L("Ошибка соединения.")); return; }
+try { localStorage.setItem("ui_lang", code); } catch {}
+location.reload();
+}
+// Язык, выбранный вручную на другом устройстве (или в боте), – подхватываем
+function syncLang(p) {
+if (!p || !p.lang_manual || !p.lang || p.lang === curLang()) return false;
+try { if (new URLSearchParams(location.search).get("lang")) return false; } catch {}
+let saved = null; try { saved = localStorage.getItem("ui_lang"); } catch {}
+if (saved === p.lang) return false; // уже пробовали – не зацикливаемся
+try { localStorage.setItem("ui_lang", p.lang); } catch {}
+location.reload();
+return true;
+}
+
 async function refreshProfile() {
 const pr = await fetch(`${BACKEND}/api/user/profile`, { headers:{ Authorization: initData } });
 if (pr.ok) { userProfile = await pr.json(); updateUI(); }

@@ -719,5 +719,8 @@ window.I18N = {
 "Рыцарь Жезлов": "Asa Şövalyesi",
 "Оплата картой": "Kartla ödeme",
 "Перейти к оплате": "Ödemeye geç",
-"Откроется страница оплаты Tribute. Войди через Telegram, а после входа вернись в браузер для завершения оплаты.": "Tribute ödeme sayfası açılacak. Telegram ile giriş yap, ardından ödemeyi tamamlamak için tarayıcıya geri dön."
+"Откроется страница оплаты Tribute. Войди через Telegram, а после входа вернись в браузер для завершения оплаты.": "Tribute ödeme sayfası açılacak. Telegram ile giriş yap, ardından ödemeyi tamamlamak için tarayıcıya geri dön.",
+"Язык приложения": "Uygulama dili",
+"На этом языке будут приложение, расклады и сообщения бота.": "Uygulama, açılımlar ve bot mesajları bu dilde olacak.",
+"Пополнить энергию": "Enerji yükle"
 };

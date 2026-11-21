@@ -719,5 +719,8 @@ window.I18N = {
 "Достаток и опыт. Управляй ресурсами мудро и спокойно.": "Boylik va tajriba. Resurslaringizni dono va sokin boshqaring.",
 "Оплата картой": "Karta orqali to‘lash",
 "Перейти к оплате": "To‘lovga o‘tish",
-"Откроется страница оплаты Tribute. Войди через Telegram, а после входа вернись в браузер для завершения оплаты.": "Tribute to‘lov sahifasi ochiladi. Telegram orqali kir, so‘ng to‘lovni yakunlash uchun brauzerga qayt."
+"Откроется страница оплаты Tribute. Войди через Telegram, а после входа вернись в браузер для завершения оплаты.": "Tribute to‘lov sahifasi ochiladi. Telegram orqali kir, so‘ng to‘lovni yakunlash uchun brauzerga qayt.",
+"Язык приложения": "Ilova tili",
+"На этом языке будут приложение, расклады и сообщения бота.": "Ilova, fol ochishlar va bot xabarlari shu tilda bo‘ladi.",
+"Пополнить энергию": "Energiyani to‘ldirish"
 };

@@ -4,6 +4,8 @@
   var MAP = { ru: "ru", be: "ru", uk: "uk", kk: "kk", en: "en", es: "es", ar: "ar", uz: "uz", tr: "tr", pt: "pt", de: "de", fr: "fr" };
   var code = "";
   try { code = new URLSearchParams(location.search).get("lang") || ""; } catch (e) {}
+  // Язык, выбранный вручную в приложении (кнопка в шапке)
+  if (!code) { try { code = localStorage.getItem("ui_lang") || ""; } catch (e) {} }
   if (!code) {
     try { code = Telegram.WebApp.initDataUnsafe.user.language_code || ""; } catch (e) {}
   }
