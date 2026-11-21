@@ -1259,7 +1259,7 @@ btn.style.cssText = "background:rgba(255,255,255,.04);border:1px solid rgba(255,
 function pickQ(el, q) {
 document.querySelectorAll(".q-btn").forEach(b => setQStyle(b, false));
 setQStyle(el, true);
-document.getElementById("sel-q").value = q;
+document.getElementById("sel-q").value = L(q);
 const own = document.getElementById("preset-own"); if (own) own.value = "";
 if (tg.HapticFeedback) tg.HapticFeedback.impactOccurred("light");
 }
@@ -1268,7 +1268,7 @@ if (tg.HapticFeedback) tg.HapticFeedback.impactOccurred("light");
 const own = document.getElementById("preset-own");
 if (!own) return;
 own.addEventListener("input", () => {
-const sel = document.getElementById("sel-q").value;
+const sel = L(document.getElementById("sel-q").value);
 document.querySelectorAll(".q-btn").forEach(b => setQStyle(b, !own.value.trim() && (b.getAttribute("onclick") || "").includes(`'${sel}'`)));
 });
 })();
@@ -2090,8 +2090,8 @@ function renderHomeSky() {
 const d = skyData;
 if (!d) return;
 const r = (d.retro || [])[0];
-document.getElementById("home-retro").textContent = r ? r.label : L("Ретроградов нет");
-document.getElementById("home-next").textContent = d.next ? `${d.next.title} ${d.next.countdown}` : "";
+document.getElementById("home-next").textContent = d.next ? `${L(d.next.title)} ${skyWhen(d.next)}` : "";
+document.getElementById("home-retro").textContent = r ? L(r.label) : L("Ретроградов нет");
 }
 // ── Карта дня на главной: рубашка → переворот → карта с номером и коротким толкованием ──
 function dailyFaceHTML(name, flipped) {
@@ -2587,7 +2587,7 @@ tg.openTelegramLink(shareUrl(L("🔮 Послание Таро в Telegram: пе
 function shareReading() {
 let t = L("🔮 Мне выпал расклад Таро");
 if (lastReading && lastReading.cards && lastReading.cards.length) {
-t += ": " + lastReading.cards.slice(0, 3).map(c => c.name.replace("Старший Аркан: ", "")).join(", ");
+t += ": " + lastReading.cards.slice(0, 3).map(c => L(c.name.replace("Старший Аркан: ", ""))).join(", ");
 }
 t += L(". Сделай свой – первый расклад бесплатно 👇");
 track("share_clicked", { what: "link", kind: (currentReading && currentReading.kind) || null });
@@ -2597,7 +2597,7 @@ tg.openTelegramLink(shareUrl(t));
 function canStory() { return !!(tg.shareToStory && tg.isVersionAtLeast && tg.isVersionAtLeast("7.8")); }
 function shareStory() {
 if (!canStory()) return;
-const names = (lastReading && lastReading.cards || []).slice(0, 3).map(c => c.name.replace("Старший Аркан: ", "")).join(", ");
+const names = (lastReading && lastReading.cards || []).slice(0, 3).map(c => L(c.name.replace("Старший Аркан: ", ""))).join(", ");
 const link = (userProfile && userProfile.ref_link) || `https://t.me/${BOT_USERNAME}`;
 const img = new URL("story.jpg", location.href.split("#")[0].split("?")[0]).href;
 track("share_clicked", { what: "story", kind: (currentReading && currentReading.kind) || null });
@@ -2660,7 +2660,7 @@ openReading(+id, fromPay ? t("energy_ready") : null);
 // ── Код судьбы ──
 function renderFate() {
 const p = userProfile || {}, f = p.fate;
-document.getElementById("home-fate-title").textContent = f ? t("fate_home_done", { arcana: f.personality_name }) : t("fate_home_new");
+document.getElementById("home-fate-title").textContent = f ? t("fate_home_done", { arcana: L(f.personality_name) }) : t("fate_home_new");
 document.getElementById("home-fate-sub").textContent = f ? t("fate_home_done_sub") : t("fate_home_new_sub");
 document.getElementById("fate-badge").classList.toggle("hidden", !!f);
 document.getElementById("fate-card").classList.toggle("card-focus", !f);   // первый шаг для новичка
@@ -2670,8 +2670,8 @@ document.getElementById("fate-result").classList.toggle("hidden", !f);
 if (!f) return;
 document.getElementById("fate-zodiac").textContent = f.zodiac;
 document.getElementById("fate-life").textContent = f.life_path;
-document.getElementById("fate-personality").textContent = `${f.personality_roman} ${f.personality_name}`;
-document.getElementById("fate-arcana").textContent = `${f.arcana_roman} ${f.arcana_name}`;
+document.getElementById("fate-personality").textContent = `${f.personality_roman} ${L(f.personality_name)}`;
+document.getElementById("fate-arcana").textContent = `${f.arcana_roman} ${L(f.arcana_name)}`;
 document.getElementById("fate-same").classList.toggle("hidden", !f.same);
 document.getElementById("fate-text").innerHTML = f.pending
 ? `<p style="color:rgba(207,201,220,0.78)">${esc(t("fate_pending"))}</p>`
@@ -2759,7 +2759,7 @@ const skel = w => todayFailed ? "—" : `<span class="skel" style="width:${w}px;
 document.getElementById("tile-number").innerHTML = n ? esc(n.word) : skel(70);
 document.getElementById("home-num").innerHTML = n ? esc(n.value) : skel(34);
 document.getElementById("home-num-arc").textContent = n && ARCANA_NAMES[n.value] ? ARCANA_NAMES[n.value] : "";
-document.getElementById("tile-moon").innerHTML = m ? esc(m.name) : skel(90);
+document.getElementById("tile-moon").innerHTML = m ? esc(L(m.name)) : skel(90);
 if (m && m.lunar_day) { homeLunar = m.lunar_day; renderHomeHead(); }
 document.getElementById("today-err").classList.toggle("hidden", !todayFailed || !!d);
 if (!d) return;
@@ -2794,18 +2794,30 @@ renderHomeSky();
 document.getElementById("sky-err").classList.toggle("hidden", !skyFailed || !!d);
 if (!d) return;
 
-document.getElementById("sky-moon-name").textContent = m.name;
+document.getElementById("sky-moon-name").textContent = L(m.name);
 document.getElementById("sky-moon-meta").textContent = Lf("{0}-й лунный день · освещена на {1}%", m.lunar_day, m.illumination);
-document.getElementById("sky-moon-good").textContent = Lf("День хорош, чтобы {0}{1}", m.good_for.charAt(0).toLowerCase(), m.good_for.slice(1));
+document.getElementById("sky-moon-good").textContent = curLang() === "ru" ? Lf("День хорош, чтобы {0}{1}", m.good_for.charAt(0).toLowerCase(), m.good_for.slice(1)) : L(m.good_for);
 document.getElementById("sky-retro").innerHTML = d.retro.length
-? d.retro.map(r => `<div><div class="font-bold text-white">${esc(r.label)}${r.until ? " до " + esc(r.until) : ""}</div><div style="color:rgba(207,201,220,0.85)">${esc(r.tip)}</div></div>`).join("")
+? d.retro.map(r => `<div><div class="font-bold text-white">${esc(L(r.label))}${r.until ? " " + esc(Lf("до {0}", skyDate(r.until))) : ""}</div><div style="color:rgba(207,201,220,0.85)">${esc(L(r.tip))}</div></div>`).join("")
 : `<div>Сейчас ретроградных планет нет: хорошее время двигаться вперёд.</div>`;
 const n = d.next;
 document.getElementById("sky-next").innerHTML = n
-? `<div class="font-bold text-white flex items-center" style="gap:8px">${skyIco(n.title)}<span>${esc(n.title)} – ${esc(n.countdown)}</span></div><div style="color:rgba(207,201,220,0.78)">${esc(n.date)}</div>`
+? `<div class="font-bold text-white flex items-center" style="gap:8px">${skyIco(n.title)}<span>${esc(L(n.title))} – ${esc(skyWhen(n))}</span></div><div style="color:rgba(207,201,220,0.78)">${esc(skyDate(n.date))}</div>`
 : `<div>В ближайший месяц больших событий нет.</div>`;
 document.getElementById("sky-events").innerHTML = d.events.slice(1, 6)
-.map(e => `<div class="flex items-center" style="gap:8px">${skyIco(e.title)}<span>${esc(e.title)} · ${esc(e.date)}</span></div>`).join("");
+.map(e => `<div class="flex items-center" style="gap:8px">${skyIco(e.title)}<span>${esc(L(e.title))} · ${esc(skyDate(e.date))}</span></div>`).join("");
+}
+// Дата «12 декабря» и «через 3 дня» с сервера – на языке приложения
+const RU_MONTHS_GEN = ["января","февраля","марта","апреля","мая","июня","июля","августа","сентября","октября","ноября","декабря"];
+function skyDate(s) {
+if (curLang() === "ru" || !s) return s;
+const m = String(s).match(/^(\d{1,2}) (\S+)$/), i = m ? RU_MONTHS_GEN.indexOf(m[2]) : -1;
+if (i < 0) return s;
+try { return new Date(2000, i, +m[1]).toLocaleDateString(window.LOCALE || "en-GB", { day:"numeric", month:"long" }); } catch { return s; }
+}
+function skyWhen(e) {
+if (curLang() === "ru" || typeof e.days !== "number") return e.countdown;
+return e.days <= 0 ? L("сегодня") : e.days === 1 ? L("завтра") : Lf("через {0} дн.", e.days);
 }
 function skyIco(title) { return icon(/луни/i.test(title || "") ? "moon" : "star", "ico ico-sm"); }
 function openSky() {
@@ -3167,7 +3179,7 @@ const pk = packFor(cost - bal);
 el.textContent = pk ? t("energy_pack", { energy: pk.energy, price: pk.price }) : "";
 el.className = "price-note";
 }
-function fillQuick(t) { const ta = document.getElementById("quick-q"); ta.value = t; ta.focus(); }
+function fillQuick(t) { const ta = document.getElementById("quick-q"); ta.value = L(t); ta.focus(); }
 function triggerQuick() {
 const q = document.getElementById("quick-q").value.trim();
 if (!q) { toast(L("Напиши свой вопрос.")); return; }
@@ -3203,7 +3215,7 @@ showUpsell(true);
 function triggerPreset() { closeModal("preset"); startPreset(); }
 async function startPreset() {
 const own = (document.getElementById("preset-own").value || "").trim();
-const q = own || document.getElementById("sel-q").value;
+const q = own || L(document.getElementById("sel-q").value);
 const cost = (userProfile.costs && userProfile.costs.preset) || 150;
 if (!(userProfile.free_preset > 0) && userProfile.balance < cost) { needEnergy(cost, "preset"); return; }
 if (document.activeElement) document.activeElement.blur();
