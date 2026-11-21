@@ -2952,7 +2952,7 @@ const go = () => tg.openLink(url);
 if (!(tg.isVersionAtLeast && tg.isVersionAtLeast("6.2"))) { go(); return; }
 tg.showPopup({
 title: "Оплата картой",
-message: "Откроется страница оплаты Tribute. Нажми «Вход через Telegram» и подтверди вход. Потом вернись на страницу оплаты: на iPhone нажми «◀ Safari» в левом верхнем углу, на Android – «Назад».",
+message: "Откроется страница оплаты Tribute. Войди через Telegram, а после входа вернись в браузер для завершения оплаты.",
 buttons: [{ id:"go", type:"default", text:"Перейти к оплате" }, { type:"cancel" }]
 }, id => { if (id === "go") go(); });
 }
