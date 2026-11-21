@@ -2959,8 +2959,10 @@ body: JSON.stringify({ pack: packId, reading_id: pendingStoreFor })
 document.getElementById("s-loading").classList.add("hidden");
 const d = await r.json().catch(() => ({}));
 if (!r.ok) { toast(d.detail || "Ошибка оплаты."); return; }
-if (d.payment_url) tg.openLink(d.payment_url);
-else if (d.webapp_url) tg.openTelegramLink(d.webapp_url);
+// Сначала мини-апп Tribute внутри Telegram: там человек уже авторизован и сразу видит оплату.
+// Веб-страница в браузере просит входа через Telegram и после входа теряется – только как запасной путь.
+if (d.webapp_url) tg.openTelegramLink(d.webapp_url);
+else if (d.payment_url) tg.openLink(d.payment_url);
 else { toast("Не удалось открыть оплату."); return; }
 watchCardPayment(d.order_id);
 } catch { document.getElementById("s-loading").classList.add("hidden"); toast("Ошибка соединения."); }
