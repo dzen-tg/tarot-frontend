@@ -2947,6 +2947,15 @@ const n = document.getElementById("r-note");
 if (!text) { n.classList.add("hidden"); return; }
 n.textContent = text; n.classList.remove("hidden");
 }
+function openCardPage(url) {
+const go = () => { setTimeout(() => { window.location.href = url; }, 150); };
+if (!(tg.isVersionAtLeast && tg.isVersionAtLeast("6.2"))) { go(); return; }
+tg.showPopup({
+title: "Оплата картой или СБП",
+message: "Откроется страница оплаты Tribute. Удобнее всего войти по почте. Если входишь через Telegram, подтверди вход и вернись в это окно. Энергию начислим сами, бот пришлёт сообщение.",
+buttons: [{ id:"go", type:"default", text:"Перейти к оплате" }, { type:"cancel" }]
+}, id => { if (id === "go") go(); });
+}
 async function buyPackCard(packId) {
 document.getElementById("s-loading").classList.remove("hidden");
 document.getElementById("loading-text").textContent = "Подготовка оплаты...";
@@ -2959,11 +2968,10 @@ body: JSON.stringify({ pack: packId, reading_id: pendingStoreFor })
 document.getElementById("s-loading").classList.add("hidden");
 const d = await r.json().catch(() => ({}));
 if (!r.ok) { toast(d.detail || "Ошибка оплаты."); return; }
-// Сначала мини-апп Tribute внутри Telegram: там человек уже авторизован и сразу видит оплату.
-// Веб-страница в браузере просит входа через Telegram и после входа теряется – только как запасной путь.
-if (d.webapp_url) tg.openTelegramLink(d.webapp_url);
-else if (d.payment_url) tg.openLink(d.payment_url);
-else { toast("Не удалось открыть оплату."); return; }
+// Страница Tribute с выбором СБП или карта. Открываем её в этом же окне Telegram,
+// а не во внешнем браузере: после входа через Telegram человек возвращается сюда, а не теряется.
+if (!d.payment_url) { toast("Не удалось открыть оплату."); return; }
+openCardPage(d.payment_url);
 watchCardPayment(d.order_id);
 } catch { document.getElementById("s-loading").classList.add("hidden"); toast("Ошибка соединения."); }
 }
