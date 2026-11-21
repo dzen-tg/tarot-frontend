@@ -280,7 +280,7 @@ window.I18N = {
 "25 энергии": "25 Energy",
 "Присылать Карту дня каждое утро в Telegram?": "Send me the Card of the Day every morning on Telegram?",
 "Да, присылать": "Yes, send it",
-"Расклад откликнулся?": "Did the spread respond?",
+"Расклад откликнулся?": "Did this resonate?",
 "Марафон пройден": "Marathon completed",
 "За неделю набралось много наблюдений. Хочешь разобрать главный вопрос с картами?": "A lot of observations came in this week. Want to dive into the main question with the cards?",
 "Быстрый ответ · 1 карта": "Quick answer · 1 card",
