@@ -196,6 +196,12 @@ body{font-family:var(--sans);color:var(--text)}
 .head-sub{font-size:12px;color:var(--text-2)}
 .head-r{display:flex;flex-direction:column;align-items:flex-end;gap:2px;flex-shrink:0}
 .head-row{display:flex;align-items:center;gap:8px}
+.f27-hero{display:flex;align-items:center;gap:14px;width:100%;margin:4px 0 14px;padding:14px 16px;border-radius:22px;text-align:start;background:linear-gradient(135deg,rgba(168,150,199,.28),rgba(230,210,181,.16));border:1px solid rgba(230,210,181,.55);box-shadow:0 8px 28px rgba(230,210,181,.10)}
+.f27-hero .yr{font-family:var(--serif);font-size:30px;font-weight:700;color:var(--gold);line-height:1}
+.f27-item{display:flex;align-items:center;justify-content:space-between;gap:10px;border-radius:18px;padding:14px;background:linear-gradient(135deg,rgba(168,150,199,.18),rgba(230,210,181,.08));border:1px solid rgba(230,210,181,.4)}
+.f27-pay{display:flex;align-items:center;justify-content:center;gap:6px;width:100%;min-height:44px;border-radius:14px;font-weight:700;font-size:13px}
+.f27-chip{min-height:40px;padding:0 14px;border-radius:999px;font-size:13px;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.12);color:#E8E4F0}
+.f27-chip.on{background:var(--gold-12);border-color:var(--gold-30);color:var(--gold);font-weight:700}
 .lang-btn{display:inline-flex;align-items:center;gap:5px;min-height:44px;padding:0 12px;border-radius:18px;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.12);color:rgba(207,201,220,.9);font-weight:600;font-size:13px;flex-shrink:0}
 .topup-link{display:inline-flex;align-items:center;gap:4px;min-height:30px;padding:0 4px;color:var(--gold);font-weight:600;font-size:12px;text-decoration:underline;text-underline-offset:3px;text-decoration-color:var(--gold-30)}
 .lang-item{display:flex;align-items:center;justify-content:space-between;width:100%;min-height:48px;padding:0 16px;border-radius:14px;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);color:#E8E4F0;font-size:15px;text-align:start}
@@ -302,6 +308,9 @@ style="background:radial-gradient(120% 40% at 50% 0%,#1E1830 0%,#0B0A10 60%) fix
 <button class="topup-link tap" onclick="openStore()" data-block="topup"><svg class="ico ico-sm" aria-hidden="true"><use href="#i-plus"/></svg>Пополнить энергию</button>
 </div>
 </header>
+
+<!-- «Мой 2027» – видно, только если модуль включён для человека -->
+<button id="f27-home" class="hidden f27-hero tap" onclick="openF27()" data-block="f27"><span class="yr">2027</span><span style="min-width:0"><span style="display:block;font-weight:700;color:#F2EDE4;font-size:15px">Мой 2027</span><span style="display:block;font-size:12px;color:rgba(222,216,235,.82)">Твоё число и карта года – бесплатно</span></span><svg class="ico ico-sm" style="margin-inline-start:auto;color:var(--gold)" aria-hidden="true"><use href="#i-chev"/></svg></button>
 
 <!-- b. Карта дня -->
 <div id="daily-card" class="glass-card daily" data-block="daily">
@@ -907,6 +916,30 @@ style="background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08)">
 </div>
 </div>
 
+<div id="modal-f27" class="hidden fixed inset-0 z-40 flex items-end justify-center" style="background:rgba(0,0,0,.8);backdrop-filter:blur(10px)">
+<div class="absolute inset-0" onclick="closeModal('f27')"></div>
+<div class="relative z-10 w-full rounded-t-3xl p-6 space-y-4 shadow-2xl overflow-y-auto" style="max-width:420px;max-height:90vh;background:#14121C;border-top:1px solid rgba(230,210,181,.3)">
+<div class="flex justify-between items-center">
+<h3 id="f27-title" class="serif text-xl font-bold" style="color:#E6D2B5">Мой 2027</h3>
+<button onclick="closeModal('f27')" class="w-8 h-8 rounded-full flex items-center justify-center text-purple-200" style="background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.08)" aria-label="Закрыть"><svg class="ico ico-sm" aria-hidden="true"><use href="#i-close"/></svg></button>
+</div>
+<!-- Данные -->
+<div id="f27-form" class="space-y-3 hidden">
+<p class="text-xs" style="color:rgba(207,201,220,0.85)">Посчитаем твоё число 2027 и карту года. Данные сохраним – второй раз спрашивать не будем.</p>
+<input id="f27-name" type="text" maxlength="40" placeholder="Как к тебе обращаться" class="w-full rounded-xl px-4 text-sm text-white" style="min-height:46px;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.12)">
+<input id="f27-date" type="text" inputmode="numeric" maxlength="10" placeholder="Дата рождения ДД.ММ.ГГГГ" class="w-full rounded-xl px-4 text-sm text-white" style="min-height:46px;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.12)">
+<p class="text-xs font-bold" style="color:#E6D2B5">Главная сфера на 2027</p>
+<div id="f27-spheres" class="flex flex-wrap" style="gap:8px"></div>
+<p id="f27-err" class="hidden text-xs" style="color:#f87171"></p>
+<button class="btn-gold w-full" onclick="saveF27()">Узнать своё число 2027</button>
+</div>
+<!-- Тизер и оффер -->
+<div id="f27-teaser" class="space-y-4 hidden"></div>
+<!-- Прогноз -->
+<div id="f27-view" class="space-y-4 hidden"></div>
+</div>
+</div>
+
 <div id="modal-history" class="hidden fixed inset-0 z-40 flex items-end justify-center" style="background:rgba(0,0,0,.8);backdrop-filter:blur(10px)">
 <div class="absolute inset-0" onclick="closeModal('history')"></div>
 <div class="relative z-10 w-full rounded-t-3xl p-6 space-y-4 shadow-2xl overflow-y-auto" style="max-width:420px;max-height:85vh;background:#14121C;border-top:1px solid rgba(230,210,181,.3)">
@@ -1109,6 +1142,7 @@ style="background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08)">
 <p id="store-pending" class="hidden text-xs rounded-xl" style="padding:8px 12px;background:rgba(230,210,181,.08);border:1px solid rgba(230,210,181,.25);color:#E6D2B5">После оплаты вернём тебя к раскладу, останется только вытянуть карту.</p>
 
 <div class="space-y-3">
+<div id="f27-store" class="hidden space-y-3"></div>
 <!-- Подписка – только звёздами -->
 <div id="row-sub" class="hidden flex items-center justify-between rounded-2xl p-4" style="background:linear-gradient(135deg,rgba(168,150,199,.25),rgba(230,210,181,.12));border:1px solid rgba(230,210,181,.5)">
 <div class="flex items-center space-x-3">
@@ -1534,6 +1568,7 @@ pendingAsk = null;
 document.getElementById("store-need").classList.add("hidden");
 document.getElementById("store-pending").classList.toggle("hidden", !pendingStoreFor);
 sheetOpen(document.getElementById("modal-store"));
+renderF27Store();
 track("store_open", { from_reading: !!pendingStoreFor });
 }
 function closeStore() { sheetClose(document.getElementById("modal-store")); }
@@ -2051,11 +2086,12 @@ openModal("myproducts");
 try {
 const r = await fetch(`${BACKEND}/api/products`, { headers:{ Authorization: initData } });
 const d = await r.json();
+const f27 = f27Owned().map(x => `<button onclick="closeModal('myproducts');openF27View('${x.id}')" class="w-full text-left rounded-xl p-3 active:scale-95" style="background:linear-gradient(135deg,rgba(168,150,199,.18),rgba(230,210,181,.08));border:1px solid rgba(230,210,181,.4)"><span style="font-size:12px;color:#E6D2B5;font-weight:700">${esc(x.emoji + " " + x.title)}</span></button>`).join("");
 if (!d.products || !d.products.length) {
-box.innerHTML = `<p class="text-xs text-center leading-relaxed" style="color:rgba(207,201,220,0.78)">Здесь будут твои матрицы, совместимости, портреты и прогнозы. Перечитывать их можно бесплатно.</p>`;
+box.innerHTML = f27 || `<p class="text-xs text-center leading-relaxed" style="color:rgba(207,201,220,0.78)">Здесь будут твои матрицы, совместимости, портреты и прогнозы. Перечитывать их можно бесплатно.</p>`;
 return;
 }
-box.innerHTML = d.products.map(x => `
+box.innerHTML = f27 + d.products.map(x => `
 <button onclick="closeModal('myproducts');openProduct(${x.id})" class="w-full text-left rounded-xl p-3 active:scale-95" style="background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08)">
 <span style="display:flex;justify-content:space-between;gap:8px;font-size:12px;color:#E6D2B5;font-weight:700"><span>${esc(x.title)}</span><span style="color:rgba(207,201,220,0.78);font-weight:400;white-space:nowrap">${fmtDate(x.created_at)}</span></span>
 ${x.status === "pending" ? `<span style="display:block;font-size:10px;color:rgba(207,201,220,0.78);margin-top:3px">Пишется…</span>` : ""}
@@ -2309,6 +2345,7 @@ function setPayMethod(m) {
 payMethodChosen = true;
 payMethod = (m === "card" && userProfile && userProfile.card_enabled) ? "card" : "stars";
 renderStorePrices();
+renderF27Store();
 }
 function renderStorePrices() {
 const p = userProfile || {};
@@ -2629,6 +2666,7 @@ document.getElementById("s-loading").classList.add("hidden");
 document.getElementById("s-dashboard").classList.remove("hidden");
 initSheets();
 openDeepLinkedReading();
+loadF27().then(() => { try { if (new URLSearchParams(location.search).get("open") === "f27") openF27(); } catch {} });
 openDeepLinkedAction();
 syncTimezone();
 loadToday();
@@ -2963,6 +3001,175 @@ if (saved === p.lang) return false; // уже пробовали – не зац
 try { localStorage.setItem("ui_lang", p.lang); } catch {}
 location.reload();
 return true;
+}
+
+// ══ «Мой 2027»: данные → тизер (число и карта года) → оплата → прогноз. Всё приходит с сервера, модуль может быть выключен ══
+let f27 = null, f27Sphere = "", f27Poll = null;
+const cardImg = id => `cards/${String(id).padStart(2, "0")}.webp`;
+async function loadF27() {
+try {
+const r = await fetch(`${BACKEND}/api/f27/state`, { headers:{ Authorization: initData } });
+f27 = r.ok ? await r.json() : null;
+} catch { f27 = null; }
+const on = !!(f27 && f27.enabled);
+document.getElementById("f27-home").classList.toggle("hidden", !on);
+renderF27Store();
+return f27;
+}
+function f27Owned() { return f27 && f27.enabled ? f27.products.filter(x => x.owned && x.id !== "full_2027") : []; }
+function f27Price(x, method) {
+if (method === "card") return x.card != null ? `${x.card} ${x.card_sign}` : null;
+if (method === "stars") return `${x.stars} ⭐`;
+return `${x.energy} ⚡`;
+}
+function renderF27Store() {
+const box = document.getElementById("f27-store");
+if (!box) return;
+const on = !!(f27 && f27.enabled);
+box.classList.toggle("hidden", !on);
+if (!on) return;
+const method = payMethod === "card" ? "card" : "stars";
+box.innerHTML = f27.products.map(x => {
+const pr = x.owned ? L("Открыт") : (f27Price(x, method) || f27Price(x, "stars"));
+return `<div class="f27-item"><div style="min-width:0"><div class="font-bold text-xs text-white">${esc(x.emoji + " " + x.title)}</div><div style="font-size:10px;color:rgba(230,210,181,.85)">${esc(L("Персональный прогноз на 2027"))}</div></div><button onclick="closeStore();${x.owned ? `openF27View('${x.id}')` : `openF27('${x.id}')`}" class="font-bold px-4 py-2 rounded-xl text-xs active:scale-95" style="flex-shrink:0;white-space:nowrap;background:#E6D2B5;color:#0B0A10">${esc(pr)}</button></div>`;
+}).join("");
+}
+async function openF27(focus) {
+if (!f27) await loadF27();
+if (!f27 || !f27.enabled) return;
+document.getElementById("f27-title").textContent = L("Мой 2027");
+["f27-form", "f27-teaser", "f27-view"].forEach(id => document.getElementById(id).classList.add("hidden"));
+openModal("f27");
+track("f27_open", { via: "app", focus: focus || null });
+if (!f27.profile.complete) { showF27Form(); return; }
+showF27Teaser(focus);
+}
+function showF27Form() {
+const p = f27.profile;
+document.getElementById("f27-name").value = p.name || (userProfile && userProfile.first_name) || "";
+document.getElementById("f27-date").value = p.birth_date || "";
+f27Sphere = p.sphere || "";
+document.getElementById("f27-spheres").innerHTML = f27.spheres.map(([k, t]) =>
+`<button class="f27-chip tap${k === f27Sphere ? " on" : ""}" onclick="f27Sphere='${k}';showF27Spheres()">${esc(t)}</button>`).join("");
+document.getElementById("f27-err").classList.add("hidden");
+document.getElementById("f27-form").classList.remove("hidden");
+document.getElementById("f27-teaser").classList.add("hidden");
+}
+function showF27Spheres() {
+document.querySelectorAll("#f27-spheres .f27-chip").forEach((b, i) => b.classList.toggle("on", f27.spheres[i][0] === f27Sphere));
+}
+async function saveF27() {
+const err = document.getElementById("f27-err");
+const body = { name: document.getElementById("f27-name").value, birth_date: document.getElementById("f27-date").value, sphere: f27Sphere };
+let src = null; try { src = new URLSearchParams(location.search).get("src"); } catch {}
+if (src) body.source = src;
+try {
+const r = await fetch(`${BACKEND}/api/f27/profile`, { method:"POST", headers:{"Content-Type":"application/json", Authorization: initData}, body: JSON.stringify(body) });
+const d = await r.json().catch(() => ({}));
+if (!r.ok) { err.textContent = d.detail || L("Ошибка"); err.classList.remove("hidden"); return; }
+f27 = d;
+document.getElementById("f27-form").classList.add("hidden");
+showF27Teaser();
+} catch { err.textContent = L("Ошибка соединения."); err.classList.remove("hidden"); }
+}
+function payButtons(x) {
+const order = f27.show_card_first ? ["card", "stars", "energy"] : ["stars", "card", "energy"];
+const label = { card: L("💳 Картой"), stars: L("⭐ Звёздами"), energy: L("⚡ Энергией") };
+return order.filter(m => (m !== "card" || x.card != null) && (m !== "energy" || (f27.balance || 0) >= x.energy))
+.map((m, i) => `<button class="f27-pay tap" style="${i === 0 ? "background:#E6D2B5;color:#0B0A10" : "background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.12);color:#E8E4F0"}" onclick="buyF27('${x.id}','${m}')">${esc(label[m])} – ${esc(f27Price(x, m))}</button>`).join("");
+}
+function showF27Teaser(focus) {
+const t = f27.teaser, box = document.getElementById("f27-teaser");
+const list = f27.products.filter(x => !focus || x.id === focus || x.owned);
+box.innerHTML = `
+<div class="flex items-center" style="gap:14px">
+<img src="${cardImg(t.year_card)}" alt="" style="width:86px;border-radius:10px;border:1px solid rgba(230,210,181,.35)">
+<div style="min-width:0">
+<p class="cat-label">${esc(L("Твоё число 2027"))}</p>
+<p class="serif" style="font-size:44px;font-weight:700;color:#E6D2B5;line-height:1">${t.personal_year}</p>
+<p class="text-xs" style="color:rgba(222,216,235,.85);margin-top:4px">${esc(Lf("Карта года – {0}", L(t.card_name)))}</p>
+</div></div>
+${t.short ? `<p class="text-sm leading-relaxed" style="color:#E8E4F0">${esc(t.short)}</p>` : ""}
+<p class="text-xs" style="color:rgba(207,201,220,0.78)">${esc(L("Что значат число и карта для тебя, месяц за месяцем, – в прогнозе."))}</p>
+${list.map(x => x.owned
+? `<button class="f27-item w-full tap" onclick="openF27View('${x.id}')"><span class="font-bold text-sm text-white">${esc(x.emoji + " " + x.title)}</span><span class="text-xs" style="color:#E6D2B5">${esc(L("Открыть"))} ›</span></button>`
+: x.can_buy ? `<div class="f27-item" style="display:block"><div class="font-bold text-sm text-white" style="margin-bottom:10px">${esc(x.emoji + " " + x.title)}</div><div class="space-y-2">${payButtons(x)}</div></div>` : "").join("")}
+<button class="w-full text-xs py-2" style="min-height:44px;color:rgba(207,201,220,0.78)" onclick="showF27Form()">${esc(L("✏️ Изменить данные"))}</button>`;
+box.classList.remove("hidden");
+}
+async function buyF27(product, method) {
+if (tg.requestWriteAccess && tg.isVersionAtLeast && tg.isVersionAtLeast("6.9")) { try { tg.requestWriteAccess(() => {}); } catch {} }
+try {
+const r = await fetch(`${BACKEND}/api/f27/buy`, { method:"POST", headers:{"Content-Type":"application/json", Authorization: initData}, body: JSON.stringify({ product, method }) });
+const d = await r.json().catch(() => ({}));
+if (!r.ok) { toast(d.detail || L("Ошибка оплаты.")); return; }
+if (d.invoice_link) {
+tg.openInvoice(d.invoice_link, st => { if (st === "paid") waitF27(product); });
+} else if (d.payment_url) {
+const go = () => { tg.openLink(d.payment_url); waitF27(product); };
+if (tg.isVersionAtLeast && tg.isVersionAtLeast("6.2")) {
+tg.showPopup({ title: L("Оплата картой"), message: L("Откроется страница оплаты Tribute. Войди через Telegram, а после входа вернись в браузер для завершения оплаты."),
+buttons: [{ id:"go", type:"default", text:L("Перейти к оплате") }, { type:"cancel" }] }, id => { if (id === "go") go(); });
+} else go();
+} else if (d.ok) {
+waitF27(product);
+}
+} catch { toast(L("Ошибка соединения.")); }
+}
+// После оплаты: ждём, пока прогноз откроется (вебхук), и показываем его
+function waitF27(product) {
+clearInterval(f27Poll);
+const started = Date.now();
+showF27Pending(L("Раскладываю карты на твой 2027…"));
+f27Poll = setInterval(async () => {
+if (Date.now() - started > 20 * 60 * 1000) { clearInterval(f27Poll); return; }
+await loadF27();
+const x = f27 && f27.products.find(p => p.id === product);
+if (x && x.owned) { clearInterval(f27Poll); refreshProfile(); openF27View(product === "full_2027" ? (f27Owned()[0] || {}).id : product); }
+}, 5000);
+}
+function showF27Pending(text) {
+["f27-form", "f27-teaser"].forEach(id => document.getElementById(id).classList.add("hidden"));
+const v = document.getElementById("f27-view");
+v.innerHTML = `<div class="text-center" style="padding:28px 0"><div class="serif" style="font-size:34px;color:#E6D2B5">2027</div><p class="text-sm mt-3" style="color:#E8E4F0">${esc(text)}</p><p class="text-xs mt-2" style="color:rgba(207,201,220,0.78)">${esc(L("Это займёт до пары минут. Прогноз и PDF придут и в чат с ботом."))}</p></div>`;
+v.classList.remove("hidden");
+}
+async function openF27View(product) {
+if (!product) return;
+if (document.getElementById("modal-f27").classList.contains("hidden")) openModal("f27");
+["f27-form", "f27-teaser"].forEach(id => document.getElementById(id).classList.add("hidden"));
+clearInterval(f27Poll);
+const load = async () => {
+const r = await fetch(`${BACKEND}/api/f27/forecast?product=${encodeURIComponent(product)}`, { headers:{ Authorization: initData } });
+const d = await r.json().catch(() => ({}));
+if (!r.ok) { toast(d.detail || L("Ошибка")); return true; }
+if (d.status !== "ready") { showF27Pending(d.other_langs && d.other_langs.length ? L("Пишу прогноз на твоём языке…") : L("Раскладываю карты на твой 2027…")); return false; }
+renderF27View(product, d);
+return true;
+};
+if (!(await load())) {
+const started = Date.now();
+f27Poll = setInterval(async () => { if ((await load()) || Date.now() - started > 15 * 60 * 1000) clearInterval(f27Poll); }, 6000);
+}
+}
+function renderF27View(product, d) {
+const v = document.getElementById("f27-view");
+document.getElementById("f27-title").textContent = d.title;
+v.innerHTML = `
+<div class="flex items-center" style="gap:14px"><img src="${cardImg(d.year_card)}" alt="" style="width:76px;border-radius:10px;border:1px solid rgba(230,210,181,.35)"><p class="serif" style="font-size:20px;color:#E6D2B5">${esc(d.core)}</p></div>
+${d.sections.map(s => `<div><p class="font-bold" style="color:#E6D2B5;font-size:15px;margin-bottom:6px">${esc(s.title)}</p>${s.text.split(/\n+/).filter(Boolean).map(t => `<p class="text-sm leading-relaxed" style="color:#E8E4F0;margin-bottom:8px">${esc(t)}</p>`).join("")}</div>`).join("")}
+${d.month_cards && d.month_cards.length ? `<p class="font-bold" style="color:#E6D2B5;font-size:15px">${esc(L("Карты месяцев"))}</p><div style="display:grid;grid-template-columns:repeat(4,1fr);gap:8px">${d.month_cards.map(c => `<div class="text-center"><img src="${cardImg(c.id)}" alt="" loading="lazy" style="width:100%;border-radius:8px"><p style="font-size:9px;color:rgba(222,216,235,.85);margin-top:3px">${esc(c.month)}<br>${esc(c.name)}</p></div>`).join("")}</div>` : ""}
+<p class="text-xs rounded-xl" style="padding:10px 12px;background:rgba(230,210,181,.08);border:1px solid rgba(230,210,181,.25);color:#E6D2B5">${esc(d.delivered ? L("📄 PDF отправлен тебе в чат с ботом") : L("📄 PDF можно получить в чат или скачать"))}</p>
+<div class="space-y-2"><button class="f27-pay tap" style="background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.12);color:#E8E4F0" onclick="sendF27Pdf('${product}')">${esc(L("Прислать PDF в чат"))}</button>
+<button class="f27-pay tap" style="background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.12);color:#E8E4F0" onclick="tg.openLink('${BACKEND}${d.pdf_url}')">${esc(L("Скачать PDF"))}</button></div>`;
+v.classList.remove("hidden");
+}
+async function sendF27Pdf(product) {
+try {
+const r = await fetch(`${BACKEND}/api/f27/send-pdf`, { method:"POST", headers:{"Content-Type":"application/json", Authorization: initData}, body: JSON.stringify({ product }) });
+const d = await r.json().catch(() => ({}));
+toast(d.sent ? L("PDF отправлен в чат с ботом.") : d.pending ? L("Прогноз ещё пишется, попробуй через пару минут.") : L("Не получилось отправить – нажми «Скачать PDF»."));
+} catch { toast(L("Ошибка соединения.")); }
 }
 
 async function refreshProfile() {
