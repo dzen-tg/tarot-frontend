@@ -3077,7 +3077,7 @@ function payButtons(x) {
 const order = f27.show_card_first ? ["card", "stars", "energy"] : ["stars", "card", "energy"];
 const label = { card: L("💳 Картой"), stars: L("⭐ Звёздами"), energy: L("⚡ Энергией") };
 return order.filter(m => (m !== "card" || x.card != null) && (m !== "energy" || (f27.balance || 0) >= x.energy))
-.map((m, i) => `<button class="f27-pay tap" style="${i === 0 ? "background:#E6D2B5;color:#0B0A10" : "background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.12);color:#E8E4F0"}" onclick="buyF27('${x.id}','${m}')">${esc(label[m])} – ${esc(f27Price(x, m))}</button>`).join("");
+.map((m, i) => `<button class="f27-pay tap" style="${i === 0 ? "background:#E6D2B5;color:#0B0A10" : "background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.12);color:#E8E4F0"}" onclick="buyF27('${x.id}','${m}')">${esc(label[m])} – ${esc(m === "stars" ? String(x.stars) : m === "energy" ? String(x.energy) : f27Price(x, m))}</button>`).join("");
 }
 function showF27Teaser(focus) {
 const t = f27.teaser, box = document.getElementById("f27-teaser");
