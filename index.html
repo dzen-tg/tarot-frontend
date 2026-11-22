@@ -1133,8 +1133,8 @@ style="background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08)">
 <!-- Способ оплаты -->
 <div id="pay-switch" class="hidden p-1 rounded-2xl" style="background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08)">
 <div style="display:grid;grid-template-columns:1fr 1fr;gap:4px">
-<button id="pm-card" onclick="setPayMethod('card')" class="py-2 rounded-xl text-xs font-bold transition-all">Картой</button>
 <button id="pm-stars" onclick="setPayMethod('stars')" class="py-2 rounded-xl text-xs font-bold transition-all">Звёздами</button>
+<button id="pm-card" onclick="setPayMethod('card')" class="py-2 rounded-xl text-xs font-bold transition-all">Картой</button>
 </div>
 </div>
 
@@ -2340,7 +2340,7 @@ m._t = setTimeout(() => { if (!m.classList.contains("open")) m.classList.add("hi
 }
 
 // ── Способ оплаты: Stars / карта (Tribute) ──
-let payMethod = "stars", payMethodChosen = false;   // по умолчанию – картой, если она подключена
+let payMethod = "stars", payMethodChosen = false;   // по умолчанию – звёздами
 function setPayMethod(m) {
 payMethodChosen = true;
 payMethod = (m === "card" && userProfile && userProfile.card_enabled) ? "card" : "stars";
@@ -3018,7 +3018,7 @@ return f27;
 }
 function f27Owned() { return f27 && f27.enabled ? f27.products.filter(x => x.owned && x.id !== "full_2027") : []; }
 function f27Price(x, method) {
-if (method === "card") return x.card != null ? `${x.card} ${x.card_sign}` : null;
+if (method === "card") return x.card != null ? `${x.card} ${x.card_sign}${x.card_alt ? " (" + x.card_alt + ")" : ""}` : null;
 if (method === "stars") return `${x.stars} ⭐`;
 return `${x.energy} ⚡`;
 }
@@ -3030,8 +3030,9 @@ box.classList.toggle("hidden", !on);
 if (!on) return;
 const method = payMethod === "card" ? "card" : "stars";
 box.innerHTML = f27.products.map(x => {
-const pr = x.owned ? L("Открыт") : (f27Price(x, method) || f27Price(x, "stars"));
-return `<div class="f27-item"><div style="min-width:0"><div class="font-bold text-xs text-white">${esc(x.emoji + " " + x.title)}</div><div style="font-size:10px;color:rgba(230,210,181,.85)">${esc(L("Персональный прогноз на 2027"))}</div></div><button onclick="closeStore();${x.owned ? `openF27View('${x.id}')` : `openF27('${x.id}')`}" class="font-bold px-4 py-2 rounded-xl text-xs active:scale-95" style="flex-shrink:0;white-space:nowrap;background:#E6D2B5;color:#0B0A10">${esc(pr)}</button></div>`;
+const pr = x.owned ? L("Открыт") : (method === "card" && x.card != null ? `${x.card} ${x.card_sign}` : f27Price(x, "stars"));
+const alt = !x.owned && method === "card" && x.card != null && x.card_alt ? `<span style="display:block;font-size:11px;font-weight:600">${esc(x.card_alt)}</span>` : "";
+return `<div class="f27-item"><div style="min-width:0"><div class="font-bold text-xs text-white">${esc(x.emoji + " " + x.title)}</div><div style="font-size:10px;color:rgba(230,210,181,.85)">${esc(L("Персональный прогноз на 2027"))}</div></div><button onclick="closeStore();${x.owned ? `openF27View('${x.id}')` : `openF27('${x.id}')`}" class="font-bold px-4 py-2 rounded-xl text-xs active:scale-95" style="flex-shrink:0;white-space:nowrap;background:#E6D2B5;color:#0B0A10;line-height:1.25">${esc(pr)}${alt}</button></div>`;
 }).join("");
 }
 async function openF27(focus) {
@@ -3363,8 +3364,8 @@ openModal("ai");
 function quickCost() { return (userProfile && userProfile.costs && userProfile.costs.quick) || 75; }
 // Цена со значком Энергии
 function energyPrice(cost) { return `${icon("energy", "ico ico-sm")}${cost}`; }
-// Способ оплаты по умолчанию: картой, если подключена, иначе звёздами
-function defaultMethod() { return userProfile && userProfile.card_enabled ? "card" : "stars"; }
+// Способ оплаты по умолчанию – звёздами (карта – второй вкладкой)
+function defaultMethod() { return "stars"; }
 // Самый маленький пакет, которого хватит на недостающую Энергию, тем способом, что открыт по умолчанию
 function packFor(missing) {
 const p = userProfile || {}, method = payMethod || defaultMethod();
