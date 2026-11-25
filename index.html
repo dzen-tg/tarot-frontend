@@ -933,6 +933,16 @@ style="background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08)">
 <p id="f27-err" class="hidden text-xs" style="color:#f87171"></p>
 <button class="btn-gold w-full" onclick="saveF27()">Узнать своё число 2027</button>
 </div>
+<!-- Астроданные: время и город рождения (для астропрогноза и «Весь 2027») -->
+<div id="f27-astro" class="space-y-3 hidden">
+<p class="text-xs" style="color:rgba(207,201,220,0.85)">Для астропрогноза нужны время и город рождения. Со временем посчитаем асцендент и дома.</p>
+<input id="f27-time" type="text" inputmode="numeric" maxlength="5" placeholder="Время рождения ЧЧ:ММ" class="w-full rounded-xl px-4 text-sm text-white" style="min-height:46px;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.12)">
+<label class="flex items-center text-xs" style="gap:8px;color:rgba(222,216,235,.85);min-height:32px"><input id="f27-notime" type="checkbox"> Не знаю время</label>
+<input id="f27-city" type="text" maxlength="60" placeholder="Город рождения" class="w-full rounded-xl px-4 text-sm text-white" style="min-height:46px;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.12)" oninput="f27CitySearch()">
+<div id="f27-cities" class="flex flex-wrap" style="gap:8px"></div>
+<p id="f27-astro-err" class="hidden text-xs" style="color:#f87171"></p>
+<button class="btn-gold w-full" onclick="saveF27Astro()">Продолжить</button>
+</div>
 <!-- Тизер и оффер -->
 <div id="f27-teaser" class="space-y-4 hidden"></div>
 <!-- Прогноз -->
@@ -2975,7 +2985,7 @@ initApp();
 
 // ── Покупки ──
 // ── Язык приложения: выбор вручную (сохраняется на сервере и в этом телефоне) ──
-const LANG_NAMES = [["ru","Русский"],["en","English"],["kk","Қазақша"],["uk","Українська"],["uz","Oʻzbekcha"],["tr","Türkçe"],["es","Español"],["pt","Português"],["de","Deutsch"],["fr","Français"],["ar","العربية"]];
+const LANG_NAMES = [["ru","Русский"],["en","English"]];
 function curLang() { return window.__lang || "ru"; }
 function renderLangBtn() { const el = document.getElementById("lang-code"); if (el) el.textContent = curLang().toUpperCase(); }
 function openLang() {
@@ -3016,7 +3026,7 @@ document.getElementById("f27-home").classList.toggle("hidden", !on);
 renderF27Store();
 return f27;
 }
-function f27Owned() { return f27 && f27.enabled ? f27.products.filter(x => x.owned && x.id !== "full_2027") : []; }
+function f27Owned() { return f27 && f27.enabled ? (f27.bought || []) : []; }
 function f27Price(x, method) {
 if (method === "card") return x.card != null ? `${x.card} ${x.card_sign}${x.card_alt ? " (" + x.card_alt + ")" : ""}` : null;
 if (method === "stars") return `${x.stars} ⭐`;
@@ -3039,7 +3049,7 @@ async function openF27(focus) {
 if (!f27) await loadF27();
 if (!f27 || !f27.enabled) return;
 document.getElementById("f27-title").textContent = L("Мой 2027");
-["f27-form", "f27-teaser", "f27-view"].forEach(id => document.getElementById(id).classList.add("hidden"));
+["f27-form", "f27-astro", "f27-teaser", "f27-view"].forEach(id => document.getElementById(id).classList.add("hidden"));
 openModal("f27");
 track("f27_open", { via: "app", focus: focus || null });
 if (!f27.profile.complete) { showF27Form(); return; }
@@ -3095,15 +3105,23 @@ ${t.short ? `<p class="text-sm leading-relaxed" style="color:#E8E4F0">${esc(t.sh
 ${list.map(x => x.owned
 ? `<button class="f27-item w-full tap" onclick="openF27View('${x.id}')"><span class="font-bold text-sm text-white">${esc(x.emoji + " " + x.title)}</span><span class="text-xs" style="color:#E6D2B5">${esc(L("Открыть"))} ›</span></button>`
 : x.can_buy ? `<div class="f27-item" style="display:block"><div class="font-bold text-sm text-white" style="margin-bottom:10px">${esc(x.emoji + " " + x.title)}</div><div class="space-y-2">${payButtons(x)}</div></div>` : "").join("")}
+${f27.gifts ? `<button class="f27-pay tap" style="background:rgba(255,255,255,.05);border:1px solid rgba(230,210,181,.4);color:#E6D2B5" onclick="showF27Gift()">${esc(L("🎁 Подарить прогноз"))}</button>` : ""}
 <button class="w-full text-xs py-2" style="min-height:44px;color:rgba(207,201,220,0.78)" onclick="showF27Form()">${esc(L("✏️ Изменить данные"))}</button>`;
 box.classList.remove("hidden");
 }
-async function buyF27(product, method) {
+let f27AfterAstro = null;
+async function buyF27(product, method, gift) {
 if (tg.requestWriteAccess && tg.isVersionAtLeast && tg.isVersionAtLeast("6.9")) { try { tg.requestWriteAccess(() => {}); } catch {} }
 try {
-const r = await fetch(`${BACKEND}/api/f27/buy`, { method:"POST", headers:{"Content-Type":"application/json", Authorization: initData}, body: JSON.stringify({ product, method }) });
+const r = await fetch(`${BACKEND}/api/f27/buy`, { method:"POST", headers:{"Content-Type":"application/json", Authorization: initData}, body: JSON.stringify({ product, method, gift: !!gift }) });
 const d = await r.json().catch(() => ({}));
+if (r.status === 409 && d.detail === "astro") { f27AfterAstro = () => buyF27(product, method); showF27Astro(); return; }
 if (!r.ok) { toast(d.detail || L("Ошибка оплаты.")); return; }
+if (gift && (d.invoice_link || d.ok)) {
+if (d.invoice_link) tg.openInvoice(d.invoice_link, st => { if (st === "paid") setTimeout(showF27GiftLinks, 2500); });
+else setTimeout(showF27GiftLinks, 1500);
+return;
+}
 if (d.invoice_link) {
 tg.openInvoice(d.invoice_link, st => { if (st === "paid") waitF27(product); });
 } else if (d.payment_url) {
@@ -3144,6 +3162,7 @@ const load = async () => {
 const r = await fetch(`${BACKEND}/api/f27/forecast?product=${encodeURIComponent(product)}`, { headers:{ Authorization: initData } });
 const d = await r.json().catch(() => ({}));
 if (!r.ok) { toast(d.detail || L("Ошибка")); return true; }
+if (d.status === "need_astro") { f27AfterAstro = () => openF27View(product); showF27Astro(); return true; }
 if (d.status !== "ready") { showF27Pending(d.other_langs && d.other_langs.length ? L("Пишу прогноз на твоём языке…") : L("Раскладываю карты на твой 2027…")); return false; }
 renderF27View(product, d);
 return true;
@@ -3164,6 +3183,74 @@ ${d.month_cards && d.month_cards.length ? `<p class="font-bold" style="color:#E6
 <div class="space-y-2"><button class="f27-pay tap" style="background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.12);color:#E8E4F0" onclick="sendF27Pdf('${product}')">${esc(L("Прислать PDF в чат"))}</button>
 <button class="f27-pay tap" style="background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.12);color:#E8E4F0" onclick="tg.openLink('${BACKEND}${d.pdf_url}')">${esc(L("Скачать PDF"))}</button></div>`;
 v.classList.remove("hidden");
+}
+let f27CityT = null, f27CityPick = null;
+function showF27Astro() {
+["f27-form", "f27-teaser", "f27-view"].forEach(id => document.getElementById(id).classList.add("hidden"));
+const p = f27.profile || {};
+document.getElementById("f27-time").value = p.birth_time && p.birth_time !== "?" ? p.birth_time : "";
+document.getElementById("f27-notime").checked = p.birth_time === "?";
+document.getElementById("f27-city").value = "";
+document.getElementById("f27-cities").innerHTML = "";
+document.getElementById("f27-astro-err").classList.add("hidden");
+f27CityPick = null;
+document.getElementById("f27-astro").classList.remove("hidden");
+}
+function f27CitySearch() {
+clearTimeout(f27CityT);
+const q = document.getElementById("f27-city").value.trim();
+f27CityPick = null;
+if (q.length < 2) { document.getElementById("f27-cities").innerHTML = ""; return; }
+f27CityT = setTimeout(async () => {
+try {
+const r = await fetch(`${BACKEND}/api/f27/city?q=${encodeURIComponent(q)}`, { headers:{ Authorization: initData } });
+const d = await r.json();
+window.__f27cities = d.cities || [];
+document.getElementById("f27-cities").innerHTML = (d.cities || []).map((c, i) =>
+`<button class="f27-chip tap" onclick="f27PickCity(${i})">${esc(c.name + ", " + c.country)}</button>`).join("") ||
+`<p class="text-xs" style="color:rgba(207,201,220,0.78)">${esc(L("Не нашёл такой город. Попробуй написать иначе или назови ближайший крупный город."))}</p>`;
+} catch {}
+}, 350);
+}
+function f27PickCity(i) {
+f27CityPick = (window.__f27cities || [])[i];
+document.querySelectorAll("#f27-cities .f27-chip").forEach((b, j) => b.classList.toggle("on", j === i));
+}
+async function saveF27Astro() {
+const err = document.getElementById("f27-astro-err");
+const t = document.getElementById("f27-notime").checked ? "" : document.getElementById("f27-time").value.trim();
+if (!f27CityPick) { err.textContent = L("Выбери город из списка."); err.classList.remove("hidden"); return; }
+if (!t && !document.getElementById("f27-notime").checked) { err.textContent = L("Напиши время так: 07:30. Или нажми «Не знаю»."); err.classList.remove("hidden"); return; }
+try {
+const r = await fetch(`${BACKEND}/api/f27/astro`, { method:"POST", headers:{"Content-Type":"application/json", Authorization: initData}, body: JSON.stringify({ time: t, city: f27CityPick.name, country: f27CityPick.country }) });
+const d = await r.json().catch(() => ({}));
+if (!r.ok) { err.textContent = d.detail || L("Ошибка"); err.classList.remove("hidden"); return; }
+f27 = d;
+document.getElementById("f27-astro").classList.add("hidden");
+const next = f27AfterAstro; f27AfterAstro = null;
+if (next) next(); else showF27Teaser();
+} catch { err.textContent = L("Ошибка соединения."); err.classList.remove("hidden"); }
+}
+function showF27Gift() {
+const box = document.getElementById("f27-teaser");
+const giftBtns = x => ["stars", "energy"].filter(m => m !== "energy" || (f27.balance || 0) >= x.energy).map((m, i) =>
+`<button class="f27-pay tap" style="${i === 0 ? "background:#E6D2B5;color:#0B0A10" : "background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.12);color:#E8E4F0"}" onclick="buyF27('${x.id}','${m}',true)">${esc(m === "stars" ? L("⭐ Звёздами") : L("⚡ Энергией"))} – ${esc(String(m === "stars" ? x.stars : x.energy))}</button>`).join("");
+box.innerHTML = `<p class="text-sm" style="color:#E8E4F0">${esc(L("Какой прогноз подарить? Получатель сам введёт свои данные."))}</p>` +
+f27.products.map(x => `<div class="f27-item" style="display:block"><div class="font-bold text-sm text-white" style="margin-bottom:10px">🎁 ${esc(x.emoji + " " + x.title)}</div><div class="space-y-2">${giftBtns(x)}</div></div>`).join("") +
+`<button class="w-full text-xs py-2" style="min-height:44px;color:rgba(207,201,220,0.78)" onclick="showF27Teaser()">${esc(L("← Назад"))}</button>`;
+}
+async function showF27GiftLinks() {
+try {
+const r = await fetch(`${BACKEND}/api/f27/gifts`, { headers:{ Authorization: initData } });
+const d = await r.json();
+const g = (d.gifts || []).find(x => !x.used);
+if (!g) { toast(L("Подарок оформляется – ссылка придёт в чат с ботом.")); return; }
+const share = "https://t.me/share/url?" + new URLSearchParams({ url: g.url, text: L("🎁 Я дарю тебе прогноз на 2027 – открой ссылку, введи свои данные и получи его.") });
+document.getElementById("f27-teaser").innerHTML = `<p class="serif" style="font-size:20px;color:#E6D2B5">🎁 ${esc(L("Подарок готов"))}</p>
+<p class="text-sm" style="color:#E8E4F0">${esc(g.title)}</p><p class="text-xs" style="color:rgba(207,201,220,0.85);word-break:break-all">${esc(g.url)}</p>
+<button class="btn-gold w-full" onclick="tg.openTelegramLink('${share}')">${esc(L("📤 Отправить подарок"))}</button>
+<p class="text-xs" style="color:rgba(207,201,220,0.78)">${esc(L("Ссылка сработает один раз. Она же пришла тебе в чат с ботом."))}</p>`;
+} catch { toast(L("Ошибка соединения.")); }
 }
 async function sendF27Pdf(product) {
 try {

@@ -1,16 +1,12 @@
-// Язык интерфейса: по языку Telegram на телефоне. Словари – в папке i18n/ (ключ – русская фраза, значение – перевод).
-// Если перевода нет, остаётся русский текст. Для проверки любого языка: ?lang=ar в адресе.
+// Язык интерфейса: русский или английский. Словарь – i18n/en.js (ключ – русская фраза, значение – перевод).
+// Если перевода нет, остаётся русский текст.
 (function () {
-  var MAP = { ru: "ru", be: "ru", uk: "uk", kk: "kk", en: "en", es: "es", ar: "ar", uz: "uz", tr: "tr", pt: "pt", de: "de", fr: "fr" };
+  // Языки: по умолчанию русский у всех; английский – если выбран кнопкой 🌐 (сохраняется в ui_lang).
+  // Язык Telegram не учитывается. Для проверки: ?lang=en в адресе.
   var code = "";
   try { code = new URLSearchParams(location.search).get("lang") || ""; } catch (e) {}
-  // Язык, выбранный вручную в приложении (кнопка в шапке)
   if (!code) { try { code = localStorage.getItem("ui_lang") || ""; } catch (e) {} }
-  if (!code) {
-    try { code = Telegram.WebApp.initDataUnsafe.user.language_code || ""; } catch (e) {}
-  }
-  if (!code) code = navigator.language || "ru";
-  var lang = MAP[String(code).toLowerCase().slice(0, 2)] || "en";
+  var lang = String(code).toLowerCase().slice(0, 2) === "en" ? "en" : "ru";
   window.__lang = lang;
   window.I18N = {};
   document.documentElement.lang = lang;

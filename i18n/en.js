@@ -776,5 +776,21 @@ window.I18N = {
 "Что значат число и карта для тебя, месяц за месяцем, – в прогнозе.": "What the number and card mean for you, month by month, – in the forecast.",
 "Твоё число и карта года – бесплатно": "Your number and year card – free",
 "Пишу прогноз на твоём языке…": "Writing the forecast in your language…",
-"Узнать своё число 2027": "Find out your 2027 number"
+"Узнать своё число 2027": "Find out your 2027 number",
+"Не нашёл такой город. Попробуй написать иначе или назови ближайший крупный город.": "Couldn't find that city. Try typing it differently or name the nearest big city.",
+"Подарок оформляется – ссылка придёт в чат с ботом.": "Your gift is being prepared – the link will arrive in the bot chat.",
+"Подарок готов": "Gift ready",
+"Для астропрогноза нужны время и город рождения. Со временем посчитаем асцендент и дома.": "We need your birth time and city for the astro‑forecast. We'll calculate the ascendant and houses later.",
+"Продолжить": "Continue",
+"Ссылка сработает один раз. Она же пришла тебе в чат с ботом.": "The link works only once. It was sent to you in the bot chat.",
+"🎁 Подарить прогноз": "🎁 Gift a forecast",
+"← Назад": "← Back",
+"Не знаю время": "I don’t know the time",
+"Выбери город из списка.": "Select a city from the list.",
+"Город рождения": "Birth city",
+"📤 Отправить подарок": "📤 Send gift",
+"🎁 Я дарю тебе прогноз на 2027 – открой ссылку, введи свои данные и получи его.": "🎁 I’m giving you a 2027 forecast – open the link, enter your details and get it.",
+"Напиши время так: 07:30. Или нажми «Не знаю».": "Enter the time like this: 07:30. Or tap “I don’t know”.",
+"Какой прогноз подарить? Получатель сам введёт свои данные.": "Which forecast to gift? The recipient will enter their own details.",
+"Время рождения ЧЧ:ММ": "Birth time HH:MM"
 };
